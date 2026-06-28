@@ -7,7 +7,7 @@
     "frontendDist": "../dist-min",
     "devUrl": "http://localhost:1420",
     "beforeDevCommand": "node sync-version.cjs && npx serve dist -p 1420 -s --no-clipboard",
-    "beforeBuildCommand": "node sync-version.cjs && node minify.cjs"
+    "beforeBuildCommand": "node sync-version.cjs && npx tauri icon src-tauri/icons/source.png && node minify.cjs"
   },
   "app": {
     "windows": [
