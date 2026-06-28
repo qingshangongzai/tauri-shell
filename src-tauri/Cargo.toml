@@ -1,0 +1,34 @@
+[package]
+name = "my-app"
+version = "1.0.0"
+edition = "2021"
+
+[lib]
+name = "app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[[bin]]
+name = "my-app"
+path = "src/main.rs"
+
+[package.metadata.tauri-winres]
+# Windows EXE 文件属性（右键 → 属性 → 详细信息）
+# 文件版本 和 产品版本 由 tauri.conf.json 的 version 自动同步
+FileDescription = "我的应用"
+ProductName = "我的应用"
+CompanyName = "My Company"
+LegalCopyright = "Copyright © 2026 My Company"
+OriginalFilename = "my-app.exe"
+InternalName = "my-app"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+tauri-winres = "0.3"
+
+[dependencies]
+tauri = { version = "2", features = [] }
+
+[profile.release]
+opt-level = "s"
+strip = true
+panic = "abort"

@@ -1,0 +1,16 @@
+{
+  "name": "my-app",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "html-minifier-terser": "^7.2.0",
+    "serve": "^14.2.6"
+  }
+}
