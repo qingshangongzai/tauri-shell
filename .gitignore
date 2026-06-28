@@ -3,3 +3,6 @@ src-tauri/target/
 *.exe
 *.msi
 dist-min/
+/.codebuddy
+/.trae
+/.qoder
