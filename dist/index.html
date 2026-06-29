@@ -35,6 +35,10 @@ See the Mulan PSL v2 for more details.
             --orange-bg: rgba(255, 149, 0, 0.08);
             --purple: #AF52DE;
             --purple-bg: rgba(175, 82, 222, 0.08);
+            --white: #FFFFFF;
+            --red: #E81123;
+            --red-active: #BF0F1D;
+            --grey-active: #C6C6C8;
             --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
             --radius: 10px;
             --radius-sm: 6px;
@@ -42,6 +46,8 @@ See the Mulan PSL v2 for more details.
             --ease: cubic-bezier(0.4, 0, 0.2, 1);
             --sidebar-w: 180px;
             --titlebar-h: 40px;
+            --gradient-welcome: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+            --gradient-about: linear-gradient(135deg, #007AFF, #5856D6);
         }
 
         /* ───── 暗色主题 ───── */
@@ -117,9 +123,9 @@ See the Mulan PSL v2 for more details.
             color: var(--label-secondary);
         }
         .win-btn:hover { background: var(--bg-secondary); }
-        .win-btn:active { background: #C6C6C8; }
-        .win-btn-close:hover { background: #E81123; color: #fff; }
-        .win-btn-close:active { background: #BF0F1D; color: #fff; }
+        .win-btn:active { background: var(--grey-active); }
+        .win-btn-close:hover { background: var(--red); color: var(--white); }
+        .win-btn-close:active { background: var(--red-active); color: var(--white); }
         .win-btn::after {
             content: '';
             display: block;
@@ -157,6 +163,80 @@ See the Mulan PSL v2 for more details.
             box-shadow: -2.5px 2.5px 0 0 currentColor;
             box-sizing: border-box;
         }
+
+        /* ───── 卡片内部排版类 ───── */
+        .card-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .card-title-sm {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .card-title-sm-lg {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .card-title-xs {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .card-subtitle {
+            font-size: 0.72rem;
+            color: var(--label-tertiary);
+            margin-bottom: 12px;
+        }
+        .card-subtitle-sm {
+            font-size: 0.72rem;
+            color: var(--label-tertiary);
+            margin-bottom: 8px;
+        }
+        .card-body {
+            font-size: 0.8rem;
+            color: var(--label-secondary);
+            line-height: 1.7;
+        }
+        .settings-msg {
+            font-size: 0.75rem;
+            color: var(--green);
+            margin-left: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .about-app-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .about-app-desc {
+            font-size: 0.78rem;
+            color: var(--label-tertiary);
+            margin-top: 4px;
+        }
+        .about-app-sub {
+            font-size: 0.75rem;
+            color: var(--label-secondary);
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+        .welcome-card code {
+            background: rgba(255,255,255,0.18);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+        }
+        .dashboard-quickstart code {
+            background: var(--bg-secondary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+        }
+        .card-spaced { margin-bottom: 16px; }
+        .card-centered { text-align: center; margin-bottom: 16px; }
+        .btn-row { margin-top: 16px; }
 
         /* ═════════════════════ 主布局 ═════════════════════ */
         .app-layout {
@@ -246,7 +326,7 @@ See the Mulan PSL v2 for more details.
         .page-title {
             font-size: 1.35rem;
             font-weight: 700;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             letter-spacing: -0.01em;
         }
         .page-desc {
@@ -307,8 +387,8 @@ See the Mulan PSL v2 for more details.
 
         /* ───── 欢迎卡片 ───── */
         .welcome-card {
-            background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
-            color: #fff;
+            background: var(--gradient-welcome);
+            color: var(--white);
             border-radius: var(--radius);
             padding: 24px 28px;
             margin-bottom: 20px;
@@ -330,7 +410,7 @@ See the Mulan PSL v2 for more details.
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 7px 16px;
+            padding: 8px 16px;
             border-radius: var(--radius-sm);
             font-size: 0.8rem;
             font-weight: 520;
@@ -341,7 +421,7 @@ See the Mulan PSL v2 for more details.
         }
         .btn-primary {
             background: var(--blue);
-            color: #fff;
+            color: var(--white);
         }
         .btn-primary:hover { opacity: 0.88; }
         .btn-secondary {
@@ -389,7 +469,7 @@ See the Mulan PSL v2 for more details.
             top: 3px; left: 3px;
             width: 20px;
             height: 20px;
-            background: #fff;
+            background: var(--white);
             border-radius: 50%;
             transition: transform 0.2s var(--ease);
             box-shadow: 0 1px 3px rgba(0,0,0,0.15);
@@ -403,7 +483,7 @@ See the Mulan PSL v2 for more details.
             font-size: 0.78rem;
             font-weight: 550;
             color: var(--label-secondary);
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
         .form-input {
             width: 100%;
@@ -418,6 +498,10 @@ See the Mulan PSL v2 for more details.
             transition: border-color 0.15s var(--ease);
         }
         .form-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-bg); }
+        .form-select {
+            appearance: auto;
+            cursor: pointer;
+        }
 
         /* ───── 工具页：计数器 ───── */
         .counter-display {
@@ -446,7 +530,7 @@ See the Mulan PSL v2 for more details.
             justify-content: center;
             transition: all 0.15s var(--ease);
         }
-        .counter-btn-plus  { background: var(--blue);  color: #fff; }
+        .counter-btn-plus  { background: var(--blue);  color: var(--white); }
         .counter-btn-minus { background: var(--bg-secondary); color: var(--label); }
         .counter-btn-reset { width: auto; padding: 0 18px; border-radius: 20px; font-size: 0.78rem; background: var(--bg-secondary); color: var(--label-secondary); }
         .counter-btn:hover { opacity: 0.8; }
@@ -463,12 +547,12 @@ See the Mulan PSL v2 for more details.
         .about-icon {
             width: 72px; height: 72px;
             border-radius: 18px;
-            background: linear-gradient(135deg, #007AFF, #5856D6);
+            background: var(--gradient-about);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 32px;
-            color: #fff;
+            color: var(--white);
             margin: 0 auto 16px;
         }
         .about-table {
@@ -497,9 +581,9 @@ See the Mulan PSL v2 for more details.
     <div class="titlebar" data-tauri-drag-region>
         <span class="titlebar-title">轻壳 · 示例</span>
         <div class="window-controls">
-            <button class="win-btn win-btn-min" id="winMin" title="最小化"></button>
-            <button class="win-btn win-btn-max" id="winMax" title="最大化"></button>
-            <button class="win-btn win-btn-close" id="winClose" title="关闭"></button>
+            <button class="win-btn win-btn-min" id="winMin" title="最小化" aria-label="最小化"></button>
+            <button class="win-btn win-btn-max" id="winMax" title="最大化" aria-label="最大化"></button>
+            <button class="win-btn win-btn-close" id="winClose" title="关闭" aria-label="关闭"></button>
         </div>
     </div>
 
@@ -507,7 +591,7 @@ See the Mulan PSL v2 for more details.
     <div class="app-layout">
 
         <!-- ───── 侧边栏 ───── -->
-        <aside class="sidebar">
+        <aside class="sidebar" aria-label="导航侧栏">
             <nav class="sidebar-nav">
                 <button class="nav-item active" data-page="dashboard">
                     <span class="nav-icon">📊</span> 仪表盘
@@ -531,7 +615,7 @@ See the Mulan PSL v2 for more details.
             <!-- 仪表盘页 -->
             <section class="page active" id="page-dashboard">
                 <div class="welcome-card">
-                    <h2>👋 欢迎使用轻壳</h2>
+                    <h1>👋 欢迎使用轻壳</h1>
                     <p>这是一个基于 Tauri v2 的桌面应用模板。你可以在 <code>dist/index.html</code> 中编写任何网页内容，一键打包为 Windows 桌面程序。</p>
                 </div>
 
@@ -567,25 +651,25 @@ See the Mulan PSL v2 for more details.
                 </div>
 
                 <div class="card">
-                    <h3 style="font-size:0.95rem;font-weight:600;margin-bottom:8px;">快速开始</h3>
-                    <p style="font-size:0.8rem;color:var(--label-secondary);line-height:1.7;">
-                        1️⃣ 修改 <code style="background:var(--bg-secondary);padding:2px 6px;border-radius:3px;font-size:0.75rem;">dist/index.html</code> 编写你的界面<br>
-                        2️⃣ 替换 <code style="background:var(--bg-secondary);padding:2px 6px;border-radius:3px;font-size:0.75rem;">src-tauri/icons/source.png</code> 为你的应用图标<br>
-                        3️⃣ 修改 <code style="background:var(--bg-secondary);padding:2px 6px;border-radius:3px;font-size:0.75rem;">tauri.conf.json</code> 中的应用名称和标识<br>
-                        4️⃣ 运行 <code style="background:var(--bg-secondary);padding:2px 6px;border-radius:3px;font-size:0.75rem;">npm run tauri build</code> 打包 EXE
+                    <h3 class="card-title-sm-lg">快速开始</h3>
+                    <p class="card-body">
+                        1️⃣ 修改 <code>dist/index.html</code> 编写你的界面<br>
+                        2️⃣ 替换 <code>src-tauri/icons/source.png</code> 为你的应用图标<br>
+                        3️⃣ 修改 <code>tauri.conf.json</code> 中的应用名称和标识<br>
+                        4️⃣ 运行 <code>npm run tauri build</code> 打包 EXE
                     </p>
                 </div>
             </section>
 
             <!-- 工具页 -->
             <section class="page" id="page-tools">
-                <h2 class="page-title">工具箱</h2>
+                <h1 class="page-title">工具箱</h1>
                 <p class="page-desc">一些实用的交互组件示例，展示桌面应用中可以做什么。</p>
 
-                <div class="card" style="margin-bottom:16px;">
-                    <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:4px;">🔢 计数器</h3>
-                    <p style="font-size:0.72rem;color:var(--label-tertiary);margin-bottom:8px;">一个简单的状态管理示例</p>
-                    <div class="counter-display" id="counterValue">0</div>
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm">🔢 计数器</h2>
+                    <p class="card-subtitle-sm">一个简单的状态管理示例</p>
+                    <div class="counter-display" id="counterValue" aria-live="polite" aria-atomic="true">0</div>
                     <div class="counter-actions">
                         <button class="counter-btn counter-btn-minus" id="counterDec">−</button>
                         <button class="counter-btn counter-btn-reset" id="counterReset">重置</button>
@@ -594,8 +678,8 @@ See the Mulan PSL v2 for more details.
                 </div>
 
                 <div class="card">
-                    <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:4px;">📋 剪贴板读写</h3>
-                    <p style="font-size:0.72rem;color:var(--label-tertiary);margin-bottom:12px;">使用 Web API 读写系统剪贴板</p>
+                    <h2 class="card-title-sm">📋 剪贴板读写</h2>
+                    <p class="card-subtitle">使用 Web API 读写系统剪贴板</p>
                     <div class="clipboard-row">
                         <input class="form-input" id="clipboardInput" placeholder="输入一些文字…" value="Hello 轻壳！">
                         <button class="btn btn-primary" id="clipboardCopy">复制</button>
@@ -609,11 +693,11 @@ See the Mulan PSL v2 for more details.
 
             <!-- 设置页 -->
             <section class="page" id="page-settings">
-                <h2 class="page-title">设置</h2>
+                <h1 class="page-title">设置</h1>
                 <p class="page-desc">个性化你的应用体验。</p>
 
-                <div class="card" style="margin-bottom:16px;">
-                    <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:2px;">外观</h3>
+                <div class="card card-spaced">
+                    <h2 class="card-title-xs">外观</h2>
                     <div class="toggle-row">
                         <div>
                             <div class="toggle-label">深色模式</div>
@@ -628,14 +712,14 @@ See the Mulan PSL v2 for more details.
                 </div>
 
                 <div class="card">
-                    <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:12px;">偏好设置</h3>
+                    <h2 class="card-title">偏好设置</h2>
                     <div class="form-group">
                         <label class="form-label">用户名</label>
                         <input class="form-input" id="settingsName" placeholder="请输入用户名" value="青山公仔">
                     </div>
                     <div class="form-group">
                         <label class="form-label">语言</label>
-                        <select class="form-input" id="settingsLang" style="appearance:auto;cursor:pointer;">
+                        <select class="form-input form-select" id="settingsLang">
                             <option value="zh-CN" selected>简体中文</option>
                             <option value="en">English</option>
                             <option value="ja">日本語</option>
@@ -652,28 +736,28 @@ See the Mulan PSL v2 for more details.
                             <span class="toggle-thumb"></span>
                         </label>
                     </div>
-                    <button class="btn btn-primary" id="saveSettings" style="margin-top:14px;">保存设置</button>
-                    <span id="settingsMsg" style="font-size:0.75rem;color:var(--green);margin-left:10px;opacity:0;transition:opacity 0.3s;">✓ 已保存</span>
+                    <button class="btn btn-primary btn-row" id="saveSettings">保存设置</button>
+                    <span class="settings-msg" id="settingsMsg">✓ 已保存</span>
                 </div>
             </section>
 
             <!-- 关于页 -->
             <section class="page" id="page-about">
-                <h2 class="page-title">关于</h2>
+                <h1 class="page-title">关于</h1>
                 <p class="page-desc">了解这个应用和它的构建技术。</p>
 
-                <div class="card" style="text-align:center;margin-bottom:16px;">
+                <div class="card card-centered">
                     <div class="about-icon">🪶</div>
-                    <h3 style="font-size:1.1rem;font-weight:700;">轻壳</h3>
-                    <p style="font-size:0.78rem;color:var(--label-tertiary);margin-top:4px;">Tauri 桌面应用模板</p>
-                    <p style="font-size:0.75rem;color:var(--label-secondary);margin-top:8px;line-height:1.6;">
+                    <h2 class="about-app-name">轻壳</h2>
+                    <p class="about-app-desc">Tauri 桌面应用模板</p>
+                    <p class="about-app-sub">
                         极简的 Tauri v2 启动模板<br>
                         Rust 层零业务逻辑，纯空壳
                     </p>
                 </div>
 
                 <div class="card">
-                    <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:12px;">技术信息</h3>
+                    <h2 class="card-title">技术信息</h2>
                     <table class="about-table">
                         <tr><td>版本</td><td>1.0.0</td></tr>
                         <tr><td>框架</td><td>Tauri v2（Rust + WebView）</td></tr>
