@@ -38,6 +38,7 @@ See the Mulan PSL v2 for more details.
             --white: #FFFFFF;
             --red: #E81123;
             --red-active: #BF0F1D;
+            --red-bg: rgba(232, 17, 35, 0.08);
             --grey-active: #C6C6C8;
             --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
             --radius: 10px;
@@ -919,6 +920,332 @@ See the Mulan PSL v2 for more details.
             color: var(--red);
             margin-left: auto;
         }
+
+        /* ═════════════════════ 能力展示页：快捷键面板 ═════════════════════ */
+        .kb-display {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            padding: 18px 12px;
+            text-align: center;
+            margin-bottom: 10px;
+            border: 1px solid var(--separator-opaque);
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .kb-placeholder {
+            font-size: 0.75rem;
+            color: var(--label-tertiary);
+        }
+        .kb-key-badge {
+            display: inline-block;
+            font-size: 1.15rem;
+            font-weight: 600;
+            padding: 8px 18px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--separator-opaque);
+            border-radius: var(--radius-sm);
+            color: var(--label);
+            font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.12s var(--ease);
+        }
+        .kb-key-badge.pressed {
+            background: var(--blue);
+            color: var(--white);
+            border-color: var(--blue);
+            transform: scale(1.05);
+        }
+        .kb-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .kb-row {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
+            text-align: center;
+            border: 1px solid var(--separator-opaque);
+        }
+        .kb-label {
+            display: block;
+            font-size: 0.65rem;
+            color: var(--label-tertiary);
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+        .kb-value {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--label);
+            font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+            word-break: break-all;
+        }
+        .kb-table {
+            width: 100%;
+            font-size: 0.75rem;
+            border-collapse: collapse;
+        }
+        .kb-table th {
+            text-align: left;
+            font-weight: 550;
+            color: var(--label-tertiary);
+            padding: 6px 0;
+            font-size: 0.68rem;
+            border-bottom: 1px solid var(--separator);
+        }
+        .kb-table td {
+            padding: 8px 0;
+            color: var(--label-secondary);
+            border-bottom: 1px solid var(--separator);
+        }
+        .kb-table td:first-child {
+            font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+        }
+        .kb-table kbd {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 550;
+            padding: 2px 7px;
+            background: var(--bg-secondary);
+            border-radius: 3px;
+            border: 1px solid var(--separator-opaque);
+            font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+            color: var(--label);
+            margin: 0 1px;
+        }
+        .kb-badge {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 550;
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+        .kb-badge-ready {
+            background: var(--green-bg);
+            color: var(--green);
+        }
+        .kb-hint {
+            font-size: 0.68rem;
+            color: var(--green);
+            margin-top: 6px;
+            min-height: 1.2em;
+        }
+
+        /* ═════════════════════ 能力展示页：拖放区域 ═════════════════════ */
+        .drop-zone {
+            border: 2px dashed var(--separator-opaque);
+            border-radius: var(--radius);
+            padding: 28px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s var(--ease);
+            background: var(--bg-tertiary);
+            outline: none;
+        }
+        .drop-zone:focus-visible {
+            box-shadow: 0 0 0 3px var(--blue-bg);
+            border-color: var(--blue);
+        }
+        .drop-zone.drag-over {
+            border-color: var(--blue);
+            background: var(--blue-bg);
+            border-style: solid;
+            cursor: copy;
+        }
+        .drop-zone-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+            line-height: 1;
+            transition: transform 0.2s var(--ease);
+        }
+        .drop-zone.drag-over .drop-zone-icon {
+            transform: scale(1.15);
+        }
+        .drop-zone-text {
+            font-size: 0.82rem;
+            font-weight: 550;
+            color: var(--label);
+            margin-bottom: 4px;
+        }
+        .drop-zone-hint {
+            font-size: 0.7rem;
+            color: var(--label-tertiary);
+        }
+        .drop-zone-input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        .drop-file-list {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .drop-file-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--separator-opaque);
+            font-size: 0.76rem;
+        }
+        .drop-file-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+        .drop-file-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .drop-file-name {
+            font-weight: 550;
+            color: var(--label);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .drop-file-meta {
+            font-size: 0.68rem;
+            color: var(--label-tertiary);
+            margin-top: 2px;
+        }
+        .drop-file-remove {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--label-secondary);
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 24px;
+            text-align: center;
+            padding: 0;
+            transition: all 0.15s var(--ease);
+            font-family: var(--font);
+        }
+        .drop-file-remove:hover {
+            background: var(--red);
+            color: var(--white);
+        }
+        .drop-empty {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.72rem;
+            color: var(--label-tertiary);
+        }
+
+        /* ═════════════════════ 能力展示页：Toast 通知 ═════════════════════ */
+        .toast-container {
+            position: fixed;
+            top: calc(var(--titlebar-h) + 12px);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+            width: auto;
+            max-width: 420px;
+        }
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-elevated);
+            border: 1px solid var(--separator-opaque);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            font-size: 0.8rem;
+            color: var(--label);
+            pointer-events: auto;
+            animation: toastSlideIn 0.25s var(--ease);
+            max-width: 100%;
+        }
+        @keyframes toastSlideIn {
+            from { opacity: 0; transform: translateY(-12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .toast.removing {
+            animation: toastSlideOut 0.2s var(--ease) forwards;
+        }
+        @keyframes toastSlideOut {
+            from { opacity: 1; transform: translateY(0); }
+            to   { opacity: 0; transform: translateY(-12px); }
+        }
+        .toast-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+            line-height: 1;
+            font-weight: 700;
+        }
+        .toast-success .toast-icon {
+            background: var(--green-bg);
+            color: var(--green);
+        }
+        .toast-warning .toast-icon {
+            background: var(--orange-bg);
+            color: var(--orange);
+        }
+        .toast-error .toast-icon {
+            background: var(--red-bg);
+            color: var(--red);
+        }
+        .toast-message {
+            flex: 1;
+            min-width: 0;
+            font-weight: 450;
+            line-height: 1.4;
+        }
+        .toast-close {
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: var(--label-tertiary);
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 22px;
+            text-align: center;
+            padding: 0;
+            transition: all 0.15s var(--ease);
+            font-family: var(--font);
+        }
+        .toast-close:hover {
+            background: var(--bg-secondary);
+            color: var(--label);
+        }
+        .toast-demo-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -945,6 +1272,9 @@ See the Mulan PSL v2 for more details.
                 <button class="nav-item" data-page="tools">
                     <span class="nav-icon">🛠</span> 工具
                 </button>
+                <button class="nav-item" data-page="tauri">
+                    <span class="nav-icon">🪟</span> 能力
+                </button>
                 <button class="nav-item" data-page="settings">
                     <span class="nav-icon">⚙</span> 设置
                 </button>
@@ -957,6 +1287,9 @@ See the Mulan PSL v2 for more details.
 
         <!-- ───── 主内容区 ───── -->
         <main class="main-content">
+
+            <!-- Toast 通知容器（全局） -->
+            <div class="toast-container" id="toastContainer" aria-live="polite" aria-relevant="additions"></div>
 
             <!-- 仪表盘页 -->
             <section class="page active" id="page-dashboard">
@@ -1158,6 +1491,85 @@ See the Mulan PSL v2 for more details.
                         <button class="btn btn-secondary" id="morseDecode">解码 ↑</button>
                         <button class="btn btn-secondary" id="morseCopy">复制结果</button>
                         <span class="morse-error" id="morseError" role="alert"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tauri 能力展示页 -->
+            <section class="page" id="page-tauri">
+                <h1 class="page-title">能力展示</h1>
+                <p class="page-desc">展示 Web 平台能力在桌面应用中的用法：键盘事件、拖放、通知。</p>
+
+                <!-- ⌨ 快捷键面板 -->
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm">⌨ 快捷键面板</h2>
+                    <p class="card-subtitle-sm">键盘事件处理示例，展示组合键注册与实时按键检测</p>
+
+                    <div class="kb-display" id="kbDisplay" aria-live="polite">
+                        <span class="kb-placeholder">按下任意键…</span>
+                    </div>
+
+                    <div class="kb-details" id="kbDetails">
+                        <div class="kb-row">
+                            <span class="kb-label">按键</span>
+                            <span class="kb-value" id="kbKey">—</span>
+                        </div>
+                        <div class="kb-row">
+                            <span class="kb-label">键码</span>
+                            <span class="kb-value" id="kbCode">—</span>
+                        </div>
+                        <div class="kb-row">
+                            <span class="kb-label">组合键</span>
+                            <span class="kb-value" id="kbCombo">—</span>
+                        </div>
+                    </div>
+
+                    <p class="card-subtitle-sm" style="margin-top:14px;">已注册的快捷键</p>
+                    <table class="kb-table" aria-label="已注册快捷键列表">
+                        <thead>
+                            <tr><th>快捷键</th><th>功能</th><th>状态</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><kbd>Ctrl</kbd> + <kbd>S</kbd></td><td>保存</td><td><span class="kb-badge kb-badge-ready">就绪</span></td></tr>
+                            <tr><td><kbd>Ctrl</kbd> + <kbd>Z</kbd></td><td>撤销</td><td><span class="kb-badge kb-badge-ready">就绪</span></td></tr>
+                            <tr><td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd></td><td>新建窗口</td><td><span class="kb-badge kb-badge-ready">就绪</span></td></tr>
+                            <tr><td><kbd>Ctrl</kbd> + <kbd>K</kbd></td><td>搜索</td><td><span class="kb-badge kb-badge-ready">就绪</span></td></tr>
+                        </tbody>
+                    </table>
+                    <p class="kb-hint" id="kbHint"></p>
+                </div>
+
+                <!-- 📁 拖放区域 -->
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm">📁 拖放区域</h2>
+                    <p class="card-subtitle-sm">Drag &amp; Drop API，拖入文件显示名称、大小与类型</p>
+
+                    <div class="drop-zone" id="dropZone" role="region" aria-label="文件拖放区域" tabindex="0"
+                         aria-describedby="dropZoneDesc">
+                        <div class="drop-zone-icon" aria-hidden="true">📂</div>
+                        <p class="drop-zone-text" id="dropZoneDesc">拖放文件到此处</p>
+                        <p class="drop-zone-hint">或点击此处选择文件</p>
+                        <input type="file" class="drop-zone-input" id="dropFileInput" aria-label="选择文件" multiple>
+                    </div>
+
+                    <div class="drop-file-list" id="dropFileList" role="list" aria-label="已拖放的文件列表"></div>
+                    <div class="drop-empty" id="dropEmpty" role="status">尚未拖放任何文件</div>
+                </div>
+
+                <!-- 🔔 Toast 通知演示 -->
+                <div class="card">
+                    <h2 class="card-title-sm">🔔 应用内通知</h2>
+                    <p class="card-subtitle">点击按钮触发不同类型的 Toast 通知，自动消失</p>
+                    <div class="toast-demo-actions">
+                        <button class="btn btn-primary" id="toastSuccess" aria-label="触发成功通知">
+                            ✓ 成功通知
+                        </button>
+                        <button class="btn btn-secondary" id="toastWarning" aria-label="触发警告通知">
+                            ⚠ 警告通知
+                        </button>
+                        <button class="btn btn-secondary" id="toastError" aria-label="触发错误通知">
+                            ✕ 错误通知
+                        </button>
                     </div>
                 </div>
             </section>
@@ -1503,7 +1915,7 @@ See the Mulan PSL v2 for more details.
                 cdDisplay.textContent = formatCountdown(cdRemaining);
                 cdProgress.style.width = cdTotal > 0 ? (cdRemaining / cdTotal * 100) + '%' : '100%';
                 cdProgress.classList.toggle('expired', cdRemaining <= 0);
-                cdProgressBar.setAttribute('aria-valuenow', cdTotal > 0 ? Math.round(cdRemaining / cdTotal * 100) : 100);
+                cdProgress.parentElement.setAttribute('aria-valuenow', cdTotal > 0 ? Math.round(cdRemaining / cdTotal * 100) : 100);
             }
 
             function cdStartPause() {
@@ -1870,6 +2282,431 @@ See the Mulan PSL v2 for more details.
                     setTimeout(() => { morseError.textContent = ''; }, 1500);
                 }
             });
+        }
+
+        /* ═══════════════════════ Toast 通知组件 ═══════════════════════ */
+        {
+            const toastContainer = document.getElementById('toastContainer');
+
+            const TOAST_ICONS = {
+                success: '✓',
+                warning: '!',
+                error: '✕'
+            };
+
+            const TOAST_DURATION = 3000;
+
+            function createToast(type, message) {
+                const toast = document.createElement('div');
+                toast.className = 'toast toast-' + type;
+                toast.setAttribute('role', 'alert');
+
+                const icon = document.createElement('span');
+                icon.className = 'toast-icon';
+                icon.textContent = TOAST_ICONS[type] || 'i';
+                icon.setAttribute('aria-hidden', 'true');
+
+                const msg = document.createElement('span');
+                msg.className = 'toast-message';
+                msg.textContent = message;
+
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'toast-close';
+                closeBtn.innerHTML = '&#x2715;';
+                closeBtn.setAttribute('aria-label', '关闭通知');
+                closeBtn.addEventListener('click', () => dismissToast(toast));
+
+                toast.appendChild(icon);
+                toast.appendChild(msg);
+                toast.appendChild(closeBtn);
+                toastContainer.appendChild(toast);
+
+                const timer = setTimeout(() => dismissToast(toast), TOAST_DURATION);
+                toast._dismissTimer = timer;
+
+                return toast;
+            }
+
+            function dismissToast(toast) {
+                if (toast._dismissed) return;
+                toast._dismissed = true;
+                clearTimeout(toast._dismissTimer);
+                toast.classList.add('removing');
+                toast.addEventListener('animationend', () => {
+                    if (toast.parentNode) toast.parentNode.removeChild(toast);
+                }, { once: true });
+            }
+
+            // 暴露到页面作用域，供演示按钮调用
+            window._showToast = createToast;
+        }
+
+        /* ═══════════════════════ 快捷键面板 ═══════════════════════ */
+        {
+            const kbDisplay = document.getElementById('kbDisplay');
+            const kbKey = document.getElementById('kbKey');
+            const kbCode = document.getElementById('kbCode');
+            const kbCombo = document.getElementById('kbCombo');
+            const kbHint = document.getElementById('kbHint');
+
+            const pressedKeys = new Set();
+            const MODIFIER_KEYS = ['Control', 'Alt', 'Shift', 'Meta'];
+
+            // 已注册快捷键列表
+            const registeredShortcuts = [
+                { combo: ['Control', 'KeyS'], action: '保存' },
+                { combo: ['Control', 'KeyZ'], action: '撤销' },
+                { combo: ['Control', 'Shift', 'KeyN'], action: '新建窗口' },
+                { combo: ['Control', 'KeyK'], action: '搜索' }
+            ];
+
+            function formatCombo(modifiers, key) {
+                const parts = [];
+                if (modifiers.includes('Control')) parts.push('Ctrl');
+                if (modifiers.includes('Alt')) parts.push('Alt');
+                if (modifiers.includes('Shift')) parts.push('Shift');
+                if (modifiers.includes('Meta')) parts.push('Meta');
+                if (key) parts.push(key);
+                return parts.join(' + ') || '—';
+            }
+
+            function renderKeyDisplay(keyName, code, combo) {
+                // 清除占位符，显示按键徽章
+                kbDisplay.innerHTML = '';
+                if (keyName && keyName !== '—') {
+                    const badge = document.createElement('span');
+                    badge.className = 'kb-key-badge pressed';
+                    badge.textContent = keyName;
+                    kbDisplay.appendChild(badge);
+                } else {
+                    const placeholder = document.createElement('span');
+                    placeholder.className = 'kb-placeholder';
+                    placeholder.textContent = '按下任意键…';
+                    kbDisplay.appendChild(placeholder);
+                }
+
+                kbKey.textContent = keyName || '—';
+                kbCode.textContent = code || '—';
+                kbCombo.textContent = combo || '—';
+            }
+
+            function checkShortcut(modifiers, code) {
+                const modSet = new Set(modifiers);
+                for (const shortcut of registeredShortcuts) {
+                    const expectedMods = shortcut.combo.filter(m => MODIFIER_KEYS.includes(m));
+                    const expectedKey = shortcut.combo.find(m => !MODIFIER_KEYS.includes(m));
+                    if (
+                        expectedMods.every(m => modSet.has(m)) &&
+                        expectedMods.length === modSet.size &&
+                        code === expectedKey
+                    ) {
+                        return shortcut;
+                    }
+                }
+                return null;
+            }
+
+            function handleKeyDown(e) {
+                // 仅在能力展示页激活时处理
+                const tauriPage = document.getElementById('page-tauri');
+                if (!tauriPage || !tauriPage.classList.contains('active')) return;
+
+                // 仅对功能键和普通按键阻止默认行为，保留 Tab / Esc 等导航键
+                const NAV_KEYS = ['Tab', 'Escape', 'Enter', ' '];
+                if (!NAV_KEYS.includes(e.key)) {
+                    e.preventDefault();
+                }
+                pressedKeys.add(e.code);
+
+                const modifiers = [];
+                if (e.ctrlKey) modifiers.push('Control');
+                if (e.altKey) modifiers.push('Alt');
+                if (e.shiftKey) modifiers.push('Shift');
+                if (e.metaKey) modifiers.push('Meta');
+
+                const isModifier = MODIFIER_KEYS.includes(e.code);
+                const displayKey = isModifier ? e.key : (e.key.length === 1 ? e.key.toUpperCase() : e.key);
+                const combo = formatCombo(modifiers, isModifier ? null : displayKey);
+
+                renderKeyDisplay(displayKey, e.code, combo);
+                kbHint.textContent = '';
+
+                // 检测已注册快捷键
+                if (!isModifier) {
+                    const matched = checkShortcut(modifiers, e.code);
+                    if (matched) {
+                        kbHint.textContent = '✓ 触发已注册快捷键：' + matched.action;
+                        window._showToast && window._showToast('success', '快捷键触发：' + matched.action);
+                    }
+                }
+            }
+
+            function handleKeyUp(e) {
+                // 仅在能力展示页激活时处理
+                const tauriPage = document.getElementById('page-tauri');
+                if (!tauriPage || !tauriPage.classList.contains('active')) return;
+
+                pressedKeys.delete(e.code);
+                if (pressedKeys.size === 0) {
+                    renderKeyDisplay('', '', '');
+                } else {
+                    // 仍有按键按下，更新显示
+                    const lastKey = Array.from(pressedKeys).pop();
+                    renderKeyDisplay(lastKey, lastKey, '');
+                }
+            }
+
+            // 仅在该页面激活时监听键盘（避免干扰其他页面输入）
+            document.addEventListener('keydown', handleKeyDown);
+            document.addEventListener('keyup', handleKeyUp);
+        }
+
+        /* ═══════════════════════ 拖放区域 ═══════════════════════ */
+        {
+            const dropZone = document.getElementById('dropZone');
+            const dropFileInput = document.getElementById('dropFileInput');
+            const dropFileList = document.getElementById('dropFileList');
+            const dropEmpty = document.getElementById('dropEmpty');
+            let files = [];
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 B';
+                const units = ['B', 'KB', 'MB', 'GB'];
+                const k = 1024;
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                const size = (bytes / Math.pow(k, i)).toFixed(i === 0 ? 0 : 1);
+                return size + ' ' + units[i];
+            }
+
+            function getFileIcon(type) {
+                if (!type) return '📄';
+                if (type.startsWith('image/')) return '🖼';
+                if (type.startsWith('video/')) return '🎬';
+                if (type.startsWith('audio/')) return '🎵';
+                if (type.startsWith('text/')) return '📝';
+                if (type.includes('pdf')) return '📕';
+                if (type.includes('zip') || type.includes('rar') || type.includes('compress')) return '📦';
+                return '📄';
+            }
+
+            function addFiles(newFiles) {
+                const incoming = Array.from(newFiles).filter(f => !files.some(existing => existing.name === f.name && existing.size === f.size));
+                files = files.concat(incoming);
+                renderFileList();
+            }
+
+            function removeFile(index) {
+                files.splice(index, 1);
+                dropFileInput.value = '';
+                renderFileList();
+            }
+
+            function renderFileList() {
+                dropFileList.innerHTML = '';
+
+                if (files.length === 0) {
+                    dropEmpty.style.display = 'block';
+                    return;
+                }
+
+                dropEmpty.style.display = 'none';
+
+                files.forEach((file, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'drop-file-item';
+                    item.setAttribute('role', 'listitem');
+
+                    const icon = document.createElement('span');
+                    icon.className = 'drop-file-icon';
+                    icon.textContent = getFileIcon(file.type);
+                    icon.setAttribute('aria-hidden', 'true');
+
+                    const info = document.createElement('div');
+                    info.className = 'drop-file-info';
+
+                    const name = document.createElement('div');
+                    name.className = 'drop-file-name';
+                    name.textContent = file.name;
+                    name.title = file.name;
+
+                    const meta = document.createElement('div');
+                    meta.className = 'drop-file-meta';
+                    meta.textContent = (file.size > 0 ? formatFileSize(file.size) : '未知大小') + (file.type ? ' · ' + file.type : '');
+
+                    info.appendChild(name);
+                    info.appendChild(meta);
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'drop-file-remove';
+                    removeBtn.innerHTML = '&#x2715;';
+                    removeBtn.setAttribute('aria-label', '移除 ' + file.name);
+                    removeBtn.addEventListener('click', () => removeFile(index));
+
+                    item.appendChild(icon);
+                    item.appendChild(info);
+                    item.appendChild(removeBtn);
+                    dropFileList.appendChild(item);
+                });
+            }
+
+            // 判断是否在能力展示页
+            function isTauriPageActive() {
+                const page = document.getElementById('page-tauri');
+                return page && page.classList.contains('active');
+            }
+
+            // ── Tauri 原生拖放事件（HTML5 不通，走 IPC）──
+            {
+                var tauri = window.__TAURI_INTERNALS__;
+                if (tauri) {
+                    var mimeMap = {
+                        md:'text/markdown', txt:'text/plain', csv:'text/csv',
+                        json:'application/json', xml:'application/xml', html:'text/html',
+                        js:'application/javascript', ts:'application/typescript',
+                        css:'text/css', svg:'image/svg+xml',
+                        png:'image/png', jpg:'image/jpeg', jpeg:'image/jpeg', gif:'image/gif',
+                        webp:'image/webp', bmp:'image/bmp', ico:'image/x-icon',
+                        pdf:'application/pdf', doc:'application/msword', docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        xls:'application/vnd.ms-excel', xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        zip:'application/zip', rar:'application/x-rar-compressed', '7z':'application/x-7z-compressed',
+                        mp4:'video/mp4', mp3:'audio/mpeg', wav:'audio/wav',
+                        exe:'application/x-msdownload', msi:'application/x-msi'
+                    };
+
+                    function registerTauriEvent(eventName, handler) {
+                        var cb = tauri.transformCallback(handler);
+                        tauri.invoke('plugin:event|listen', {
+                            target: { kind: 'Window', label: 'main' },
+                            event: eventName,
+                            handler: cb
+                        }).catch(function() {});
+                    }
+
+                    registerTauriEvent('tauri://drag-enter', function(raw) {
+                        if (isTauriPageActive()) dropZone.classList.add('drag-over');
+                    });
+
+                    registerTauriEvent('tauri://drag-leave', function(raw) {
+                        if (isTauriPageActive()) dropZone.classList.remove('drag-over');
+                    });
+
+                    registerTauriEvent('tauri://drag-over', function(raw) {
+                        if (!isTauriPageActive()) return;
+                        var p = (raw.payload && raw.payload.position) || null;
+                        if (p) {
+                            var r = dropZone.getBoundingClientRect();
+                            dropZone.classList.toggle('drag-over',
+                                p.x >= r.left && p.x <= r.right &&
+                                p.y >= r.top  && p.y <= r.bottom);
+                        }
+                    });
+
+                    registerTauriEvent('tauri://drag-drop', function(raw) {
+                        if (!isTauriPageActive()) return;
+                        dropZone.classList.remove('drag-over');
+                        var paths = raw.payload && raw.payload.paths;
+                        if (paths && Array.isArray(paths) && paths.length > 0) {
+                            Promise.all(paths.map(function(p) {
+                                var name = (p.split('\\').pop() || p.split('/').pop() || p);
+                                var ext = (name.split('.').pop() || '').toLowerCase();
+                                var mime = mimeMap[ext] || '';
+                                return tauri.invoke('get_file_size', { path: p })
+                                    .then(function(size) {
+                                        return { name: name, size: Number(size) || 0, type: mime };
+                                    }).catch(function() {
+                                        return { name: name, size: 0, type: mime };
+                                    });
+                            })).then(function(fileObjs) {
+                                addFiles(fileObjs);
+                            });
+                        }
+                    });
+                }
+            }
+
+            // ── HTML5 事件（浏览器模式兜底）──
+            function extractFiles(transfer) {
+                const result = [];
+                if (transfer.items && transfer.items.length > 0) {
+                    for (let i = 0; i < transfer.items.length; i++) {
+                        const item = transfer.items[i];
+                        if (item.kind === 'file') {
+                            const file = item.getAsFile();
+                            if (file) result.push(file);
+                        }
+                    }
+                }
+                if (result.length === 0 && transfer.files && transfer.files.length > 0) {
+                    for (let i = 0; i < transfer.files.length; i++) {
+                        result.push(transfer.files[i]);
+                    }
+                }
+                return result;
+            }
+
+            window.addEventListener('dragover', function(e) {
+                if (!isTauriPageActive()) return;
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'copy';
+                const r = dropZone.getBoundingClientRect();
+                dropZone.classList.toggle('drag-over',
+                    e.clientX >= r.left && e.clientX <= r.right &&
+                    e.clientY >= r.top  && e.clientY <= r.bottom);
+            });
+
+            window.addEventListener('drop', function(e) {
+                if (!isTauriPageActive()) return;
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+                const droppedFiles = extractFiles(e.dataTransfer);
+                if (droppedFiles.length > 0) addFiles(droppedFiles);
+            });
+
+            // 键盘激活：Enter / Space 打开文件选择
+            dropZone.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    dropFileInput.click();
+                }
+            });
+
+            // 点击打开文件选择（排除 input 自身点击避免重复触发）
+            dropZone.addEventListener('click', (e) => {
+                if (e.target === dropFileInput) return;
+                dropFileInput.click();
+            });
+
+            dropFileInput.addEventListener('change', () => {
+                if (dropFileInput.files.length > 0) {
+                    addFiles(dropFileInput.files);
+                    dropFileInput.value = '';
+                }
+            });
+
+            renderFileList();
+        }
+
+        /* ═══════════════════════ 能力展示页：演示按钮 ═══════════════════════ */
+        {
+            const toastSuccessBtn = document.getElementById('toastSuccess');
+            const toastWarningBtn = document.getElementById('toastWarning');
+            const toastErrorBtn = document.getElementById('toastError');
+
+            if (toastSuccessBtn) {
+                toastSuccessBtn.addEventListener('click', () => {
+                    window._showToast && window._showToast('success', '操作已成功完成！');
+                });
+            }
+            if (toastWarningBtn) {
+                toastWarningBtn.addEventListener('click', () => {
+                    window._showToast && window._showToast('warning', '请注意，存储空间不足。');
+                });
+            }
+            if (toastErrorBtn) {
+                toastErrorBtn.addEventListener('click', () => {
+                    window._showToast && window._showToast('error', '发生了错误，请稍后重试。');
+                });
+            }
         }
     }
     </script>
