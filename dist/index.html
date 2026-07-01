@@ -438,6 +438,7 @@ See the Mulan PSL v2 for more details.
             padding: 12px 0;
         }
         .toggle-row + .toggle-row { border-top: 1px solid var(--separator); }
+        .toggle-row.bordered { border-top: 1px solid var(--separator); }
         .toggle-label {
             font-size: 0.85rem;
             font-weight: 450;
@@ -573,6 +574,351 @@ See the Mulan PSL v2 for more details.
         .main-content::-webkit-scrollbar { width: 5px; }
         .main-content::-webkit-scrollbar-track { background: transparent; }
         .main-content::-webkit-scrollbar-thumb { background: var(--separator-opaque); border-radius: 3px; }
+
+        /* ═════════════════════ 工具页：秒表/倒计时 ═════════════════════ */
+        .timer-tabs {
+            display: flex;
+            margin-bottom: 16px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-secondary);
+            padding: 2px;
+        }
+        .timer-tab {
+            flex: 1;
+            padding: 6px 0;
+            border: none;
+            border-radius: calc(var(--radius-sm) - 1px);
+            background: transparent;
+            color: var(--label-secondary);
+            font-size: 0.78rem;
+            font-weight: 500;
+            font-family: var(--font);
+            cursor: pointer;
+            transition: all 0.2s var(--ease);
+        }
+        .timer-tab.active {
+            background: var(--bg-elevated);
+            color: var(--label);
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+        }
+        .timer-panel { display: none; }
+        .timer-panel.active { display: block; }
+        .timer-display {
+            font-size: 2.8rem;
+            font-weight: 300;
+            text-align: center;
+            padding: 20px 0 4px;
+            letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
+        }
+        .timer-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        .timer-btn {
+            padding: 7px 18px;
+            border-radius: 20px;
+            border: none;
+            font-size: 0.78rem;
+            font-weight: 520;
+            font-family: var(--font);
+            cursor: pointer;
+            transition: all 0.15s var(--ease);
+        }
+        .timer-btn:disabled {
+            opacity: 0.4;
+            cursor: default;
+            pointer-events: none;
+        }
+        .timer-btn-start  { background: var(--green);  color: var(--white); }
+        .timer-btn-start:hover:not(:disabled) { opacity: 0.85; }
+        .timer-btn-pause  { background: var(--orange); color: var(--white); }
+        .timer-btn-pause:hover:not(:disabled) { opacity: 0.85; }
+        .timer-btn-lap    { background: var(--blue);   color: var(--white); }
+        .timer-btn-lap:hover:not(:disabled) { opacity: 0.85; }
+        .timer-btn-reset  { background: var(--bg-secondary); color: var(--label); }
+        .timer-btn-reset:hover:not(:disabled) { opacity: 0.7; }
+        .timer-preset-row {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .timer-preset {
+            padding: 4px 12px;
+            border-radius: 14px;
+            border: 1px solid var(--separator-opaque);
+            background: var(--bg-elevated);
+            color: var(--label-secondary);
+            font-size: 0.72rem;
+            font-family: var(--font);
+            cursor: pointer;
+            transition: all 0.15s var(--ease);
+        }
+        .timer-preset.active {
+            background: var(--blue);
+            border-color: var(--blue);
+            color: var(--white);
+        }
+        .timer-preset:hover:not(.active) { background: var(--bg-secondary); }
+        .timer-laps {
+            list-style: none;
+            max-height: 140px;
+            overflow-y: auto;
+            margin: 0;
+            padding: 0;
+        }
+        .timer-lap-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 12px;
+            font-size: 0.76rem;
+            font-variant-numeric: tabular-nums;
+            color: var(--label-secondary);
+        }
+        .timer-lap-item + .timer-lap-item { border-top: 1px solid var(--separator); }
+        .timer-lap-best { color: var(--green); font-weight: 600; }
+        .timer-lap-worst { color: var(--red); font-weight: 600; }
+        .timer-progress {
+            height: 4px;
+            background: var(--bg-secondary);
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .timer-progress-bar {
+            height: 100%;
+            background: var(--blue);
+            border-radius: 2px;
+            transition: width 0.3s linear, background 0.3s var(--ease);
+            width: 100%;
+        }
+        .timer-progress-bar.expired { background: var(--red); }
+
+        /* ═════════════════════ 工具页：便签本 ═════════════════════ */
+        .note-area {
+            width: 100%;
+            min-height: 140px;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--separator-opaque);
+            background: var(--bg-elevated);
+            color: var(--label);
+            font-size: 0.82rem;
+            font-family: var(--font);
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.15s var(--ease);
+        }
+        .note-area:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-bg); }
+        .note-status {
+            font-size: 0.7rem;
+            color: var(--label-tertiary);
+            margin-top: 8px;
+            transition: color 0.3s var(--ease);
+        }
+        .note-status.saved { color: var(--green); }
+
+        /* ═════════════════════ 工具页：JSON 格式化 ═════════════════════ */
+        .tool-row {
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+        }
+        .tool-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .tool-col-label {
+            font-size: 0.7rem;
+            color: var(--label-tertiary);
+            margin-bottom: 6px;
+            font-weight: 550;
+        }
+        .tool-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            align-items: center;
+        }
+        .json-textarea {
+            width: 100%;
+            min-height: 160px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--separator-opaque);
+            background: var(--bg-elevated);
+            color: var(--label);
+            font-size: 0.78rem;
+            font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+            line-height: 1.5;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.15s var(--ease);
+        }
+        .json-textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-bg); }
+        .json-output {
+            min-height: 160px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--separator-opaque);
+            background: var(--bg-tertiary);
+            color: var(--label-secondary);
+            font-size: 0.78rem;
+            font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-all;
+            overflow-y: auto;
+        }
+        .json-error {
+            font-size: 0.72rem;
+            color: var(--red);
+            margin-top: 6px;
+            min-height: 1.2em;
+        }
+
+        /* ═════════════════════ 工具页：取色器 ═════════════════════ */
+        .color-picker-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .color-picker-wrapper {
+            position: relative;
+            width: 52px;
+            height: 52px;
+            flex-shrink: 0;
+        }
+        .color-picker-input {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            border: none;
+            padding: 0;
+            z-index: 1;
+        }
+        .color-preview {
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--separator-opaque);
+            transition: background 0.2s var(--ease);
+            cursor: pointer;
+        }
+        .color-preview:hover { box-shadow: 0 0 0 3px var(--blue-bg); }
+        .color-value {
+            font-size: 0.85rem;
+            font-weight: 550;
+            font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+            color: var(--label);
+            letter-spacing: 0.02em;
+        }
+        .color-copy-btn {
+            padding: 5px 14px;
+            font-size: 0.72rem;
+        }
+        .color-history {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .color-swatch {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 1.5px solid var(--separator-opaque);
+            cursor: pointer;
+            transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
+            flex-shrink: 0;
+        }
+        .color-swatch:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 0 2px var(--blue-bg);
+        }
+        .color-history-label {
+            margin-bottom: 8px;
+        }
+
+        /* ═════════════════════ 工具页：Base64 编解码 ═════════════════════ */
+        .base64-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .base64-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--separator-opaque);
+            background: var(--bg-elevated);
+            color: var(--label);
+            font-size: 0.78rem;
+            font-family: var(--font);
+            line-height: 1.5;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.15s var(--ease);
+        }
+        .base64-textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-bg); }
+        .base64-error {
+            font-size: 0.72rem;
+            color: var(--red);
+            margin-left: auto;
+        }
+
+        /* ═════════════════════ 工具页：摩斯编码 ═════════════════════ */
+        .morse-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .morse-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--separator-opaque);
+            background: var(--bg-elevated);
+            color: var(--label);
+            font-size: 0.78rem;
+            font-family: var(--font);
+            line-height: 1.5;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.15s var(--ease);
+        }
+        .morse-textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-bg); }
+        .morse-output {
+            min-height: 100px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--separator-opaque);
+            background: var(--bg-tertiary);
+            color: var(--label-secondary);
+            font-size: 0.78rem;
+            font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-all;
+            letter-spacing: 0.04em;
+        }
+        .morse-error {
+            font-size: 0.72rem;
+            color: var(--red);
+            margin-left: auto;
+        }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -677,7 +1023,7 @@ See the Mulan PSL v2 for more details.
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card card-spaced">
                     <h2 class="card-title-sm">📋 剪贴板读写</h2>
                     <p class="card-subtitle">使用 Web API 读写系统剪贴板</p>
                     <div class="clipboard-row">
@@ -687,6 +1033,131 @@ See the Mulan PSL v2 for more details.
                     <div class="clipboard-row">
                         <input class="form-input" id="clipboardOutput" placeholder="点击粘贴按钮读取剪贴板…" readonly>
                         <button class="btn btn-secondary" id="clipboardPaste">粘贴</button>
+                    </div>
+                </div>
+
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm">⏱ 秒表/倒计时</h2>
+                    <p class="card-subtitle">setInterval 定时器状态管理示例</p>
+
+                    <div class="timer-tabs" role="tablist" aria-label="定时器模式">
+                        <button class="timer-tab active" role="tab" aria-selected="true" data-timer="stopwatch">秒表</button>
+                        <button class="timer-tab" role="tab" aria-selected="false" data-timer="countdown">倒计时</button>
+                    </div>
+
+                    <div class="timer-panel active" id="panel-stopwatch" role="tabpanel">
+                        <div class="timer-display" id="swDisplay" aria-live="polite">00:00.00</div>
+                        <div class="timer-actions">
+                            <button class="timer-btn timer-btn-start" id="swStart" aria-label="开始秒表">开始</button>
+                            <button class="timer-btn timer-btn-lap" id="swLap" disabled aria-label="计次">计次</button>
+                            <button class="timer-btn timer-btn-reset" id="swReset" aria-label="重置秒表">重置</button>
+                        </div>
+                        <ul class="timer-laps" id="swLaps" role="list" aria-label="计次记录"></ul>
+                    </div>
+
+                    <div class="timer-panel" id="panel-countdown" role="tabpanel">
+                        <div class="timer-preset-row">
+                            <button class="timer-preset" data-seconds="30">30秒</button>
+                            <button class="timer-preset active" data-seconds="60">1分钟</button>
+                            <button class="timer-preset" data-seconds="180">3分钟</button>
+                            <button class="timer-preset" data-seconds="300">5分钟</button>
+                            <button class="timer-preset" data-seconds="600">10分钟</button>
+                            <button class="timer-preset" data-seconds="-1">自定义</button>
+                        </div>
+                        <div class="timer-display" id="cdDisplay" aria-live="polite">01:00</div>
+                        <div class="timer-actions">
+                            <button class="timer-btn timer-btn-start" id="cdStart" aria-label="开始倒计时">开始</button>
+                            <button class="timer-btn timer-btn-pause" id="cdPause" disabled aria-label="暂停倒计时">暂停</button>
+                            <button class="timer-btn timer-btn-reset" id="cdReset" aria-label="重置倒计时">重置</button>
+                        </div>
+                        <div class="timer-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+                            <div class="timer-progress-bar" id="cdProgress"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm">📝 便签本</h2>
+                    <p class="card-subtitle-sm">多行文本编辑器，localStorage 自动保存</p>
+                    <textarea class="note-area" id="noteArea" placeholder="在这里写点什么…" aria-label="便签内容"></textarea>
+                    <div class="note-status" id="noteStatus" role="status"></div>
+                </div>
+
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm">🔤 JSON 格式化</h2>
+                    <p class="card-subtitle">输入原始 JSON → 格式化或压缩输出</p>
+                    <div class="json-row">
+                        <div class="tool-col">
+                            <span class="tool-col-label">输入</span>
+                            <textarea class="json-textarea" id="jsonInput" placeholder='{"key": "value"}' aria-label="JSON 输入"></textarea>
+                            <div class="json-error" id="jsonError" role="alert"></div>
+                        </div>
+                        <div class="tool-col">
+                            <span class="tool-col-label">输出</span>
+                            <div class="json-output" id="jsonOutput" role="status" aria-label="JSON 输出"></div>
+                        </div>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" id="jsonFormat">格式化</button>
+                        <button class="btn btn-secondary" id="jsonCompress">压缩</button>
+                        <button class="btn btn-secondary" id="jsonCopy">复制结果</button>
+                    </div>
+                </div>
+
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm">🎨 取色器</h2>
+                    <p class="card-subtitle-sm">选色并查看 HEX 值，保留取色历史</p>
+                    <div class="color-picker-row">
+                        <div class="color-picker-wrapper">
+                            <input type="color" class="color-picker-input" id="colorPicker" value="#007AFF" aria-label="颜色选择器">
+                            <div class="color-preview" id="colorPreview" aria-hidden="true"></div>
+                        </div>
+                        <span class="color-value" id="colorHex">#007AFF</span>
+                        <button class="btn btn-secondary color-copy-btn" id="colorCopyHex">复制</button>
+                    </div>
+                    <p class="card-subtitle-sm color-history-label">取色历史（点击色块重新选取）</p>
+                    <div class="color-history" id="colorHistory" role="list" aria-label="取色历史"></div>
+                </div>
+
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm">🔐 Base64 编解码</h2>
+                    <p class="card-subtitle">文本与 Base64 互相转换，btoa / atob API</p>
+                    <div class="base64-row">
+                        <div class="tool-col">
+                            <span class="tool-col-label">原文</span>
+                            <textarea class="base64-textarea" id="base64Text" placeholder="输入要编码的文本…" aria-label="原文输入"></textarea>
+                        </div>
+                        <div class="tool-col">
+                            <span class="tool-col-label">Base64</span>
+                            <textarea class="base64-textarea" id="base64Encoded" placeholder="或输入 Base64 字符串解码…" aria-label="Base64 输入"></textarea>
+                        </div>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" id="base64Encode">编码 ↓</button>
+                        <button class="btn btn-secondary" id="base64Decode">解码 ↑</button>
+                        <button class="btn btn-secondary" id="base64CopyResult">复制结果</button>
+                        <span class="base64-error" id="base64Error" role="alert"></span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title-sm">📡 摩斯编码</h2>
+                    <p class="card-subtitle">文本与摩斯电码互相转换</p>
+                    <div class="morse-row">
+                        <div class="tool-col">
+                            <span class="tool-col-label">文本</span>
+                            <textarea class="morse-textarea" id="morseText" placeholder="输入要编码的文本…" aria-label="文本输入"></textarea>
+                        </div>
+                        <div class="tool-col">
+                            <span class="tool-col-label">摩斯电码</span>
+                            <div class="morse-output" id="morseOutput" role="status" aria-label="摩斯电码输出"></div>
+                        </div>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" id="morseEncode">编码 ↓</button>
+                        <button class="btn btn-secondary" id="morseDecode">解码 ↑</button>
+                        <button class="btn btn-secondary" id="morseCopy">复制结果</button>
+                        <span class="morse-error" id="morseError" role="alert"></span>
                     </div>
                 </div>
             </section>
@@ -725,7 +1196,7 @@ See the Mulan PSL v2 for more details.
                             <option value="ja">日本語</option>
                         </select>
                     </div>
-                    <div class="toggle-row" style="border-top:1px solid var(--separator);">
+                    <div class="toggle-row bordered">
                         <div>
                             <div class="toggle-label">自动保存</div>
                             <div class="toggle-hint">退出时自动保存设置</div>
@@ -857,19 +1328,22 @@ See the Mulan PSL v2 for more details.
 
         /* ═══════════════════════ 剪贴板 ═══════════════════════ */
         document.getElementById('clipboardCopy').addEventListener('click', async () => {
+            const btn = document.getElementById('clipboardCopy');
             const text = document.getElementById('clipboardInput').value;
             try {
                 await navigator.clipboard.writeText(text);
+                btn.textContent = '已复制';
             } catch {
-                // fallback
                 const ta = document.createElement('textarea');
                 ta.value = text;
                 ta.style.position = 'fixed'; ta.style.opacity = '0';
                 document.body.appendChild(ta);
                 ta.select();
-                document.execCommand('copy');
+                const ok = document.execCommand('copy');
                 document.body.removeChild(ta);
+                btn.textContent = ok ? '已复制' : '失败';
             }
+            setTimeout(() => { btn.textContent = '复制'; }, 1500);
         });
         document.getElementById('clipboardPaste').addEventListener('click', async () => {
             try {
@@ -902,6 +1376,501 @@ See the Mulan PSL v2 for more details.
         if (savedLang) document.getElementById('settingsLang').value = savedLang;
         const savedAuto = localStorage.getItem('tauri-shell-autosave');
         if (savedAuto === '0') document.getElementById('autoSave').checked = false;
+
+        /* ═══════════════════════ 秒表/倒计时 Tab 切换 ═══════════════════════ */
+        {
+            const timerTabs = document.querySelectorAll('.timer-tab');
+            const timerPanels = document.querySelectorAll('.timer-panel');
+            timerTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const mode = tab.dataset.timer;
+                    timerTabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+                    tab.classList.add('active');
+                    tab.setAttribute('aria-selected', 'true');
+                    timerPanels.forEach(p => p.classList.remove('active'));
+                    document.getElementById('panel-' + mode).classList.add('active');
+                });
+            });
+        }
+
+        /* ═══════════════════════ 秒表 ═══════════════════════ */
+        {
+            const swDisplay = document.getElementById('swDisplay');
+            const swStartBtn = document.getElementById('swStart');
+            const swLapBtn = document.getElementById('swLap');
+            const swResetBtn = document.getElementById('swReset');
+            const swLapsEl = document.getElementById('swLaps');
+
+            let swRunning = false;
+            let swElapsed = 0;
+            let swStartTime = 0;
+            let swInterval = null;
+            let swLaps = [];
+
+            function formatStopwatch(ms) {
+                const m = Math.floor(ms / 60000);
+                const s = Math.floor((ms % 60000) / 1000);
+                const cs = Math.floor((ms % 1000) / 10);
+                return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0') + '.' + String(cs).padStart(2, '0');
+            }
+
+            function renderSwDisplay() {
+                swDisplay.textContent = formatStopwatch(swElapsed);
+                swLapBtn.disabled = !swRunning || swElapsed === 0;
+            }
+
+            function renderLaps() {
+                swLapsEl.innerHTML = '';
+                if (swLaps.length === 0) return;
+                const best = Math.min(...swLaps);
+                const worst = Math.max(...swLaps);
+                [...swLaps].reverse().forEach(t => {
+                    const li = document.createElement('li');
+                    li.className = 'timer-lap-item';
+                    li.innerHTML = '<span>计次 ' + (swLaps.indexOf(t) + 1) + '</span><span>' + formatStopwatch(t) + '</span>';
+                    if (swLaps.length > 1) {
+                        if (t === best) li.classList.add('timer-lap-best');
+                        if (t === worst) li.classList.add('timer-lap-worst');
+                    }
+                    swLapsEl.appendChild(li);
+                });
+            }
+
+            function swStartStop() {
+                if (swRunning) {
+                    clearInterval(swInterval);
+                    swElapsed += Date.now() - swStartTime;
+                    swRunning = false;
+                    swStartBtn.textContent = '继续';
+                    swStartBtn.className = 'timer-btn timer-btn-start';
+                } else {
+                    swStartTime = Date.now();
+                    swRunning = true;
+                    swStartBtn.textContent = '暂停';
+                    swStartBtn.className = 'timer-btn timer-btn-pause';
+                    swInterval = setInterval(() => {
+                        const now = Date.now();
+                        swDisplay.textContent = formatStopwatch(swElapsed + (now - swStartTime));
+                    }, 10);
+                }
+                renderSwDisplay();
+            }
+
+            swStartBtn.addEventListener('click', swStartStop);
+
+            swLapBtn.addEventListener('click', () => {
+                const total = swElapsed + (Date.now() - swStartTime);
+                swLaps.push(total);
+                renderLaps();
+            });
+
+            swResetBtn.addEventListener('click', () => {
+                clearInterval(swInterval);
+                swRunning = false;
+                swElapsed = 0;
+                swLaps = [];
+                swStartBtn.textContent = '开始';
+                swStartBtn.className = 'timer-btn timer-btn-start';
+                swDisplay.textContent = '00:00.00';
+                swLapBtn.disabled = true;
+                swLapsEl.innerHTML = '';
+            });
+
+            renderSwDisplay();
+        }
+
+        /* ═══════════════════════ 倒计时 ═══════════════════════ */
+        {
+            const cdDisplay = document.getElementById('cdDisplay');
+            const cdStartBtn = document.getElementById('cdStart');
+            const cdPauseBtn = document.getElementById('cdPause');
+            const cdResetBtn = document.getElementById('cdReset');
+            const cdProgress = document.getElementById('cdProgress');
+            const cdPresets = document.querySelectorAll('#panel-countdown .timer-preset');
+
+            let cdRunning = false;
+            let cdRemaining = 60;
+            let cdTotal = 60;
+            let cdInterval = null;
+
+            function formatCountdown(s) {
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+            }
+
+            function renderCdDisplay() {
+                cdDisplay.textContent = formatCountdown(cdRemaining);
+                cdProgress.style.width = cdTotal > 0 ? (cdRemaining / cdTotal * 100) + '%' : '100%';
+                cdProgress.classList.toggle('expired', cdRemaining <= 0);
+                cdProgressBar.setAttribute('aria-valuenow', cdTotal > 0 ? Math.round(cdRemaining / cdTotal * 100) : 100);
+            }
+
+            function cdStartPause() {
+                if (cdRunning) {
+                    clearInterval(cdInterval);
+                    cdRunning = false;
+                    cdStartBtn.textContent = '继续';
+                    cdStartBtn.className = 'timer-btn timer-btn-start';
+                    cdPauseBtn.disabled = true;
+                } else {
+                    if (cdRemaining <= 0) cdRemaining = cdTotal;
+                    cdRunning = true;
+                    cdStartBtn.textContent = '暂停';
+                    cdStartBtn.className = 'timer-btn timer-btn-pause';
+                    cdPauseBtn.disabled = false;
+                    cdInterval = setInterval(() => {
+                        cdRemaining--;
+                        renderCdDisplay();
+                        if (cdRemaining <= 0) {
+                            clearInterval(cdInterval);
+                            cdRunning = false;
+                            cdStartBtn.textContent = '开始';
+                            cdStartBtn.className = 'timer-btn timer-btn-start';
+                            cdPauseBtn.disabled = true;
+                        }
+                    }, 1000);
+                }
+            }
+
+            cdStartBtn.addEventListener('click', cdStartPause);
+
+            cdPauseBtn.addEventListener('click', () => {
+                clearInterval(cdInterval);
+                cdRunning = false;
+                cdStartBtn.textContent = '继续';
+                cdStartBtn.className = 'timer-btn timer-btn-start';
+                cdPauseBtn.disabled = true;
+            });
+
+            cdResetBtn.addEventListener('click', () => {
+                clearInterval(cdInterval);
+                cdRunning = false;
+                cdRemaining = cdTotal;
+                cdStartBtn.textContent = '开始';
+                cdStartBtn.className = 'timer-btn timer-btn-start';
+                cdPauseBtn.disabled = true;
+                renderCdDisplay();
+            });
+
+            cdPresets.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    clearInterval(cdInterval);
+                    cdRunning = false;
+                    let sec = parseInt(btn.dataset.seconds, 10);
+                    if (sec === -1) {
+                        const input = prompt('输入倒计时秒数：', '90');
+                        if (input === null) return;
+                        sec = parseInt(input, 10);
+                        if (isNaN(sec) || sec <= 0) return;
+                    }
+                    cdTotal = sec;
+                    cdRemaining = sec;
+                    cdStartBtn.textContent = '开始';
+                    cdStartBtn.className = 'timer-btn timer-btn-start';
+                    cdPauseBtn.disabled = true;
+                    cdPresets.forEach(p => p.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderCdDisplay();
+                });
+            });
+
+            renderCdDisplay();
+        }
+
+        /* ═══════════════════════ 便签本 ═══════════════════════ */
+        {
+            const noteArea = document.getElementById('noteArea');
+            const noteStatus = document.getElementById('noteStatus');
+            let noteTimer = null;
+
+            const saved = localStorage.getItem('tauri-shell-note');
+            if (saved) {
+                noteArea.value = saved;
+                noteStatus.textContent = '已加载保存的内容';
+                noteStatus.classList.add('saved');
+            }
+
+            function setNoteStatus(text, isSaved) {
+                noteStatus.textContent = text;
+                noteStatus.classList.toggle('saved', isSaved);
+            }
+
+            noteArea.addEventListener('input', () => {
+                setNoteStatus('输入中…', false);
+                clearTimeout(noteTimer);
+                noteTimer = setTimeout(() => {
+                    localStorage.setItem('tauri-shell-note', noteArea.value);
+                    setNoteStatus('已自动保存', true);
+                    setTimeout(() => { noteStatus.textContent = ''; }, 2000);
+                }, 800);
+            });
+        }
+
+        /* ═══════════════════════ JSON 格式化 ═══════════════════════ */
+        {
+            const jsonInput = document.getElementById('jsonInput');
+            const jsonOutput = document.getElementById('jsonOutput');
+            const jsonError = document.getElementById('jsonError');
+
+            function processJSON(indent) {
+                const raw = jsonInput.value.trim();
+                if (!raw) {
+                    jsonOutput.textContent = '';
+                    jsonError.textContent = '';
+                    return;
+                }
+                try {
+                    const obj = JSON.parse(raw);
+                    jsonOutput.textContent = JSON.stringify(obj, null, indent);
+                    jsonError.textContent = '';
+                } catch (e) {
+                    jsonOutput.textContent = '';
+                    jsonError.textContent = 'JSON 解析失败：' + e.message;
+                }
+            }
+
+            document.getElementById('jsonFormat').addEventListener('click', () => processJSON(2));
+            document.getElementById('jsonCompress').addEventListener('click', () => processJSON(0));
+            document.getElementById('jsonCopy').addEventListener('click', async () => {
+                const text = jsonOutput.textContent;
+                if (!text) { jsonError.textContent = '没有可复制的内容'; return; }
+                try {
+                    await navigator.clipboard.writeText(text);
+                    jsonError.textContent = '已复制';
+                    setTimeout(() => { jsonError.textContent = ''; }, 1500);
+                } catch {
+                    const ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed'; ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    const ok = document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    jsonError.textContent = ok ? '已复制' : '复制失败';
+                    setTimeout(() => { jsonError.textContent = ''; }, 1500);
+                }
+            });
+        }
+
+        /* ═══════════════════════ 取色器 ═══════════════════════ */
+        {
+            const colorPicker = document.getElementById('colorPicker');
+            const colorPreview = document.getElementById('colorPreview');
+            const colorHex = document.getElementById('colorHex');
+            const colorHistory = document.getElementById('colorHistory');
+
+            const STORAGE_KEY = 'tauri-shell-color-history';
+            const MAX_HISTORY = 12;
+            let colors = [];
+
+            function loadHistory() {
+                try {
+                    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+                    if (Array.isArray(saved)) colors = saved.slice(0, MAX_HISTORY);
+                } catch { /* ignore */ }
+            }
+
+            function saveHistory() {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(colors));
+            }
+
+            function renderHistory() {
+                colorHistory.innerHTML = '';
+                colors.forEach(c => {
+                    const swatch = document.createElement('button');
+                    swatch.className = 'color-swatch';
+                    swatch.style.background = c;
+                    swatch.title = c;
+                    swatch.setAttribute('aria-label', '选取颜色 ' + c);
+                    swatch.addEventListener('click', () => {
+                        colorPicker.value = c;
+                        updateColor(c);
+                    });
+                    colorHistory.appendChild(swatch);
+                });
+            }
+
+            function updateColor(hex) {
+                colorPreview.style.background = hex;
+                colorHex.textContent = hex.toUpperCase();
+            }
+
+            function addColor(hex) {
+                colors = colors.filter(c => c.toLowerCase() !== hex.toLowerCase());
+                colors.unshift(hex);
+                if (colors.length > MAX_HISTORY) colors.pop();
+                saveHistory();
+                renderHistory();
+            }
+
+            colorPicker.addEventListener('input', () => {
+                updateColor(colorPicker.value);
+            });
+
+            colorPicker.addEventListener('change', () => {
+                const hex = colorPicker.value;
+                updateColor(hex);
+                addColor(hex);
+            });
+
+            document.getElementById('colorCopyHex').addEventListener('click', async () => {
+                const btn = document.getElementById('colorCopyHex');
+                const hex = colorHex.textContent;
+                try {
+                    await navigator.clipboard.writeText(hex);
+                    btn.textContent = '已复制';
+                } catch {
+                    const ta = document.createElement('textarea');
+                    ta.value = hex;
+                    ta.style.position = 'fixed'; ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    const ok = document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = ok ? '已复制' : '失败';
+                }
+                setTimeout(() => { btn.textContent = '复制'; }, 1500);
+            });
+
+            loadHistory();
+            updateColor('#007AFF');
+            renderHistory();
+        }
+
+        /* ═══════════════════════ Base64 编解码 ═══════════════════════ */
+        {
+            const b64Text = document.getElementById('base64Text');
+            const b64Encoded = document.getElementById('base64Encoded');
+            const b64Error = document.getElementById('base64Error');
+
+            // btoa/atob 不支持 Unicode，通过 encodeURIComponent 转百分号编码后再编解码
+            function b64Encode(str) {
+                return btoa(unescape(encodeURIComponent(str)));
+            }
+
+            // btoa/atob 不支持 Unicode，通过 encodeURIComponent 转百分号编码后再编解码
+            function b64Decode(str) {
+                return decodeURIComponent(escape(atob(str)));
+            }
+
+            document.getElementById('base64Encode').addEventListener('click', () => {
+                const input = b64Text.value;
+                if (!input) { b64Error.textContent = '请输入文本'; return; }
+                try {
+                    b64Encoded.value = b64Encode(input);
+                    b64Error.textContent = '';
+                } catch (e) {
+                    b64Error.textContent = '编码失败：' + e.message;
+                }
+            });
+
+            document.getElementById('base64Decode').addEventListener('click', () => {
+                const input = b64Encoded.value.trim();
+                if (!input) { b64Error.textContent = '请输入 Base64 字符串'; return; }
+                try {
+                    b64Text.value = b64Decode(input);
+                    b64Error.textContent = '';
+                } catch (e) {
+                    b64Error.textContent = '解码失败：请检查输入是否为有效 Base64';
+                }
+            });
+
+            document.getElementById('base64CopyResult').addEventListener('click', async () => {
+                const text = b64Encoded.value || b64Text.value;
+                if (!text) { b64Error.textContent = '没有可复制的内容'; return; }
+                try {
+                    await navigator.clipboard.writeText(text);
+                    b64Error.textContent = '已复制';
+                    setTimeout(() => { b64Error.textContent = ''; }, 1500);
+                } catch {
+                    const ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed'; ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    const ok = document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    b64Error.textContent = ok ? '已复制' : '复制失败';
+                    setTimeout(() => { b64Error.textContent = ''; }, 1500);
+                }
+            });
+        }
+
+        /* ═══════════════════════ 摩斯编码 ═══════════════════════ */
+        {
+            const MORSE_MAP = {
+                'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.',
+                'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.',
+                'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-',
+                'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-', 'Y': '-.--', 'Z': '--..',
+                '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-',
+                '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.',
+                '.': '.-.-.-', ',': '--..--', '?': '..--..', "'": '.----.', '!': '-.-.--',
+                '/': '-..-.', '(': '-.--.', ')': '-.--.-', '&': '.-...', ':': '---...',
+                ';': '-.-.-.', '=': '-...-', '+': '.-.-.', '-': '-....-', '_': '..--.-',
+                '"': '.-..-.', '$': '...-..-', '@': '.--.-.'
+            };
+            const REVERSE_MAP = {};
+            for (const [k, v] of Object.entries(MORSE_MAP)) { REVERSE_MAP[v] = k; }
+
+            const morseText = document.getElementById('morseText');
+            const morseOutput = document.getElementById('morseOutput');
+            const morseError = document.getElementById('morseError');
+
+            function encodeMorse(text) {
+                const words = text.toUpperCase().trim().split(/\s+/);
+                return words.map(word => {
+                    return [...word].map(ch => MORSE_MAP[ch] || ch).filter(Boolean).join(' ');
+                }).join(' / ');
+            }
+
+            function decodeMorse(text) {
+                const words = text.trim().split(/\s*\/\s*/);
+                return words.map(word => {
+                    return word.trim().split(/\s+/).map(code => REVERSE_MAP[code] || '').join('');
+                }).join(' ');
+            }
+
+            document.getElementById('morseEncode').addEventListener('click', () => {
+                const input = morseText.value.trim();
+                if (!input) { morseError.textContent = '请输入文本'; return; }
+                if (/[\u4e00-\u9fff\u3400-\u4dbf]/.test(input)) {
+                    morseError.textContent = '暂不支持中文，仅支持 A-Z / 0-9 及常用标点';
+                    morseOutput.textContent = '';
+                    return;
+                }
+                morseOutput.textContent = encodeMorse(input);
+                morseError.textContent = '';
+            });
+
+            document.getElementById('morseDecode').addEventListener('click', () => {
+                const input = morseOutput.textContent.trim();
+                if (!input) { morseError.textContent = '请先生成或输入摩斯电码'; return; }
+                morseText.value = decodeMorse(input);
+                morseError.textContent = '';
+            });
+
+            document.getElementById('morseCopy').addEventListener('click', async () => {
+                const text = morseOutput.textContent;
+                if (!text) { morseError.textContent = '没有可复制的内容'; return; }
+                try {
+                    await navigator.clipboard.writeText(text);
+                    morseError.textContent = '已复制';
+                    setTimeout(() => { morseError.textContent = ''; }, 1500);
+                } catch {
+                    const ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed'; ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    const ok = document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    morseError.textContent = ok ? '已复制' : '复制失败';
+                    setTimeout(() => { morseError.textContent = ''; }, 1500);
+                }
+            });
+        }
     }
     </script>
 </body>
