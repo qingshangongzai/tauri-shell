@@ -1,0 +1,162 @@
+/*
+Copyright (c) 2026 青山公仔
+轻壳 (Tauri Shell) is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details.
+*/
+
+/* ===== 设计 Token（主应用与安装器共享，勿引入业务样式） ===== */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ===== Fluent Design theme tokens (light defaults) ===== */
+:root {
+  /* 配色 - 浅色 */
+  --bg: #fcfcfc;
+  --sidebar: #feffff;
+  --card: #feffff;
+  --divider: #d9d9d9;
+  --border-soft: color-mix(in srgb, #d9d9d9 40%, transparent);
+
+  --titlebar: #feffff;
+  --hover: #e0e0e0;
+  --cursor: #171717;
+  --code-bg: #e8e8e8;
+  --code-text: #2b2b2b;
+  --danger: #c42b1c;
+  --danger-bg: rgba(196, 43, 28, 0.08);
+  --warning: #b26b00;
+  --warning-bg: rgba(255, 179, 0, 0.1);
+  --copy-success: #107c10;
+
+  /* Accent 强调色系统 - 浅色 */
+  --accent: #005fb8;
+  --accent-bg: #e8f4fd;
+  --accent-hover: #004a94;
+
+  /* 文字不透明度阶梯（"去线留白" Phase A）*/
+  --text-primary: rgba(0, 0, 0, 0.87);
+  --text-body: rgba(0, 0, 0, 0.78);
+  --text-auxiliary: rgba(0, 0, 0, 0.52);
+  --text-placeholder: rgba(0, 0, 0, 0.3);
+
+  /* 填充式输入框背景（"去线留白" Phase C）*/
+  --input-bg: rgba(0, 0, 0, 0.02);
+  --input-bg-focus: rgba(0, 0, 0, 0.04);
+
+  /* Fluent 动效规范 */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  /* 以下变量预留给 Phase 7 对话框进出动效，当前未使用 */
+  --ease-enter: cubic-bezier(0, 0, 0, 1);
+  --ease-exit: cubic-bezier(1, 0, 1, 1);
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --duration-theme: 500ms;
+
+  /* Elevation 阴影层级 */
+  --shadow-dialog: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.14);
+
+  /* 标签色板 - 浅色：主色（实心点） */
+  --tag-red: #e5484d;
+  --tag-orange: #e8930c;
+  --tag-yellow: #d9a400;
+  --tag-green: #30a46c;
+  --tag-cyan: #0ba5b8;
+  --tag-blue: #3e7bfa;
+  --tag-purple: #8e4ec6;
+  --tag-gray: #8b8d98;
+
+  /* 字体：思源宋体（Google版优先） */
+  --font-sans: "Noto Serif SC", "edit Han Serif SC", "SimSun", "宋体", serif;
+}
+
+.dark {
+  /* 配色 - 深色 */
+  --bg: #202020; /* AltHigh */
+  --sidebar: #232323; /* ChromeMediumLow */
+  --card: #232323; /* ChromeMediumLow */
+  --divider: #454545; /* ChromeHigh */
+  --border-soft: color-mix(in srgb, #454545 40%, transparent);
+
+  --titlebar: #232323; /* AltHigh */
+  --hover: #3d3d3d; /* ChromeHigh 与 ChromeMedium 之间插值 */
+  --cursor: #ffffff;
+  --code-bg: #2d2d2d;
+  --code-text: #e8e8e8;
+  --danger: #ff6b6b;
+  --danger-bg: rgba(255, 107, 107, 0.1);
+  --warning: #ffb84d;
+  --warning-bg: rgba(255, 184, 77, 0.1);
+  --copy-success: #4ade80;
+
+  /* Accent 强调色系统 - 深色 */
+  --accent: #60cdff;
+  --accent-bg: #2a3f5c;
+  --accent-hover: #8ad6ff;
+
+  /* 文字不透明度阶梯（"去线留白" Phase A）*/
+  --text-primary: rgba(255, 255, 255, 0.87);
+  --text-body: rgba(255, 255, 255, 0.6);
+  --text-auxiliary: rgba(255, 255, 255, 0.4);
+  --text-placeholder: rgba(255, 255, 255, 0.25);
+
+  /* 填充式输入框背景（"去线留白" Phase C）*/
+  --input-bg: rgba(255, 255, 255, 0.04);
+  --input-bg-focus: rgba(255, 255, 255, 0.07);
+
+  /* CodeMirror 深色选区高亮色 */
+  --select: color-mix(in srgb, var(--accent) 25%, transparent);
+
+  /* Elevation 阴影层级 - 深色 */
+  --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-dialog: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  /* 标签色板 - 深色：主色提亮降饱和一档 */
+  --tag-red: #ff6369;
+  --tag-orange: #ffa057;
+  --tag-yellow: #ebbf3f;
+  --tag-green: #4cc38a;
+  --tag-cyan: #3db9cf;
+  --tag-blue: #6e9bff;
+  --tag-purple: #bf7af0;
+  --tag-gray: #a0a2ab;
+}
+
+/* Map CSS vars to Tailwind color tokens */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-sidebar: var(--sidebar);
+  --color-card: var(--card);
+  --color-divider: var(--divider);
+
+  --color-titlebar: var(--titlebar);
+  --color-hover: var(--hover);
+  --color-cursor: var(--cursor);
+  --color-code-bg: var(--code-bg);
+  --color-code-text: var(--code-text);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+
+  /* Fluent Accent 强调色映射 */
+  --color-accent: var(--accent);
+  --color-accent-bg: var(--accent-bg);
+  --color-accent-hover: var(--accent-hover);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-body: var(--text-body);
+  --color-text-auxiliary: var(--text-auxiliary);
+  --color-text-placeholder: var(--text-placeholder);
+  --color-input-bg: var(--input-bg);
+  --color-input-bg-focus: var(--input-bg-focus);
+
+  --font-sans: "Noto Serif SC", "edit Han Serif SC", "SimSun", "宋体", serif;
+}

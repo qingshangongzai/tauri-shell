@@ -6,7 +6,9 @@
   "scripts": {
     "tauri": "tauri",
     "dev": "tauri dev",
-    "build": "tauri build"
+    "dev:installer": "npm --prefix installer run tauri dev",
+    "build": "node scripts/build-installer.mjs",
+    "build:nsis": "tauri build"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2",

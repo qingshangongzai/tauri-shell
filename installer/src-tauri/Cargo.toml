@@ -1,0 +1,57 @@
+[package]
+name = "my-app-installer"
+version = "1.0.0"
+description = "我的应用 安装向导"
+authors = ["My Company"]
+edition = "2021"
+
+[lib]
+name = "installer_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+# 二进制命名避开 install/setup 等关键词，防止 Windows 启发式 UAC 清单检测
+[[bin]]
+name = "my-app-wizard"
+path = "src/main.rs"
+
+[package.metadata.tauri-winres]
+# Windows EXE 文件属性（右键 → 属性 → 详细信息）
+FileDescription = "我的应用 安装向导"
+ProductName = "我的应用 安装向导"
+CompanyName = "My Company"
+LegalCopyright = "Copyright © 2026 My Company"
+OriginalFilename = "my-app-wizard.exe"
+InternalName = "my-app-wizard"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+
+[target.'cfg(windows)'.dependencies]
+winreg = "0.52"
+zip = { version = "2", default-features = false, features = ["deflate"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+windows = { version = "0.61", features = [
+    "Win32_Foundation",
+    "Win32_UI_Shell",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_System_Com",
+    "Win32_System_Console",
+    "Win32_System_Diagnostics_ToolHelp",
+    "Win32_System_Threading",
+    "Win32_Security",
+] }
+
+# 体积优化：cargo test 走 dev profile，不受 panic = "abort" 影响。
+# lto 用 thin 而非全量：双产物流程每次打包要链接两次 release，
+# 全量 LTO + codegen-units=1 会让每次链接多花 1 分钟以上，
+# 换来的体积收益仅几百 KB，不划算
+[profile.release]
+opt-level = "z"
+lto = "thin"
+strip = true
+panic = "abort"
