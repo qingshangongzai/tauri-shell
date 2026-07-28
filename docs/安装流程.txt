@@ -1,0 +1,11 @@
+npm run build（build-installer.mjs）的五步各司其职：
+1. 构建主应用（build main app）
+执行 tauri build --no-bundle，其 beforeBuildCommand 会先跑版本同步（sync-version.cjs）、图标生成（gen-icons.mjs）、HTML 压缩（minify.cjs），再编译出主程序 src-tauri/target/release/{mainBin}.exe。--no-bundle 跳过打包阶段的 productName 重命名，保证 exe 文件名确定。传 --skip-main 可跳过这步复用上次产物（仅改安装器时的快速迭代）。
+2. 编译"纯壳"向导（vite + 第一次 cargo build）
+先删掉仓库根残留的 app-bundle.zip（防止上次的 zip 被嵌进壳里造成嵌套旧安装包），再 build 安装器前端、第一次 cargo build。此时没有 zip，build.rs 的占位机制生效，产出不含安装包的纯壳 exe——它就是最终装进用户机器的卸载器。
+3. 打包 app-bundle.zip
+把第 1 步的主程序 exe 和第 2 步的纯壳向导 exe 平铺压缩为仓库根 app-bundle.zip（zip 根文件名须与 config.rs 的 MAIN_EXE_NAME / WIZARD_EXE_NAME 约定一致，用 PowerShell Compress-Archive 的 deflate 压缩，与安装器 zip crate 兼容）。
+4. 编译完整安装器（第二次 cargo build，嵌入 zip）
+参数与第一次完全一致（避免 Cargo 视为不同配置大面积重编），这次 build.rs 把 zip 嵌进二进制，原地覆盖产出完整安装器。随后做体积校验：安装器必须大于 zip 且大于纯壳（防零字节占位/未重新嵌入）。
+5. 收集产物（collect artifact）
+从 tauri.conf.json 读产品名和版本号，清空 dist-installer/ 后把完整安装器复制为 dist-installer/{productName}_{version}_x64-setup.exe。核心是双产物流程：同一个向导 crate 编译两次——第一次产出纯壳（卸载器，随 zip 装进安装目录），第二次嵌入 zip 产出安装器，避免卸载器里内嵌一份无用安装包的体积浪费。
