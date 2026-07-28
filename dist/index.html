@@ -218,14 +218,31 @@ See the Mulan PSL v2 for more details.
             border-radius: 1px;
             box-sizing: border-box;
         }
+        /* 还原图标：Windows 经典双层方块，前方块完整描边，后方块只露出右上边角 */
+        .win-btn.maximized {
+            position: relative;
+        }
         .win-btn.maximized::after {
-            width: 7px;
-            height: 7px;
+            width: 8px;
+            height: 8px;
             border: 1.5px solid currentColor;
             border-radius: 1px;
-            background: var(--titlebar);
-            box-shadow: -2.5px 2.5px 0 0 currentColor;
             box-sizing: border-box;
+            transform: translate(-1px, 1px);
+        }
+        .win-btn.maximized::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            border-top: 1.5px solid currentColor;
+            border-right: 1.5px solid currentColor;
+            border-top-right-radius: 2px;
+            box-sizing: border-box;
+            transform: translate(calc(-50% + 2px), calc(-50% - 2px));
+            pointer-events: none;
         }
 
         /* ───── 卡片内部排版类 ───── */
