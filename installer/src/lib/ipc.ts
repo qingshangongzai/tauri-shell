@@ -16,10 +16,21 @@ export interface InstallConfig {
   version: string;
   systemDefaultDir: string;
   userDefaultDir: string;
-  /** 向导模式，前端据此分支渲染安装/卸载流程 */
-  mode: "install" | "uninstall";
-  /** 卸载模式的现场信息；安装模式或未检测到安装时为 null */
+  /** 向导模式，前端据此分支渲染安装/更新/卸载流程 */
+  mode: "install" | "update" | "uninstall";
+  /** 更新模式的已安装现场；其余模式为 null */
+  updateInfo: UpdateInfo | null;
+  /** 卸载模式的现场信息；其余模式或未检测到安装时为 null */
   uninstallInfo: UninstallInfo | null;
+}
+
+/** 检测到的已安装现场（对应后端 ExistingInstall） */
+export interface UpdateInfo {
+  isSystem: boolean;
+  installDir: string;
+  version: string;
+  desktopShortcut: boolean;
+  fileAssoc: boolean;
 }
 
 /** 检测到的卸载现场（对应后端 UninstallSite） */

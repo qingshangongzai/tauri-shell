@@ -40,6 +40,8 @@ pub struct InstallInfo {
     pub progid: String,
     /// 安装时是否创建了桌面快捷方式，卸载时据此决定是否删除
     pub created_desktop_shortcut: bool,
+    /// 安装时是否登记了文件关联，更新模式据此静默沿用上次选择
+    pub file_assoc: bool,
 }
 
 /// 将安装信息写入 `{dir}\install-info.json`
@@ -224,6 +226,7 @@ pub fn run_install_with(
             app_id: ctx.app_id.into(),
             progid: ctx.assoc.progid.into(),
             created_desktop_shortcut: opts.desktop_shortcut,
+            file_assoc: opts.file_assoc,
         },
     )?;
 
@@ -304,6 +307,61 @@ fn create_app_shortcuts(
     }
 }
 
+/// 检测到的已安装现场（更新模式的数据源）。
+/// 字段名 camelCase：作为 get_install_config 的 updateInfo 返回给前端
+#[derive(Debug, Clone, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ExistingInstall {
+    /// true = 系统级（HKLM + Program Files），false = 用户级（HKCU + LOCALAPPDATA）
+    pub is_system: bool,
+    pub install_dir: String,
+    /// 已安装的版本号（取自 install-info.json）
+    pub version: String,
+    pub desktop_shortcut: bool,
+    pub file_assoc: bool,
+}
+
+/// 检测已有安装（安装器无参数启动时决定进入更新/新安装模式）。
+/// 查注册表卸载键（先 HKCU 后 HKLM，与卸载侧检测顺序一致）取 InstallLocation，
+/// 再从该目录读 install-info.json 补全上次的安装选项。
+/// 与卸载侧 detect_install 不合并：后者优先读 exe 同目录的元信息（卸载器在
+/// 安装目录内），安装器从下载目录运行，只能走"注册表键 → 安装目录 json"这条链
+pub fn detect_existing_install() -> Option<ExistingInstall> {
+    use winreg::enums::{HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE};
+
+    let key_path = format!(
+        r"Software\Microsoft\Windows\CurrentVersion\Uninstall\{}",
+        registry::APP_ID
+    );
+    for hive in [HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE] {
+        if let Ok(key) = RegKey::predef(hive).open_subkey(&key_path) {
+            if let Some(found) = existing_install_from_key(&key) {
+                return Some(found);
+            }
+        }
+    }
+    None
+}
+
+/// 从卸载键的 InstallLocation 读 install-info.json 重建已安装现场；
+/// 任一环节缺失/损坏返回 None（现场残缺回退新安装模式，天然自愈）。
+/// is_system 以 json 为准（不以命中的注册表 hive 为准），与卸载检测同源。
+/// 拆为独立函数供测试用 HKCU 专用键验证。
+fn existing_install_from_key(key: &RegKey) -> Option<ExistingInstall> {
+    let install_dir: String = key.get_value("InstallLocation").ok()?;
+    if install_dir.is_empty() {
+        return None;
+    }
+    let info = load_install_info(Path::new(&install_dir)).ok()?;
+    Some(ExistingInstall {
+        is_system: info.is_system,
+        install_dir,
+        version: info.version,
+        desktop_shortcut: info.created_desktop_shortcut,
+        file_assoc: info.file_assoc,
+    })
+}
+
 /// `--elevated` 模式的 CLI 参数（UI 进程构造，提权进程重建 InstallOptions）
 #[derive(Debug, PartialEq)]
 pub struct ElevatedArgs {
@@ -375,6 +433,7 @@ mod tests {
             app_id: crate::config::APP_ID.into(),
             progid: crate::config::PROGID.into(),
             created_desktop_shortcut: true,
+            file_assoc: true,
         }
     }
 
@@ -491,6 +550,63 @@ mod tests {
         assert_eq!(parsed.progress_file, None);
     }
 
+    #[test]
+    fn existing_install_from_key_rebuilds_site() {
+        // Drop 守卫：断言失败 panic 时也能清理 HKCU 测试键与临时目录
+        struct DetectSiteCleanup {
+            key_path: &'static str,
+            dir: PathBuf,
+        }
+        impl Drop for DetectSiteCleanup {
+            fn drop(&mut self) {
+                let _ = registry::root_for(false).delete_subkey_all(self.key_path);
+                let _ = std::fs::remove_dir_all(&self.dir);
+            }
+        }
+
+        const KEY_PATH: &str = r"Software\MyAppWizardTest.DetectSite";
+        let dir = std::env::temp_dir().join(format!(
+            "my-app-detect-site-test-{}",
+            std::process::id()
+        ));
+        let _cleanup = DetectSiteCleanup {
+            key_path: KEY_PATH,
+            dir: dir.clone(),
+        };
+
+        let (key, _) = registry::root_for(false).create_subkey(KEY_PATH).unwrap();
+        key.set_value("InstallLocation", &dir.to_string_lossy().into_owned())
+            .unwrap();
+
+        // 1. 完整现场：InstallLocation + 目录内 install-info.json → 检测成功且字段正确；
+        // 测试键在 HKCU 而 json 记 is_system=true，验证 is_system 以 json 为准
+        let info = sample_info(&dir);
+        save_install_info(&dir, &info).unwrap();
+        assert_eq!(
+            existing_install_from_key(&key).unwrap(),
+            ExistingInstall {
+                is_system: true,
+                install_dir: dir.to_string_lossy().into_owned(),
+                version: info.version.clone(),
+                desktop_shortcut: info.created_desktop_shortcut,
+                file_assoc: info.file_assoc,
+            }
+        );
+
+        // 2. json 损坏 → None；json 删除 → None
+        std::fs::write(dir.join(INSTALL_INFO_FILE), "not json{{").unwrap();
+        assert_eq!(existing_install_from_key(&key), None);
+        std::fs::remove_file(dir.join(INSTALL_INFO_FILE)).unwrap();
+        assert_eq!(existing_install_from_key(&key), None);
+
+        // 3. InstallLocation 置空 → None；删除该值 → None
+        key.set_value("InstallLocation", &"").unwrap();
+        assert_eq!(existing_install_from_key(&key), None);
+        key.delete_value("InstallLocation").unwrap();
+        assert_eq!(existing_install_from_key(&key), None);
+        // 清理由 DetectSiteCleanup 的 Drop 执行
+    }
+
     /// 测试现场清理守卫：Drop 中执行，断言失败 panic 时也能清理，
     /// 避免残留的卸载键出现在 Windows 设置的"安装的应用"列表中
     struct SiteCleanup {
@@ -587,6 +703,7 @@ mod tests {
         assert!(!info.is_system);
         assert_eq!(info.version, "9.9.9");
         assert!(info.created_desktop_shortcut);
+        assert!(info.file_assoc);
 
         // 注册表：卸载信息与文件关联
         let key = root

@@ -21,6 +21,8 @@ interface FinishPageProps {
   fileAssoc: boolean;
   /** 系统级/用户级安装，深链参数据此区分 Machine/User 登记 */
   isSystem: boolean;
+  /** 更新模式：文案换措辞，且不重复展示文件关联引导（登记已存在） */
+  isUpdate?: boolean;
 }
 
 /** 第五步：完成页。启动主应用 + 关闭向导。 */
@@ -28,6 +30,7 @@ export function FinishPage({
   installDir,
   fileAssoc,
   isSystem,
+  isUpdate = false,
 }: FinishPageProps) {
   const [launchError, setLaunchError] = useState<string | null>(null);
 
@@ -45,12 +48,14 @@ export function FinishPage({
       <CheckCircle2 className="h-16 w-16 text-accent" strokeWidth={1.5} />
       <div className="flex flex-col gap-2">
         <h1 className="text-[22px] font-semibold text-text-primary">
-          安装完成
+          {isUpdate ? "更新完成" : "安装完成"}
         </h1>
         <p className="max-w-md text-[14px] leading-relaxed text-text-body">
-          {PRODUCT_NAME} 已成功安装到您的电脑。
+          {isUpdate
+            ? `${PRODUCT_NAME} 已更新到最新版本。`
+            : `${PRODUCT_NAME} 已成功安装到您的电脑。`}
         </p>
-        {fileAssoc && (
+        {fileAssoc && !isUpdate && (
           <p className="max-w-md text-[12px] leading-relaxed text-text-auxiliary">
             {PRODUCT_NAME} 已注册为相关文件的打开方式，想设为默认应用可
             <button

@@ -13,6 +13,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { TitleBar } from "@/components/TitleBar";
 import { StepNav } from "@/components/StepNav";
 import { WelcomePage } from "@/components/pages/WelcomePage";
+import { UpdateWelcomePage } from "@/components/pages/UpdateWelcomePage";
 import { PathPage } from "@/components/pages/PathPage";
 import { OptionsPage } from "@/components/pages/OptionsPage";
 import { ProgressPage } from "@/components/pages/ProgressPage";
@@ -21,15 +22,23 @@ import { UninstallConfirmPage } from "@/components/pages/UninstallConfirmPage";
 import { UninstallProgressPage } from "@/components/pages/UninstallProgressPage";
 import { UninstallFinishPage } from "@/components/pages/UninstallFinishPage";
 import { CloseAppConfirmDialog } from "@/components/CloseAppConfirmDialog";
-import { getInstallConfig, isAppRunning, type InstallConfig } from "@/lib/ipc";
+import {
+  getInstallConfig,
+  isAppRunning,
+  type InstallConfig,
+  type UpdateInfo,
+} from "@/lib/ipc";
 import { FILE_ASSOC_ENABLED, PRODUCT_NAME } from "@/product";
 import {
   INSTALL_STEPS,
   INSTALL_STEP_LABELS,
   UNINSTALL_STEPS,
   UNINSTALL_STEP_LABELS,
+  UPDATE_STEPS,
+  UPDATE_STEP_LABELS,
   type InstallStep,
   type UninstallStep,
+  type UpdateStep,
 } from "@/types";
 
 export default function App() {
@@ -68,10 +77,104 @@ export default function App() {
     );
   }
 
-  return config.mode === "uninstall" ? (
-    <UninstallWizard config={config} />
-  ) : (
-    <InstallWizard config={config} />
+  if (config.mode === "uninstall") return <UninstallWizard config={config} />;
+  // updateInfo 作独立 prop 传入，顶层收窄后组件内类型自然非空
+  if (config.mode === "update" && config.updateInfo) {
+    return <UpdateWizard config={config} info={config.updateInfo} />;
+  }
+  return <InstallWizard config={config} />;
+}
+
+/** 更新向导：三步精简流程，安装选项静默沿用上次安装记录 */
+function UpdateWizard({
+  config,
+  info,
+}: {
+  config: InstallConfig;
+  info: UpdateInfo;
+}) {
+  const [step, setStep] = useState<UpdateStep>("welcome");
+  // 检测到主程序运行中，等待用户确认关闭（未确认不进入更新流程）
+  const [confirmClose, setConfirmClose] = useState(false);
+
+  // 更新即以上次选项调现有 start_install（覆盖安装），后端编排零改动
+  const options = {
+    isSystem: info.isSystem,
+    installDir: info.installDir,
+    desktopShortcut: info.desktopShortcut,
+    fileAssoc: info.fileAssoc,
+  };
+
+  // 更新进行中禁用关闭（防止中断写注册表/复制文件）
+  const closable = step !== "progress";
+
+  // 进入更新前检测运行中的实例：弹确认对话框，未确认不进入更新流程
+  //（实际关闭由后端安装编排执行）
+  const confirmThenUpdate = async () => {
+    if (await isAppRunning(info.installDir)) {
+      setConfirmClose(true);
+      return;
+    }
+    setStep("progress");
+  };
+
+  const renderPage = () => {
+    switch (step) {
+      case "welcome":
+        return (
+          <UpdateWelcomePage
+            info={info}
+            version={config.version}
+            onNext={() => void confirmThenUpdate()}
+          />
+        );
+      case "progress":
+        return (
+          <ProgressPage
+            options={options}
+            isUpdate
+            onSuccess={() => setStep("finish")}
+            onBack={() => setStep("welcome")}
+          />
+        );
+      case "finish":
+        return (
+          <FinishPage
+            installDir={info.installDir}
+            fileAssoc={info.fileAssoc}
+            isSystem={info.isSystem}
+            isUpdate
+          />
+        );
+    }
+  };
+
+  return (
+    <div className="flex h-screen flex-col bg-bg">
+      <TitleBar closable={closable} />
+      <div className="flex min-h-0 flex-1">
+        <StepNav
+          steps={UPDATE_STEPS}
+          labels={UPDATE_STEP_LABELS}
+          current={step}
+        />
+        <main className="min-w-0 flex-1 bg-bg">
+          <div key={step} className="wizard-page-enter h-full">
+            {renderPage()}
+          </div>
+        </main>
+      </div>
+      <CloseAppConfirmDialog
+        open={confirmClose}
+        confirmLabel="继续更新"
+        description={`检测到 ${PRODUCT_NAME} 正在运行，继续更新将关闭它。`}
+        onConfirm={() => {
+          setConfirmClose(false);
+          setStep("progress");
+        }}
+        onCancel={() => setConfirmClose(false)}
+      />
+    </div>
   );
 }
 

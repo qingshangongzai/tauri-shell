@@ -37,3 +37,14 @@ export const UNINSTALL_STEP_LABELS: Record<UninstallStep, string> = {
   progress: "卸载",
   finish: "完成",
 };
+
+/** 更新向导三步（欢迎 / 更新 / 完成） */
+export const UPDATE_STEPS = ["welcome", "progress", "finish"] as const;
+
+export type UpdateStep = (typeof UPDATE_STEPS)[number];
+
+export const UPDATE_STEP_LABELS: Record<UpdateStep, string> = {
+  welcome: "欢迎",
+  progress: "更新",
+  finish: "完成",
+};

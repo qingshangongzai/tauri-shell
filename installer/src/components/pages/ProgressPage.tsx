@@ -11,6 +11,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { PRODUCT_NAME } from "@/product";
 import {
   startInstall,
   onInstallProgress,
@@ -22,16 +23,21 @@ interface ProgressPageProps {
   options: InstallOptions;
   onSuccess: () => void;
   onBack: () => void;
+  /** 更新模式：仅文案换措辞，流程逻辑与安装一致 */
+  isUpdate?: boolean;
 }
 
-/** 第四步：安装进度。进入即触发 start_install，事件驱动进度条。 */
+/** 第四步：安装/更新进度。进入即触发 start_install，事件驱动进度条。 */
 export function ProgressPage({
   options,
   onSuccess,
   onBack,
+  isUpdate = false,
 }: ProgressPageProps) {
   const [percent, setPercent] = useState(0);
-  const [message, setMessage] = useState("准备安装...");
+  const [message, setMessage] = useState(
+    isUpdate ? "准备更新..." : "准备安装...",
+  );
   const [error, setError] = useState<string | null>(null);
   // StrictMode 会二次触发 effect；install 有副作用（写文件/注册表），必须仅执行一次
   const startedRef = useRef(false);
@@ -78,12 +84,18 @@ export function ProgressPage({
     <div className="flex h-full flex-col gap-8 px-12 py-10">
       <div className="flex flex-col gap-1">
         <h2 className="text-[18px] font-semibold text-text-primary">
-          {error ? "安装失败" : "正在安装"}
+          {error
+            ? isUpdate
+              ? "更新失败"
+              : "安装失败"
+            : isUpdate
+              ? "正在更新"
+              : "正在安装"}
         </h2>
         <p className="text-[13px] text-text-auxiliary">
           {error
-            ? "安装过程中遇到问题。"
-            : "请稍候，正在将 Air Note 安装到您的电脑。"}
+            ? `${isUpdate ? "更新" : "安装"}过程中遇到问题。`
+            : `请稍候，正在将 ${PRODUCT_NAME} ${isUpdate ? "更新到最新版本" : "安装到您的电脑"}。`}
         </p>
       </div>
 

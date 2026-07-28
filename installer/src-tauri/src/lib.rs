@@ -15,12 +15,13 @@
 pub mod commands;
 pub mod config;
 
-/// 向导模式状态：安装，或卸载（携带检测到的卸载现场，未检测到时为 None，
-/// UI 显示"未找到安装"提示）
+/// 向导模式状态：安装、更新（携带检测到的已安装现场），或卸载
+///（携带检测到的卸载现场，未检测到时为 None，UI 显示"未找到安装"提示）
 #[cfg(windows)]
 #[derive(Clone)]
 pub struct WizardState {
     pub(crate) mode: &'static str,
+    pub(crate) update_site: Option<commands::install::ExistingInstall>,
     pub(crate) uninstall_site: Option<commands::uninstall::UninstallSite>,
 }
 
@@ -34,7 +35,7 @@ mod ipc {
     use tauri::{AppHandle, Emitter, State};
 
     use crate::commands::elevate;
-    use crate::commands::install::{self, InstallOptions, InstallPaths};
+    use crate::commands::install::{self, ExistingInstall, InstallOptions, InstallPaths};
     use crate::commands::process;
     use crate::commands::progress::{self, InstallProgress};
     use crate::commands::uninstall::{self, UninstallSite};
@@ -50,9 +51,11 @@ mod ipc {
         version: String,
         system_default_dir: String,
         user_default_dir: String,
-        /// "install" | "uninstall"，前端据此分支向导流程
+        /// "install" | "update" | "uninstall"，前端据此分支向导流程
         mode: String,
-        /// 卸载模式的现场信息；安装模式或未检测到安装时为 None
+        /// 更新模式的已安装现场；其余模式为 None
+        update_info: Option<ExistingInstall>,
+        /// 卸载模式的现场信息；其余模式或未检测到安装时为 None
         uninstall_info: Option<UninstallSite>,
     }
 
@@ -69,6 +72,7 @@ mod ipc {
                 .to_string_lossy()
                 .into_owned(),
             mode: state.mode.into(),
+            update_info: state.update_site.clone(),
             uninstall_info: state.uninstall_site.clone(),
         })
     }
@@ -310,13 +314,18 @@ mod ipc {
     }
 }
 
-/// 安装向导入口
+/// 安装向导入口：检测到已有安装时进入更新模式（沿用上次路径与选项的
+/// 精简流程），否则为新安装模式
 pub fn run() {
     #[cfg(windows)]
-    run_with_state(WizardState {
-        mode: "install",
-        uninstall_site: None,
-    });
+    {
+        let update_site = commands::install::detect_existing_install();
+        run_with_state(WizardState {
+            mode: if update_site.is_some() { "update" } else { "install" },
+            update_site,
+            uninstall_site: None,
+        });
+    }
     #[cfg(not(windows))]
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
@@ -329,6 +338,7 @@ pub fn run() {
 pub fn run_uninstaller(site: Option<commands::uninstall::UninstallSite>) {
     run_with_state(WizardState {
         mode: "uninstall",
+        update_site: None,
         uninstall_site: site,
     });
 }
