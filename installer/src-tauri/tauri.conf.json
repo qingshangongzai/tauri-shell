@@ -20,7 +20,8 @@
         "resizable": false,
         "center": true,
         "decorations": false,
-        "visible": false
+        "visible": false,
+        "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection,ElasticOverscroll,OverscrollHistoryNavigation"
       }
     ],
     "security": {

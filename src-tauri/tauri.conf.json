@@ -13,12 +13,13 @@
     "windows": [
       {
         "title": "我的应用",
-        "width": 700,
-        "height": 650,
+        "width": 900,
+        "height": 600,
         "resizable": true,
         "decorations": false,
         "center": true,
-        "visible": false
+        "visible": false,
+        "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection,ElasticOverscroll,OverscrollHistoryNavigation"
       }
     ],
     "security": {

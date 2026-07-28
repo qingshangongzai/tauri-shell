@@ -111,7 +111,13 @@ See the Mulan PSL v2 for more details.
 
         /* ═════════════════════ 基础重置 ═════════════════════ */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        html {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: var(--bg);
+            /* 禁用边界回弹与滚动链，避免拉扯时露出画布背景（网页感） */
+            overscroll-behavior: none;
+        }
 
         /* ───── 内嵌图标（SVG 雪碧图引用） ───── */
         .icon {
@@ -139,6 +145,9 @@ See the Mulan PSL v2 for more details.
         }
 
         /* ═════════════════════ 自定义标题栏 ═════════════════════ */
+        /* 拖拽统一走 data-tauri-drag-region（JS 通道，仅响应左键）；
+           禁用 -webkit-app-region: drag：它会被 WebView2 按非客户区标题栏处理，
+           右键时在引擎层直接弹出 Windows 系统菜单，顶层窗口侧无法拦截 */
         .titlebar {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -147,7 +156,6 @@ See the Mulan PSL v2 for more details.
             align-items: center;
             padding-left: 16px;
             background: var(--titlebar);
-            -webkit-app-region: drag;
             -webkit-user-select: none;
             user-select: none;
             z-index: 1000;
@@ -157,13 +165,14 @@ See the Mulan PSL v2 for more details.
             font-weight: 600;
             color: var(--text-body);
             letter-spacing: 0.01em;
+            /* 点击穿透到带 data-tauri-drag-region 的父容器，保证标题文字上也可拖拽 */
+            pointer-events: none;
         }
         .window-controls {
             position: absolute;
             right: 0; top: 0; bottom: 0;
             display: flex;
             align-items: stretch;
-            -webkit-app-region: no-drag;
         }
         .win-btn {
             width: 46px;
@@ -175,7 +184,6 @@ See the Mulan PSL v2 for more details.
             display: flex;
             align-items: center;
             justify-content: center;
-            -webkit-app-region: no-drag;
             color: var(--text-body);
         }
         .win-btn:hover { background: var(--hover); }
@@ -354,6 +362,7 @@ See the Mulan PSL v2 for more details.
         .main-content {
             flex: 1;
             overflow-y: auto;
+            overscroll-behavior: none;
             padding: 24px;
         }
         .page {
@@ -649,34 +658,7 @@ See the Mulan PSL v2 for more details.
         .main-content::-webkit-scrollbar-thumb { background: var(--divider); border-radius: 3px; }
 
         /* ═════════════════════ 工具页：秒表/倒计时 ═════════════════════ */
-        .timer-tabs {
-            display: flex;
-            margin-bottom: 16px;
-            border-radius: var(--radius-sm);
-            background: var(--hover);
-            padding: 2px;
-        }
-        .timer-tab {
-            flex: 1;
-            padding: 6px 0;
-            border: none;
-            border-radius: calc(var(--radius-sm) - 1px);
-            background: transparent;
-            color: var(--text-body);
-            font-size: 0.78rem;
-            font-weight: 500;
-            font-family: var(--font);
-            cursor: pointer;
-            transition: background var(--duration-normal) var(--ease), color var(--duration-normal) var(--ease);
-        }
-        .timer-tab.active {
-            background: var(--card);
-            color: var(--text-primary);
-            font-weight: 600;
-            box-shadow: var(--shadow-card);
-        }
-        .timer-panel { display: none; }
-        .timer-panel.active { display: block; }
+        /* Tab 切换视觉复用通用 .tabs / .tab / .tab-panel（见 UI 组件：Tab 标签页） */
         .timer-display {
             font-size: 2rem;
             font-weight: 300;
@@ -1183,10 +1165,10 @@ See the Mulan PSL v2 for more details.
             color: var(--text-auxiliary);
         }
 
-        /* ═════════════════════ 能力展示页：Toast 通知 ═════════════════════ */
+        /* ═════════════════════ UI 组件：Toast 通知 ═════════════════════ */
         .toast-container {
             position: fixed;
-            top: calc(var(--titlebar-h) + 12px);
+            top: calc(var(--titlebar-h) + 16px);
             left: 50%;
             transform: translateX(-50%);
             z-index: 2000;
@@ -1201,7 +1183,7 @@ See the Mulan PSL v2 for more details.
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 14px;
+            padding: 12px 16px;
             border-radius: var(--radius-sm);
             background: var(--card);
             box-shadow: var(--shadow-flyout);
@@ -1277,6 +1259,237 @@ See the Mulan PSL v2 for more details.
             flex-wrap: wrap;
         }
 
+        /* ═════════════════════ UI 组件：Modal 弹窗 ═════════════════════ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            animation: modalFadeIn 0.2s var(--ease);
+        }
+        .modal-overlay.open { display: flex; }
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        .modal {
+            width: min(420px, calc(100vw - 48px));
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-flyout);
+            padding: 24px;
+            outline: none;
+            animation: modalPopIn 0.25s var(--ease);
+        }
+        @keyframes modalPopIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.96); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .modal-title {
+            font-size: 0.92rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .modal-body {
+            font-size: 0.8rem;
+            color: var(--text-body);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        /* ═════════════════════ UI 组件：Tab 标签页 ═════════════════════ */
+        .tabs {
+            display: flex;
+            margin-bottom: 16px;
+            border-radius: var(--radius-sm);
+            background: var(--hover);
+            padding: 2px;
+        }
+        .tab {
+            flex: 1;
+            padding: 6px 0;
+            border: none;
+            border-radius: calc(var(--radius-sm) - 1px);
+            background: transparent;
+            color: var(--text-body);
+            font-size: 0.78rem;
+            font-weight: 500;
+            font-family: var(--font);
+            cursor: pointer;
+            transition: background var(--duration-normal) var(--ease), color var(--duration-normal) var(--ease);
+        }
+        .tab.active {
+            background: var(--card);
+            color: var(--text-primary);
+            font-weight: 600;
+            box-shadow: var(--shadow-card);
+        }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        .tab-panel-text {
+            font-size: 0.78rem;
+            color: var(--text-body);
+            line-height: 1.6;
+        }
+
+        /* ═════════════════════ UI 组件：Progress 进度条 ═════════════════════ */
+        .progress-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .progress {
+            flex: 1;
+            height: 4px;
+            background: var(--hover);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            /* width 过渡与既有 .timer-progress-bar 同款实现；4px 高小元素的 layout 开销可忽略 */
+            transition: width var(--duration-slow) var(--ease);
+        }
+        .progress-value {
+            flex-shrink: 0;
+            width: 40px;
+            text-align: right;
+            font-size: 0.78rem;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            color: var(--text-body);
+        }
+        .progress-indeterminate .progress-bar {
+            width: 30%;
+            animation: progressSlide 1.2s ease-in-out infinite;
+        }
+        @keyframes progressSlide {
+            from { transform: translateX(-100%); }
+            /* 334% ≈ 100% / 30%（色块自身宽度占轨道 30%），保证完全滑出右缘；改 width 需同步此值 */
+            to   { transform: translateX(334%); }
+        }
+
+        /* ═════════════════════ UI 组件：Badge / Tag ═════════════════════ */
+        .badge-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.68rem;
+            font-weight: 550;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: var(--hover);
+            color: var(--text-body);
+        }
+        .badge-accent  { background: var(--accent-bg); color: var(--accent); }
+        .badge-success { background: color-mix(in srgb, var(--copy-success) 12%, transparent); color: var(--copy-success); }
+        .badge-warning { background: var(--warning-bg); color: var(--warning); }
+        .badge-danger  { background: var(--danger-bg); color: var(--danger); }
+        .badge-dot::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        .badge-count {
+            min-width: 20px;
+            justify-content: center;
+            padding: 3px 6px;
+            font-variant-numeric: tabular-nums;
+            background: var(--danger);
+            color: var(--on-accent);
+        }
+
+        /* ═════════════════════ UI 组件：Tooltip ═════════════════════ */
+        .tooltip {
+            position: relative;
+            /* 组件级变量：气泡深底浅字与主题反转，不进共享设计令牌块 */
+            --tip-bg: rgba(0, 0, 0, 0.78);
+            --tip-text: #ffffff;
+        }
+        [data-theme="dark"] .tooltip {
+            --tip-bg: rgba(255, 255, 255, 0.87);
+            --tip-text: rgba(0, 0, 0, 0.87);
+        }
+        .tooltip::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) translateY(2px);
+            padding: 5px 10px;
+            border-radius: var(--radius-sm);
+            background: var(--tip-bg);
+            color: var(--tip-text);
+            font-size: 0.7rem;
+            font-weight: 450;
+            line-height: 1.4;
+            white-space: nowrap;
+            box-shadow: var(--shadow-flyout);
+            z-index: 10;
+        }
+        .tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 3px);
+            left: 50%;
+            transform: translateX(-50%) translateY(2px);
+            border: 5px solid transparent;
+            border-top-color: var(--tip-bg);
+            border-bottom: none;
+            z-index: 10;
+        }
+        .tooltip::after, .tooltip::before {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--duration-fast) var(--ease) 150ms, transform var(--duration-fast) var(--ease) 150ms;
+        }
+        .tooltip:hover::after, .tooltip:hover::before,
+        .tooltip:focus-visible::after, .tooltip:focus-visible::before {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .tooltip-demo-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding-top: 24px; /* 给上方气泡留出弹出空间 */
+        }
+        .tooltip-icon-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: var(--hover);
+            color: var(--text-body);
+            cursor: pointer;
+            padding: 0;
+            transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
+        }
+        .tooltip-icon-btn .icon { width: 14px; height: 14px; }
+        .tooltip-icon-btn:hover { background: var(--divider); color: var(--text-primary); }
+
         /* ───── 动效降级（同安装器 index.css） ───── */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
@@ -1322,6 +1535,11 @@ See the Mulan PSL v2 for more details.
         <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
         <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
         <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+        <symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></symbol>
+        <symbol id="i-panels" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></symbol>
+        <symbol id="i-gauge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></symbol>
+        <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></symbol>
+        <symbol id="i-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
     </svg>
 
     <!-- ═══════════ 标题栏 ═══════════ -->
@@ -1349,6 +1567,9 @@ See the Mulan PSL v2 for more details.
                 <button class="nav-item" data-page="tauri">
                     <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-window"></use></svg></span> 能力
                 </button>
+                <button class="nav-item" data-page="components">
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-layers"></use></svg></span> 组件
+                </button>
                 <button class="nav-item" data-page="settings">
                     <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-settings"></use></svg></span> 设置
                 </button>
@@ -1356,7 +1577,7 @@ See the Mulan PSL v2 for more details.
                     <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg></span> 关于
                 </button>
             </nav>
-            <div class="sidebar-footer">轻壳 v1.0.0</div>
+            <div class="sidebar-footer">轻壳 v0.1.0</div>
         </aside>
 
         <!-- ───── 主内容区 ───── -->
@@ -1383,8 +1604,8 @@ See the Mulan PSL v2 for more details.
                     <div class="stat-card">
                         <div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#i-feather"></use></svg></div>
                         <div>
-                            <div class="stat-value">&lt; 5 MB</div>
-                            <div class="stat-label">典型打包体积</div>
+                            <div class="stat-value">&lt; 10 MB</div>
+                            <div class="stat-label">单文件安装器体积</div>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -1407,9 +1628,10 @@ See the Mulan PSL v2 for more details.
                     <h3 class="card-title-sm-lg">快速开始</h3>
                     <ol class="quickstart-list">
                         <li>修改 <code>dist/index.html</code> 编写你的界面</li>
-                        <li>替换 <code>src-tauri/icons/source.png</code> 为你的应用图标</li>
+                        <li>替换 <code>src-tauri/icons/logo.svg</code> 为你的应用图标（构建时自动同步安装器）</li>
                         <li>修改 <code>tauri.conf.json</code> 中的应用名称和标识</li>
-                        <li>运行 <code>npm run tauri build</code> 打包 EXE</li>
+                        <li>同步安装向导产品信息，改名清单见 <code>docs/安装器说明.md</code></li>
+                        <li>运行 <code>npm run build</code> 打包单文件安装器（或 <code>npm run build:nsis</code> 走 NSIS）</li>
                     </ol>
                 </div>
             </section>
@@ -1447,12 +1669,12 @@ See the Mulan PSL v2 for more details.
                     <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-timer"></use></svg> 秒表/倒计时</h2>
                     <p class="card-subtitle">setInterval 定时器状态管理示例</p>
 
-                    <div class="timer-tabs" role="tablist" aria-label="定时器模式">
-                        <button class="timer-tab active" role="tab" aria-selected="true" data-timer="stopwatch">秒表</button>
-                        <button class="timer-tab" role="tab" aria-selected="false" data-timer="countdown">倒计时</button>
+                    <div class="tabs" role="tablist" aria-label="定时器模式">
+                        <button class="tab timer-tab active" role="tab" aria-selected="true" data-timer="stopwatch">秒表</button>
+                        <button class="tab timer-tab" role="tab" aria-selected="false" data-timer="countdown">倒计时</button>
                     </div>
 
-                    <div class="timer-panel active" id="panel-stopwatch" role="tabpanel">
+                    <div class="tab-panel timer-panel active" id="panel-stopwatch" role="tabpanel">
                         <div class="timer-display" id="swDisplay" aria-live="polite">00:00.00</div>
                         <div class="timer-actions">
                             <button class="timer-btn timer-btn-start" id="swStart" aria-label="开始秒表">开始</button>
@@ -1462,7 +1684,7 @@ See the Mulan PSL v2 for more details.
                         <ul class="timer-laps" id="swLaps" role="list" aria-label="计次记录"></ul>
                     </div>
 
-                    <div class="timer-panel" id="panel-countdown" role="tabpanel">
+                    <div class="tab-panel timer-panel" id="panel-countdown" role="tabpanel">
                         <div class="timer-preset-row">
                             <button class="timer-preset" data-seconds="30">30秒</button>
                             <button class="timer-preset active" data-seconds="60">1分钟</button>
@@ -1648,6 +1870,112 @@ See the Mulan PSL v2 for more details.
                 </div>
             </section>
 
+            <!-- UI 组件库页 -->
+            <section class="page" id="page-components">
+                <h1 class="page-title">组件库</h1>
+                <p class="page-desc">去线留白风格的常用 UI 组件：以空间、色块与弥散阴影表达层级，不依赖边框线条。</p>
+
+                <!-- Toast 通知 -->
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-bell"></use></svg> Toast 通知</h2>
+                    <p class="card-subtitle">顶部居中弹出，自动消失，支持 success / warning / error 三种类型</p>
+                    <div class="toast-demo-actions">
+                        <button class="btn btn-primary" id="compToastSuccess" aria-label="触发成功通知">
+                            <svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg> 成功通知
+                        </button>
+                        <button class="btn btn-secondary" id="compToastWarning" aria-label="触发警告通知">
+                            <svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg> 警告通知
+                        </button>
+                        <button class="btn btn-secondary" id="compToastError" aria-label="触发错误通知">
+                            <svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg> 错误通知
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal 弹窗 -->
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-window"></use></svg> Modal 弹窗</h2>
+                    <p class="card-subtitle">居中遮罩层，支持 ESC 键与点击遮罩关闭</p>
+                    <button class="btn btn-primary" id="modalOpen">打开弹窗</button>
+                </div>
+
+                <!-- Tab 标签页 -->
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-panels"></use></svg> Tab 标签页</h2>
+                    <p class="card-subtitle">页内子标签切换，选中态用色块与字重表达，不用下划线</p>
+                    <div class="tabs" role="tablist" aria-label="示例标签页">
+                        <button class="tab active" role="tab" aria-selected="true" data-tab="tab-intro">简介</button>
+                        <button class="tab" role="tab" aria-selected="false" data-tab="tab-config">配置</button>
+                        <button class="tab" role="tab" aria-selected="false" data-tab="tab-log">日志</button>
+                    </div>
+                    <div class="tab-panel active" id="tab-intro" role="tabpanel">
+                        <p class="tab-panel-text">这里是简介面板。分段式标签以胶囊色块为底，选中项通过卡片色背景、加粗字重与弥散阴影浮起，无需任何分割线。</p>
+                    </div>
+                    <div class="tab-panel" id="tab-config" role="tabpanel">
+                        <p class="tab-panel-text">这里是配置面板。切换时面板直接显隐，标签与内容之间依靠 16px 间距建立关联。</p>
+                    </div>
+                    <div class="tab-panel" id="tab-log" role="tabpanel">
+                        <p class="tab-panel-text">这里是日志面板。三个标签均带 role="tab" 与 aria-selected，对屏幕阅读器友好。</p>
+                    </div>
+                </div>
+
+                <!-- Progress 进度条 -->
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-gauge"></use></svg> Progress 进度条</h2>
+                    <p class="card-subtitle">确定与不确定两种进度状态</p>
+                    <div class="progress-row">
+                        <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" aria-label="确定进度">
+                            <div class="progress-bar" id="progressBar" style="width:40%"></div>
+                        </div>
+                        <span class="progress-value" id="progressValue">40%</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-secondary" id="progressDec">−10%</button>
+                        <button class="btn btn-secondary" id="progressInc">+10%</button>
+                        <button class="btn btn-secondary" id="progressReset">重置</button>
+                    </div>
+                    <p class="card-subtitle" style="margin-top:16px;">不确定进度（加载中）</p>
+                    <div class="progress progress-indeterminate" role="progressbar" aria-label="加载中">
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+
+                <!-- Badge / Tag -->
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-tag"></use></svg> Badge / Tag</h2>
+                    <p class="card-subtitle">透明色底 + 同色文字的无边框徽章，展示状态或分类</p>
+                    <p class="card-subtitle">状态徽章</p>
+                    <div class="badge-row">
+                        <span class="badge badge-dot badge-success">运行中</span>
+                        <span class="badge badge-dot badge-warning">待处理</span>
+                        <span class="badge badge-dot badge-danger">已中断</span>
+                        <span class="badge badge-dot">已离线</span>
+                    </div>
+                    <p class="card-subtitle" style="margin-top:16px;">分类标签与数字角标</p>
+                    <div class="badge-row">
+                        <span class="badge badge-accent">Tauri v2</span>
+                        <span class="badge badge-accent">前端</span>
+                        <span class="badge">模板</span>
+                        <span class="badge">文档</span>
+                        <span class="badge badge-count">3</span>
+                        <span class="badge badge-count">99+</span>
+                    </div>
+                </div>
+
+                <!-- Tooltip -->
+                <div class="card">
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-message"></use></svg> Tooltip</h2>
+                    <p class="card-subtitle">悬停或键盘聚焦时显示提示气泡，纯 CSS 实现</p>
+                    <div class="tooltip-demo-row">
+                        <button class="btn btn-primary tooltip" data-tip="保存当前更改（Ctrl+S）">保存</button>
+                        <button class="btn btn-secondary tooltip" data-tip="撤销上一步操作（Ctrl+Z）">撤销</button>
+                        <button class="tooltip-icon-btn tooltip" data-tip="查看帮助信息" aria-label="帮助">
+                            <svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
             <!-- 设置页 -->
             <section class="page" id="page-settings">
                 <h1 class="page-title">设置</h1>
@@ -1716,7 +2044,7 @@ See the Mulan PSL v2 for more details.
                 <div class="card">
                     <h2 class="card-title">技术信息</h2>
                     <table class="about-table">
-                        <tr><td>版本</td><td>1.0.0</td></tr>
+                        <tr><td>版本</td><td>0.1.0</td></tr>
                         <tr><td>框架</td><td>Tauri v2（Rust + WebView）</td></tr>
                         <tr><td>前端</td><td>纯 HTML / CSS / JavaScript</td></tr>
                         <tr><td>平台</td><td>Windows</td></tr>
@@ -1727,6 +2055,18 @@ See the Mulan PSL v2 for more details.
             </section>
 
         </main>
+    </div>
+
+    <!-- Modal 弹窗（组件页演示，遮罩层全局挂载） -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+            <h3 class="modal-title" id="modalTitle">确认操作</h3>
+            <div class="modal-body">这是一个居中弹窗示例：按 ESC 键或点击遮罩均可关闭。弹窗通过弥散阴影与遮罩建立空间层级，不使用边框线条。</div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="modalCancel">取消</button>
+                <button class="btn btn-primary" id="modalConfirm">确定</button>
+            </div>
+        </div>
     </div>
 
     <!-- ═══════════ 脚本 ═══════════ -->
@@ -1766,6 +2106,33 @@ See the Mulan PSL v2 for more details.
 
             // 页面加载完成后显示窗口
             invoke('plugin:window|show');
+        }
+
+        /* ═══════════════════════ 屏蔽浏览器加速键（仅打包版） ═══════════════════════ */
+        // 仅在打包产物（tauri.localhost / tauri: 协议）中生效，
+        // 浏览器预览与 npm run dev（localhost:1420）保留 F5/F12 便于调试
+        if (location.protocol === 'tauri:' || location.hostname === 'tauri.localhost') {
+            // 刷新/查源/打印/查找/下载/缩放类 Ctrl 组合键
+            const BLOCKED_CTRL_KEYS = ['r', 'p', 'u', 'f', 'g', 'j', '+', '-', '=', '0'];
+            document.addEventListener('keydown', e => {
+                const key = e.key.toLowerCase();
+                if (
+                    key === 'f5' || key === 'f3' || key === 'f12' ||
+                    (e.ctrlKey && e.shiftKey && ['i', 'j', 'c'].includes(key)) ||
+                    (e.ctrlKey && !e.altKey && BLOCKED_CTRL_KEYS.includes(key)) ||
+                    (e.altKey && (key === 'arrowleft' || key === 'arrowright'))
+                ) {
+                    e.preventDefault();
+                }
+            }, { capture: true });
+            // Ctrl+滚轮页面缩放
+            document.addEventListener('wheel', e => {
+                if (e.ctrlKey) e.preventDefault();
+            }, { passive: false, capture: true });
+            // 鼠标侧键历史前进/后退
+            document.addEventListener('mouseup', e => {
+                if (e.button === 3 || e.button === 4) e.preventDefault();
+            });
         }
 
         /* ═══════════════════════ 侧边栏导航 ═══════════════════════ */
@@ -2762,27 +3129,113 @@ See the Mulan PSL v2 for more details.
             renderFileList();
         }
 
-        /* ═══════════════════════ 能力展示页：演示按钮 ═══════════════════════ */
+        /* ═══════════════════════ Toast 演示按钮（能力页 + 组件页共用绑定） ═══════════════════════ */
         {
-            const toastSuccessBtn = document.getElementById('toastSuccess');
-            const toastWarningBtn = document.getElementById('toastWarning');
-            const toastErrorBtn = document.getElementById('toastError');
+            const bindToastDemo = (id, type, message) => {
+                const btn = document.getElementById(id);
+                if (btn) btn.addEventListener('click', () => {
+                    window._showToast && window._showToast(type, message);
+                });
+            };
+            bindToastDemo('toastSuccess', 'success', '操作已成功完成！');
+            bindToastDemo('toastWarning', 'warning', '请注意，存储空间不足。');
+            bindToastDemo('toastError', 'error', '发生了错误，请稍后重试。');
+            bindToastDemo('compToastSuccess', 'success', '操作已成功完成！');
+            bindToastDemo('compToastWarning', 'warning', '请注意，存储空间不足。');
+            bindToastDemo('compToastError', 'error', '发生了错误，请稍后重试。');
+        }
 
-            if (toastSuccessBtn) {
-                toastSuccessBtn.addEventListener('click', () => {
-                    window._showToast && window._showToast('success', '操作已成功完成！');
-                });
+        /* ═══════════════════════ UI 组件：Modal 弹窗 ═══════════════════════ */
+        {
+            const overlay = document.getElementById('modalOverlay');
+            const modal = overlay.querySelector('.modal');
+            let lastFocus = null;
+
+            function openModal() {
+                lastFocus = document.activeElement;
+                overlay.classList.add('open');
+                modal.focus();
             }
-            if (toastWarningBtn) {
-                toastWarningBtn.addEventListener('click', () => {
-                    window._showToast && window._showToast('warning', '请注意，存储空间不足。');
-                });
+
+            function closeModal() {
+                overlay.classList.remove('open');
+                if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
             }
-            if (toastErrorBtn) {
-                toastErrorBtn.addEventListener('click', () => {
-                    window._showToast && window._showToast('error', '发生了错误，请稍后重试。');
+
+            document.getElementById('modalOpen').addEventListener('click', openModal);
+            document.getElementById('modalCancel').addEventListener('click', closeModal);
+            document.getElementById('modalConfirm').addEventListener('click', () => {
+                closeModal();
+                window._showToast && window._showToast('success', '操作已确认');
+            });
+
+            // 点击遮罩自身关闭（点击弹窗内部不触发）
+            overlay.addEventListener('click', e => {
+                if (e.target === overlay) closeModal();
+            });
+
+            // ESC 关闭 + Tab 焦点圈禁（aria-modal 需配合焦点不逃逸出对话框）
+            document.addEventListener('keydown', e => {
+                if (!overlay.classList.contains('open')) return;
+                if (e.key === 'Escape') {
+                    closeModal();
+                    return;
+                }
+                if (e.key === 'Tab') {
+                    const focusables = modal.querySelectorAll('button');
+                    const first = focusables[0];
+                    const last = focusables[focusables.length - 1];
+                    if (e.shiftKey && (document.activeElement === first || document.activeElement === modal)) {
+                        e.preventDefault();
+                        last.focus();
+                    } else if (!e.shiftKey && document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                }
+            });
+        }
+
+        /* ═══════════════════════ UI 组件：Tab 标签页 ═══════════════════════ */
+        {
+            // 选中态与面板均限定在当前卡片内，多组 Tab 互不干扰
+            document.querySelectorAll('#page-components .tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const card = tab.closest('.card');
+                    card.querySelectorAll('.tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+                    tab.classList.add('active');
+                    tab.setAttribute('aria-selected', 'true');
+                    card.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                    document.getElementById(tab.dataset.tab).classList.add('active');
                 });
+            });
+        }
+
+        /* ═══════════════════════ UI 组件：Progress 进度条 ═══════════════════════ */
+        {
+            const progressBar = document.getElementById('progressBar');
+            const progressValue = document.getElementById('progressValue');
+            const progressTrack = progressBar.parentElement;
+            let percent = 40;
+
+            function renderProgress() {
+                progressBar.style.width = percent + '%';
+                progressValue.textContent = percent + '%';
+                progressTrack.setAttribute('aria-valuenow', percent);
             }
+
+            document.getElementById('progressDec').addEventListener('click', () => {
+                percent = Math.max(0, percent - 10);
+                renderProgress();
+            });
+            document.getElementById('progressInc').addEventListener('click', () => {
+                percent = Math.min(100, percent + 10);
+                renderProgress();
+            });
+            document.getElementById('progressReset').addEventListener('click', () => {
+                percent = 40;
+                renderProgress();
+            });
         }
     }
     </script>
