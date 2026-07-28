@@ -6,16 +6,13 @@ dist-min/
 /.codebuddy
 /.trae
 /.qoder
-# 图标由 tauri icon 从 source.png 自动生成
-src-tauri/icons/32x32.png
-src-tauri/icons/64x64.png
-src-tauri/icons/128x128.png
-src-tauri/icons/128x128@2x.png
-src-tauri/icons/icon.icns
+# 图标由 scripts/gen-icons.mjs 从 logo.svg 自动生成
 src-tauri/icons/icon.ico
-src-tauri/icons/icon.png
-src-tauri/icons/Square*.png
-src-tauri/icons/StoreLogo.png
-src-tauri/icons/android/
-src-tauri/icons/ios/
+# 安装器打包中间产物与成品
+app-bundle.zip
+dist-installer/
+# 安装器子包构建产物
+installer/dist/
+installer/src-tauri/target/
+installer/src-tauri/gen/
 待优化清单.md
