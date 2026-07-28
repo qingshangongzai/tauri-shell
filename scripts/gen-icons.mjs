@@ -40,6 +40,9 @@ for (const entry of readdirSync(iconsDir)) {
   }
 }
 
+// 同步给主应用前端：关于页 logo（dist 为前端源目录，minify 时一并拷入 dist-min）
+copyFileSync(join(iconsDir, "logo.svg"), join(root, "dist", "logo.svg"));
+
 // 同步给安装器子包：向导页面 logo + 安装器 EXE 图标（子包被裁剪时跳过）
 if (existsSync(join(root, "installer"))) {
   copyFileSync(

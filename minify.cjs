@@ -19,5 +19,7 @@ minify(html, {
 }).then((r) => {
   fs.mkdirSync("dist-min", { recursive: true });
   fs.writeFileSync("dist-min/index.html", r);
+  // 非 HTML 静态资源直接拷贝（关于页 logo 等）
+  fs.copyFileSync("dist/logo.svg", "dist-min/logo.svg");
   console.log("Minified:", html.length, "->", r.length);
 });

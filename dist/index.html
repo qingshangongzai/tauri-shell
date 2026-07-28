@@ -16,66 +16,122 @@ See the Mulan PSL v2 for more details.
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>轻壳 · 示例</title>
     <style>
-        /* ═════════════════════ 设计令牌 ═════════════════════ */
+        /* ═════════════════════ 设计令牌（与 installer/src/styles/tokens.css 共享，勿单侧改动） ═════════════════════ */
         :root {
-            --bg: #F2F2F7;
-            --bg-elevated: #FFFFFF;
-            --bg-secondary: #E5E5EA;
-            --bg-tertiary: #F9F9FB;
-            --label: #000000;
-            --label-secondary: #3C3C43;
-            --label-tertiary: #8E8E93;
-            --separator: rgba(60, 60, 67, 0.12);
-            --separator-opaque: #E5E5EA;
-            --blue: #007AFF;
-            --blue-bg: rgba(0, 122, 255, 0.08);
-            --green: #34C759;
-            --green-bg: rgba(52, 199, 89, 0.08);
-            --orange: #FF9500;
-            --orange-bg: rgba(255, 149, 0, 0.08);
-            --purple: #AF52DE;
-            --purple-bg: rgba(175, 82, 222, 0.08);
-            --white: #FFFFFF;
-            --red: #E81123;
-            --red-active: #BF0F1D;
-            --red-bg: rgba(232, 17, 35, 0.08);
-            --grey-active: #C6C6C8;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+            /* 配色 - 浅色 */
+            --bg: #fcfcfc;
+            --sidebar: #feffff;
+            --card: #feffff;
+            --titlebar: #feffff;
+            --divider: #d9d9d9;
+            --border-soft: color-mix(in srgb, #d9d9d9 40%, transparent);
+            --hover: #e0e0e0;
+            --code-bg: #e8e8e8;
+            --code-text: #2b2b2b;
+            --danger: #c42b1c;
+            --danger-bg: rgba(196, 43, 28, 0.08);
+            --warning: #b26b00;
+            --warning-bg: rgba(255, 179, 0, 0.1);
+            --copy-success: #107c10;
+
+            /* Accent 强调色系统 - 浅色 */
+            --accent: #005fb8;
+            --accent-bg: #e8f4fd;
+            --accent-hover: #004a94;
+            --on-accent: #ffffff;
+
+            /* 双主题恒白（红底关闭键文字、开关滑块，深色下不反转） */
+            --static-white: #ffffff;
+
+            /* 文字不透明度阶梯（"去线留白"） */
+            --text-primary: rgba(0, 0, 0, 0.87);
+            --text-body: rgba(0, 0, 0, 0.78);
+            --text-auxiliary: rgba(0, 0, 0, 0.52);
+            --text-placeholder: rgba(0, 0, 0, 0.3);
+
+            /* 填充式输入框背景（"去线留白"） */
+            --input-bg: rgba(0, 0, 0, 0.02);
+            --input-bg-focus: rgba(0, 0, 0, 0.04);
+
+            /* 动效规范 */
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --duration-fast: 100ms;
+            --duration-normal: 200ms;
+            --duration-slow: 300ms;
+
+            /* Elevation 弥散阴影层级 */
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.14);
+
+            /* 标题栏关闭键（Windows 惯例色，双主题一致） */
+            --close-hover: #c42b1c;
+            --close-active: #b3271a;
+
+            /* 布局与字体 */
             --radius: 10px;
             --radius-sm: 6px;
-            --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --font: "Noto Serif SC", "edit Han Serif SC", "SimSun", "宋体", serif;
             --sidebar-w: 164px;
             --titlebar-h: 40px;
-            --gradient-welcome: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
-            --gradient-about: linear-gradient(135deg, #007AFF, #5856D6);
         }
 
         /* ───── 暗色主题 ───── */
         [data-theme="dark"] {
-            --bg: #1C1C1E;
-            --bg-elevated: #2C2C2E;
-            --bg-secondary: #3A3A3C;
-            --bg-tertiary: #242426;
-            --label: #FFFFFF;
-            --label-secondary: #EBEBF5;
-            --label-tertiary: #98989D;
-            --separator: rgba(235, 235, 245, 0.12);
-            --separator-opaque: #38383A;
-            --blue-bg: rgba(10, 132, 255, 0.15);
-            --green-bg: rgba(50, 215, 75, 0.12);
-            --orange-bg: rgba(255, 159, 10, 0.12);
-            --purple-bg: rgba(191, 90, 242, 0.12);
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+            --bg: #202020;
+            --sidebar: #232323;
+            --card: #232323;
+            --titlebar: #232323;
+            --divider: #454545;
+            --border-soft: color-mix(in srgb, #454545 40%, transparent);
+            --hover: #3d3d3d;
+            --code-bg: #2d2d2d;
+            --code-text: #e8e8e8;
+            --danger: #ff6b6b;
+            --danger-bg: rgba(255, 107, 107, 0.1);
+            --warning: #ffb84d;
+            --warning-bg: rgba(255, 184, 77, 0.1);
+            --copy-success: #4ade80;
+
+            --accent: #60cdff;
+            --accent-bg: #2a3f5c;
+            --accent-hover: #8ad6ff;
+            --on-accent: rgba(0, 0, 0, 0.87);
+
+            --text-primary: rgba(255, 255, 255, 0.87);
+            --text-body: rgba(255, 255, 255, 0.6);
+            --text-auxiliary: rgba(255, 255, 255, 0.4);
+            --text-placeholder: rgba(255, 255, 255, 0.25);
+
+            --input-bg: rgba(255, 255, 255, 0.04);
+            --input-bg-focus: rgba(255, 255, 255, 0.07);
+
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.4);
         }
 
         /* ═════════════════════ 基础重置 ═════════════════════ */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+        /* ───── 内嵌图标（SVG 雪碧图引用） ───── */
+        .icon {
+            width: 1em;
+            height: 1em;
+            flex-shrink: 0;
+            vertical-align: -0.15em;
+        }
+        .icon-title {
+            width: 15px;
+            height: 15px;
+            vertical-align: -0.125em;
+            margin-right: 2px;
+            color: var(--text-auxiliary);
+        }
+        .btn .icon { width: 14px; height: 14px; }
         body {
             font-family: var(--font);
             background: var(--bg);
-            color: var(--label);
+            color: var(--text-primary);
             min-height: 100vh;
             overflow: hidden;
             -webkit-user-select: none;
@@ -89,9 +145,8 @@ See the Mulan PSL v2 for more details.
             height: var(--titlebar-h);
             display: flex;
             align-items: center;
-            padding-left: 12px;
-            background: var(--bg-elevated);
-            border-bottom: 1px solid var(--separator-opaque);
+            padding-left: 16px;
+            background: var(--titlebar);
             -webkit-app-region: drag;
             -webkit-user-select: none;
             user-select: none;
@@ -100,7 +155,7 @@ See the Mulan PSL v2 for more details.
         .titlebar-title {
             font-size: 0.78rem;
             font-weight: 600;
-            color: var(--label-secondary);
+            color: var(--text-body);
             letter-spacing: 0.01em;
         }
         .window-controls {
@@ -116,17 +171,17 @@ See the Mulan PSL v2 for more details.
             cursor: pointer;
             padding: 0;
             background: transparent;
-            transition: background 0.15s var(--ease);
+            transition: background var(--duration-fast) var(--ease);
             display: flex;
             align-items: center;
             justify-content: center;
             -webkit-app-region: no-drag;
-            color: var(--label-secondary);
+            color: var(--text-body);
         }
-        .win-btn:hover { background: var(--bg-secondary); }
-        .win-btn:active { background: var(--grey-active); }
-        .win-btn-close:hover { background: var(--red); color: var(--white); }
-        .win-btn-close:active { background: var(--red-active); color: var(--white); }
+        .win-btn:hover { background: var(--hover); }
+        .win-btn:active { background: var(--divider); }
+        .win-btn-close:hover { background: var(--close-hover); color: var(--static-white); }
+        .win-btn-close:active { background: var(--close-active); color: var(--static-white); }
         .win-btn::after {
             content: '';
             display: block;
@@ -160,7 +215,7 @@ See the Mulan PSL v2 for more details.
             height: 7px;
             border: 1.5px solid currentColor;
             border-radius: 1px;
-            background: var(--bg-elevated);
+            background: var(--titlebar);
             box-shadow: -2.5px 2.5px 0 0 currentColor;
             box-sizing: border-box;
         }
@@ -188,23 +243,13 @@ See the Mulan PSL v2 for more details.
         }
         .card-subtitle {
             font-size: 0.7rem;
-            color: var(--label-tertiary);
-            margin-bottom: 10px;
-        }
-        .card-subtitle-sm {
-            font-size: 0.7rem;
-            color: var(--label-tertiary);
-            margin-bottom: 6px;
-        }
-        .card-body {
-            font-size: 0.8rem;
-            color: var(--label-secondary);
-            line-height: 1.7;
+            color: var(--text-auxiliary);
+            margin-bottom: 8px;
         }
         .settings-msg {
             font-size: 0.75rem;
-            color: var(--green);
-            margin-left: 10px;
+            color: var(--copy-success);
+            margin-left: 8px;
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -214,30 +259,32 @@ See the Mulan PSL v2 for more details.
         }
         .about-app-desc {
             font-size: 0.75rem;
-            color: var(--label-tertiary);
+            color: var(--text-auxiliary);
             margin-top: 2px;
         }
         .about-app-sub {
             font-size: 0.72rem;
-            color: var(--label-secondary);
-            margin-top: 6px;
+            color: var(--text-body);
+            margin-top: 8px;
             line-height: 1.5;
         }
         .welcome-card code {
-            background: rgba(255,255,255,0.18);
+            background: var(--code-bg);
+            color: var(--code-text);
             padding: 2px 6px;
             border-radius: 3px;
             font-size: 0.75rem;
         }
         .dashboard-quickstart code {
-            background: var(--bg-secondary);
+            background: var(--code-bg);
+            color: var(--code-text);
             padding: 2px 6px;
             border-radius: 3px;
             font-size: 0.75rem;
         }
-        .card-spaced { margin-bottom: 12px; }
-        .card-centered { text-align: center; margin-bottom: 12px; }
-        .btn-row { margin-top: 12px; }
+        .card-spaced { margin-bottom: 16px; }
+        .card-centered { text-align: center; margin-bottom: 16px; }
+        .btn-row { margin-top: 16px; }
 
         /* ═════════════════════ 主布局 ═════════════════════ */
         .app-layout {
@@ -249,8 +296,7 @@ See the Mulan PSL v2 for more details.
         /* ───── 侧边栏 ───── */
         .sidebar {
             width: var(--sidebar-w);
-            background: var(--bg-tertiary);
-            border-right: 1px solid var(--separator-opaque);
+            background: var(--sidebar);
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
@@ -258,7 +304,7 @@ See the Mulan PSL v2 for more details.
         }
         .sidebar-nav {
             flex: 1;
-            padding: 10px 6px;
+            padding: 16px 8px;
             display: flex;
             flex-direction: column;
             gap: 2px;
@@ -271,9 +317,9 @@ See the Mulan PSL v2 for more details.
             border-radius: var(--radius-sm);
             font-size: 0.78rem;
             font-weight: 450;
-            color: var(--label-secondary);
+            color: var(--text-body);
             cursor: pointer;
-            transition: all 0.15s var(--ease);
+            transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
             border: none;
             background: none;
             font-family: var(--font);
@@ -281,12 +327,11 @@ See the Mulan PSL v2 for more details.
             text-align: left;
             white-space: nowrap;
         }
-        .nav-item:hover { background: var(--bg-secondary); }
+        .nav-item:hover { background: var(--hover); }
         .nav-item.active {
-            background: var(--bg-elevated);
-            color: var(--blue);
-            font-weight: 550;
-            box-shadow: var(--shadow-sm);
+            background: var(--accent-bg);
+            color: var(--accent);
+            font-weight: 600;
         }
         .nav-icon {
             width: 20px;
@@ -294,24 +339,22 @@ See the Mulan PSL v2 for more details.
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            line-height: 1;
             flex-shrink: 0;
         }
+        .nav-icon .icon { width: 16px; height: 16px; }
 
         /* 侧边栏底部版本号 */
         .sidebar-footer {
-            padding: 8px 12px;
-            border-top: 1px solid var(--separator);
+            padding: 16px;
             font-size: 0.65rem;
-            color: var(--label-tertiary);
+            color: var(--text-auxiliary);
         }
 
         /* ───── 主内容区 ───── */
         .main-content {
             flex: 1;
             overflow-y: auto;
-            padding: 20px 20px;
+            padding: 24px;
         }
         .page {
             display: none;
@@ -332,30 +375,28 @@ See the Mulan PSL v2 for more details.
         }
         .page-desc {
             font-size: 0.78rem;
-            color: var(--label-tertiary);
+            color: var(--text-auxiliary);
             margin-bottom: 16px;
         }
         .card {
-            background: var(--bg-elevated);
+            background: var(--card);
             border-radius: var(--radius);
             padding: 16px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--separator);
+            box-shadow: var(--shadow-card);
         }
 
         /* ───── 统计卡片网格 ───── */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 14px;
+            gap: 16px;
+            margin-bottom: 16px;
         }
         .stat-card {
-            background: var(--bg-elevated);
+            background: var(--card);
             border-radius: var(--radius);
             padding: 12px 14px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--separator);
+            box-shadow: var(--shadow-card);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -367,13 +408,11 @@ See the Mulan PSL v2 for more details.
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
             flex-shrink: 0;
+            background: var(--accent-bg);
+            color: var(--accent);
         }
-        .stat-icon.blue   { background: var(--blue-bg);   color: var(--blue); }
-        .stat-icon.green  { background: var(--green-bg);  color: var(--green); }
-        .stat-icon.orange { background: var(--orange-bg); color: var(--orange); }
-        .stat-icon.purple { background: var(--purple-bg); color: var(--purple); }
+        .stat-icon .icon { width: 16px; height: 16px; }
         .stat-value {
             font-size: 1.05rem;
             font-weight: 700;
@@ -382,28 +421,58 @@ See the Mulan PSL v2 for more details.
         }
         .stat-label {
             font-size: 0.68rem;
-            color: var(--label-tertiary);
+            color: var(--text-auxiliary);
             margin-top: 2px;
         }
 
         /* ───── 欢迎卡片 ───── */
         .welcome-card {
-            background: var(--gradient-welcome);
-            color: var(--white);
+            background: var(--accent-bg);
             border-radius: var(--radius);
-            padding: 16px 20px;
-            margin-bottom: 14px;
-            box-shadow: 0 4px 16px rgba(0,122,255,0.25);
+            padding: 16px 24px;
+            margin-bottom: 16px;
         }
-        .welcome-card h2 {
+        .welcome-card h1 {
             font-size: 1.05rem;
             font-weight: 700;
-            margin-bottom: 4px;
+            color: var(--accent);
+            margin-bottom: 8px;
         }
         .welcome-card p {
             font-size: 0.75rem;
-            opacity: 0.85;
-            line-height: 1.5;
+            color: var(--text-body);
+            line-height: 1.6;
+        }
+
+        /* ───── 快速开始步骤列表 ───── */
+        .quickstart-list {
+            list-style: none;
+            counter-reset: qs;
+            font-size: 0.8rem;
+            color: var(--text-body);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .quickstart-list li {
+            counter-increment: qs;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .quickstart-list li::before {
+            content: counter(qs);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-bg);
+            color: var(--accent);
+            font-size: 0.68rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
         /* ───── 按钮 ───── */
@@ -418,18 +487,19 @@ See the Mulan PSL v2 for more details.
             font-family: var(--font);
             cursor: pointer;
             border: none;
-            transition: all 0.15s var(--ease);
+            transition: background var(--duration-fast) var(--ease), opacity var(--duration-fast) var(--ease), transform var(--duration-fast) var(--ease);
         }
+        .btn:active { transform: scale(0.97); opacity: 0.8; }
         .btn-primary {
-            background: var(--blue);
-            color: var(--white);
+            background: var(--accent);
+            color: var(--on-accent);
         }
-        .btn-primary:hover { opacity: 0.88; }
+        .btn-primary:hover { background: var(--accent-hover); }
         .btn-secondary {
-            background: var(--bg-secondary);
-            color: var(--label);
+            background: var(--hover);
+            color: var(--text-primary);
         }
-        .btn-secondary:hover { opacity: 0.7; }
+        .btn-secondary:hover { opacity: 0.8; }
 
         /* ───── 开关组件 ───── */
         .toggle-row {
@@ -438,16 +508,14 @@ See the Mulan PSL v2 for more details.
             justify-content: space-between;
             padding: 12px 0;
         }
-        .toggle-row + .toggle-row { border-top: 1px solid var(--separator); }
-        .toggle-row.bordered { border-top: 1px solid var(--separator); }
         .toggle-label {
             font-size: 0.85rem;
             font-weight: 450;
-            color: var(--label);
+            color: var(--text-primary);
         }
         .toggle-hint {
             font-size: 0.7rem;
-            color: var(--label-tertiary);
+            color: var(--text-auxiliary);
             margin-top: 2px;
         }
         .toggle {
@@ -460,46 +528,55 @@ See the Mulan PSL v2 for more details.
         .toggle-track {
             position: absolute;
             inset: 0;
-            background: var(--bg-secondary);
+            background: var(--hover);
             border-radius: 13px;
             cursor: pointer;
-            transition: background 0.2s var(--ease);
+            transition: background var(--duration-normal) var(--ease);
         }
-        .toggle input:checked + .toggle-track { background: var(--green); }
+        .toggle input:checked + .toggle-track { background: var(--accent); }
         .toggle-thumb {
             position: absolute;
             top: 3px; left: 3px;
             width: 20px;
             height: 20px;
-            background: var(--white);
+            background: var(--static-white);
             border-radius: 50%;
-            transition: transform 0.2s var(--ease);
+            transition: transform var(--duration-normal) var(--ease);
             box-shadow: 0 1px 3px rgba(0,0,0,0.15);
         }
         .toggle input:checked ~ .toggle-thumb { transform: translateX(18px); }
 
-        /* ───── 输入框 ───── */
-        .form-group { margin-bottom: 12px; }
+        /* ───── 输入框（填充式，去线留白） ───── */
+        .form-group { margin-bottom: 16px; }
         .form-label {
             display: block;
             font-size: 0.78rem;
             font-weight: 550;
-            color: var(--label-secondary);
+            color: var(--text-body);
             margin-bottom: 8px;
         }
-        .form-input {
+        /* 五类填充式输入控件的公共样式，个体规则只保留尺寸与字体差异 */
+        .form-input, .note-area, .json-textarea, .base64-textarea, .morse-textarea {
             width: 100%;
-            padding: 8px 12px;
             border-radius: var(--radius-sm);
-            border: 1px solid var(--separator-opaque);
-            background: var(--bg-elevated);
-            color: var(--label);
+            border: none;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            caret-color: var(--accent);
+            outline: none;
+            transition: background var(--duration-fast) var(--ease);
+        }
+        .form-input::placeholder, .note-area::placeholder, .json-textarea::placeholder,
+        .base64-textarea::placeholder, .morse-textarea::placeholder { color: var(--text-placeholder); }
+        .form-input:focus, .note-area:focus, .json-textarea:focus,
+        .base64-textarea:focus, .morse-textarea:focus { background: var(--input-bg-focus); }
+        .form-input:focus-visible, .note-area:focus-visible, .json-textarea:focus-visible,
+        .base64-textarea:focus-visible, .morse-textarea:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }
+        .form-input {
+            padding: 8px 12px;
             font-size: 0.82rem;
             font-family: var(--font);
-            outline: none;
-            transition: border-color 0.15s var(--ease);
         }
-        .form-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-bg); }
         .form-select {
             appearance: auto;
             cursor: pointer;
@@ -516,9 +593,9 @@ See the Mulan PSL v2 for more details.
         }
         .counter-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
         .counter-btn {
             width: 40px; height: 40px;
@@ -530,32 +607,27 @@ See the Mulan PSL v2 for more details.
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.15s var(--ease);
+            transition: opacity var(--duration-fast) var(--ease), transform var(--duration-fast) var(--ease);
         }
-        .counter-btn-plus  { background: var(--blue);  color: var(--white); }
-        .counter-btn-minus { background: var(--bg-secondary); color: var(--label); }
-        .counter-btn-reset { width: auto; padding: 0 18px; border-radius: 20px; font-size: 0.78rem; background: var(--bg-secondary); color: var(--label-secondary); }
+        .counter-btn-plus  { background: var(--accent);  color: var(--on-accent); }
+        .counter-btn-minus { background: var(--hover); color: var(--text-primary); }
+        .counter-btn-reset { width: auto; padding: 0 18px; border-radius: 20px; font-size: 0.78rem; background: var(--hover); color: var(--text-body); }
         .counter-btn:hover { opacity: 0.8; }
+        .counter-btn:active { transform: scale(0.96); }
 
         /* ───── 工具页：剪贴板 ───── */
         .clipboard-row {
             display: flex;
             gap: 8px;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
         .clipboard-row .form-input { flex: 1; }
 
         /* ───── 关于页 ───── */
         .about-icon {
             width: 56px; height: 56px;
-            border-radius: 16px;
-            background: var(--gradient-about);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            color: var(--white);
-            margin: 0 auto 12px;
+            display: block;
+            margin: 0 auto 16px;
         }
         .about-table {
             width: 100%;
@@ -566,22 +638,22 @@ See the Mulan PSL v2 for more details.
             vertical-align: top;
         }
         .about-table td:first-child {
-            color: var(--label-tertiary);
+            color: var(--text-auxiliary);
             width: 50px;
             white-space: nowrap;
         }
 
         /* ───── 滚动条美化 ───── */
-        .main-content::-webkit-scrollbar { width: 5px; }
+        .main-content::-webkit-scrollbar { width: 6px; }
         .main-content::-webkit-scrollbar-track { background: transparent; }
-        .main-content::-webkit-scrollbar-thumb { background: var(--separator-opaque); border-radius: 3px; }
+        .main-content::-webkit-scrollbar-thumb { background: var(--divider); border-radius: 3px; }
 
         /* ═════════════════════ 工具页：秒表/倒计时 ═════════════════════ */
         .timer-tabs {
             display: flex;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             border-radius: var(--radius-sm);
-            background: var(--bg-secondary);
+            background: var(--hover);
             padding: 2px;
         }
         .timer-tab {
@@ -590,18 +662,18 @@ See the Mulan PSL v2 for more details.
             border: none;
             border-radius: calc(var(--radius-sm) - 1px);
             background: transparent;
-            color: var(--label-secondary);
+            color: var(--text-body);
             font-size: 0.78rem;
             font-weight: 500;
             font-family: var(--font);
             cursor: pointer;
-            transition: all 0.2s var(--ease);
+            transition: background var(--duration-normal) var(--ease), color var(--duration-normal) var(--ease);
         }
         .timer-tab.active {
-            background: var(--bg-elevated);
-            color: var(--label);
+            background: var(--card);
+            color: var(--text-primary);
             font-weight: 600;
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-card);
         }
         .timer-panel { display: none; }
         .timer-panel.active { display: block; }
@@ -627,21 +699,22 @@ See the Mulan PSL v2 for more details.
             font-weight: 520;
             font-family: var(--font);
             cursor: pointer;
-            transition: all 0.15s var(--ease);
+            transition: opacity var(--duration-fast) var(--ease), transform var(--duration-fast) var(--ease);
         }
+        .timer-btn:active:not(:disabled) { transform: scale(0.96); }
         .timer-btn:disabled {
             opacity: 0.4;
             cursor: default;
             pointer-events: none;
         }
-        .timer-btn-start  { background: var(--green);  color: var(--white); }
+        .timer-btn-start  { background: var(--copy-success);  color: var(--on-accent); }
         .timer-btn-start:hover:not(:disabled) { opacity: 0.85; }
-        .timer-btn-pause  { background: var(--orange); color: var(--white); }
+        .timer-btn-pause  { background: var(--warning); color: var(--on-accent); }
         .timer-btn-pause:hover:not(:disabled) { opacity: 0.85; }
-        .timer-btn-lap    { background: var(--blue);   color: var(--white); }
+        .timer-btn-lap    { background: var(--accent);   color: var(--on-accent); }
         .timer-btn-lap:hover:not(:disabled) { opacity: 0.85; }
-        .timer-btn-reset  { background: var(--bg-secondary); color: var(--label); }
-        .timer-btn-reset:hover:not(:disabled) { opacity: 0.7; }
+        .timer-btn-reset  { background: var(--hover); color: var(--text-primary); }
+        .timer-btn-reset:hover:not(:disabled) { opacity: 0.8; }
         .timer-preset-row {
             display: flex;
             gap: 6px;
@@ -652,20 +725,19 @@ See the Mulan PSL v2 for more details.
         .timer-preset {
             padding: 4px 12px;
             border-radius: 14px;
-            border: 1px solid var(--separator-opaque);
-            background: var(--bg-elevated);
-            color: var(--label-secondary);
+            border: none;
+            background: var(--hover);
+            color: var(--text-body);
             font-size: 0.72rem;
             font-family: var(--font);
             cursor: pointer;
-            transition: all 0.15s var(--ease);
+            transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
         }
         .timer-preset.active {
-            background: var(--blue);
-            border-color: var(--blue);
-            color: var(--white);
+            background: var(--accent);
+            color: var(--on-accent);
         }
-        .timer-preset:hover:not(.active) { background: var(--bg-secondary); }
+        .timer-preset:hover:not(.active) { background: var(--divider); }
         .timer-laps {
             list-style: none;
             max-height: 100px;
@@ -677,53 +749,47 @@ See the Mulan PSL v2 for more details.
             display: flex;
             justify-content: space-between;
             padding: 6px 12px;
+            border-radius: var(--radius-sm);
             font-size: 0.76rem;
             font-variant-numeric: tabular-nums;
-            color: var(--label-secondary);
+            color: var(--text-body);
+            transition: background var(--duration-fast) var(--ease);
         }
-        .timer-lap-item + .timer-lap-item { border-top: 1px solid var(--separator); }
-        .timer-lap-best { color: var(--green); font-weight: 600; }
-        .timer-lap-worst { color: var(--red); font-weight: 600; }
+        .timer-lap-item:hover { background: var(--input-bg-focus); }
+        .timer-lap-best { color: var(--copy-success); font-weight: 600; }
+        .timer-lap-worst { color: var(--danger); font-weight: 600; }
         .timer-progress {
             height: 4px;
-            background: var(--bg-secondary);
+            background: var(--hover);
             border-radius: 2px;
             margin-top: 8px;
             overflow: hidden;
         }
         .timer-progress-bar {
             height: 100%;
-            background: var(--blue);
+            background: var(--accent);
             border-radius: 2px;
-            transition: width 0.3s linear, background 0.3s var(--ease);
+            transition: width 0.3s linear, background var(--duration-slow) var(--ease);
             width: 100%;
         }
-        .timer-progress-bar.expired { background: var(--red); }
+        .timer-progress-bar.expired { background: var(--danger); }
 
         /* ═════════════════════ 工具页：便签本 ═════════════════════ */
         .note-area {
-            width: 100%;
             min-height: 100px;
             padding: 12px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--separator-opaque);
-            background: var(--bg-elevated);
-            color: var(--label);
             font-size: 0.82rem;
             font-family: var(--font);
             line-height: 1.6;
             resize: vertical;
-            outline: none;
-            transition: border-color 0.15s var(--ease);
         }
-        .note-area:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-bg); }
         .note-status {
             font-size: 0.7rem;
-            color: var(--label-tertiary);
+            color: var(--text-auxiliary);
             margin-top: 8px;
-            transition: color 0.3s var(--ease);
+            transition: color var(--duration-slow) var(--ease);
         }
-        .note-status.saved { color: var(--green); }
+        .note-status.saved { color: var(--copy-success); }
 
         /* ═════════════════════ 工具页：JSON 格式化 ═════════════════════ */
         .tool-row {
@@ -738,39 +804,30 @@ See the Mulan PSL v2 for more details.
         }
         .tool-col-label {
             font-size: 0.7rem;
-            color: var(--label-tertiary);
+            color: var(--text-auxiliary);
             margin-bottom: 6px;
             font-weight: 550;
         }
         .tool-actions {
             display: flex;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 16px;
             align-items: center;
         }
         .json-textarea {
-            width: 100%;
             min-height: 120px;
             padding: 10px 12px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--separator-opaque);
-            background: var(--bg-elevated);
-            color: var(--label);
             font-size: 0.78rem;
             font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
             line-height: 1.5;
             resize: vertical;
-            outline: none;
-            transition: border-color 0.15s var(--ease);
         }
-        .json-textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-bg); }
         .json-output {
             min-height: 120px;
             padding: 10px 12px;
             border-radius: var(--radius-sm);
-            border: 1px solid var(--separator-opaque);
-            background: var(--bg-tertiary);
-            color: var(--label-secondary);
+            background: var(--code-bg);
+            color: var(--code-text);
             font-size: 0.78rem;
             font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
             line-height: 1.5;
@@ -780,7 +837,7 @@ See the Mulan PSL v2 for more details.
         }
         .json-error {
             font-size: 0.72rem;
-            color: var(--red);
+            color: var(--danger);
             margin-top: 6px;
             min-height: 1.2em;
         }
@@ -813,16 +870,16 @@ See the Mulan PSL v2 for more details.
             width: 52px;
             height: 52px;
             border-radius: var(--radius-sm);
-            border: 1px solid var(--separator-opaque);
-            transition: background 0.2s var(--ease);
+            border: 1px solid var(--border-soft);
+            transition: background var(--duration-normal) var(--ease);
             cursor: pointer;
         }
-        .color-preview:hover { box-shadow: 0 0 0 3px var(--blue-bg); }
+        .color-preview:hover { box-shadow: 0 0 0 3px var(--accent-bg); }
         .color-value {
             font-size: 0.85rem;
             font-weight: 550;
             font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
-            color: var(--label);
+            color: var(--text-primary);
             letter-spacing: 0.02em;
         }
         .color-copy-btn {
@@ -838,14 +895,14 @@ See the Mulan PSL v2 for more details.
             width: 26px;
             height: 26px;
             border-radius: 50%;
-            border: 1.5px solid var(--separator-opaque);
+            border: 1px solid var(--border-soft);
             cursor: pointer;
-            transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
+            transition: transform var(--duration-fast) var(--ease), box-shadow var(--duration-fast) var(--ease);
             flex-shrink: 0;
         }
         .color-swatch:hover {
             transform: scale(1.2);
-            box-shadow: 0 0 0 2px var(--blue-bg);
+            box-shadow: 0 0 0 2px var(--accent-bg);
         }
         .color-history-label {
             margin-bottom: 8px;
@@ -857,25 +914,19 @@ See the Mulan PSL v2 for more details.
             flex-direction: column;
             gap: 10px;
         }
-        .base64-textarea {
-            width: 100%;
+        /* 摩斯输入框与 Base64 同尺寸，共用一条规则 */
+        .base64-textarea,
+        .morse-textarea {
             min-height: 80px;
             padding: 10px 12px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--separator-opaque);
-            background: var(--bg-elevated);
-            color: var(--label);
             font-size: 0.78rem;
             font-family: var(--font);
             line-height: 1.5;
             resize: vertical;
-            outline: none;
-            transition: border-color 0.15s var(--ease);
         }
-        .base64-textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-bg); }
         .base64-error {
             font-size: 0.72rem;
-            color: var(--red);
+            color: var(--danger);
             margin-left: auto;
         }
 
@@ -885,29 +936,12 @@ See the Mulan PSL v2 for more details.
             flex-direction: column;
             gap: 10px;
         }
-        .morse-textarea {
-            width: 100%;
-            min-height: 80px;
-            padding: 10px 12px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--separator-opaque);
-            background: var(--bg-elevated);
-            color: var(--label);
-            font-size: 0.78rem;
-            font-family: var(--font);
-            line-height: 1.5;
-            resize: vertical;
-            outline: none;
-            transition: border-color 0.15s var(--ease);
-        }
-        .morse-textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-bg); }
         .morse-output {
             min-height: 80px;
             padding: 10px 12px;
             border-radius: var(--radius-sm);
-            border: 1px solid var(--separator-opaque);
-            background: var(--bg-tertiary);
-            color: var(--label-secondary);
+            background: var(--code-bg);
+            color: var(--code-text);
             font-size: 0.78rem;
             font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
             line-height: 1.6;
@@ -917,18 +951,17 @@ See the Mulan PSL v2 for more details.
         }
         .morse-error {
             font-size: 0.72rem;
-            color: var(--red);
+            color: var(--danger);
             margin-left: auto;
         }
 
         /* ═════════════════════ 能力展示页：快捷键面板 ═════════════════════ */
         .kb-display {
-            background: var(--bg-tertiary);
+            background: var(--input-bg);
             border-radius: var(--radius-sm);
             padding: 18px 12px;
             text-align: center;
-            margin-bottom: 10px;
-            border: 1px solid var(--separator-opaque);
+            margin-bottom: 16px;
             min-height: 44px;
             display: flex;
             align-items: center;
@@ -936,44 +969,41 @@ See the Mulan PSL v2 for more details.
         }
         .kb-placeholder {
             font-size: 0.75rem;
-            color: var(--label-tertiary);
+            color: var(--text-auxiliary);
         }
         .kb-key-badge {
             display: inline-block;
             font-size: 1.15rem;
             font-weight: 600;
             padding: 8px 18px;
-            background: var(--bg-elevated);
-            border: 1px solid var(--separator-opaque);
+            background: var(--card);
             border-radius: var(--radius-sm);
-            color: var(--label);
+            color: var(--text-primary);
             font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.12s var(--ease);
+            box-shadow: var(--shadow-card);
+            transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease), transform var(--duration-fast) var(--ease);
         }
         .kb-key-badge.pressed {
-            background: var(--blue);
-            color: var(--white);
-            border-color: var(--blue);
+            background: var(--accent);
+            color: var(--on-accent);
             transform: scale(1.05);
         }
         .kb-details {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 8px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .kb-row {
-            background: var(--bg-tertiary);
+            background: var(--input-bg);
             border-radius: var(--radius-sm);
             padding: 10px 12px;
             text-align: center;
-            border: 1px solid var(--separator-opaque);
         }
         .kb-label {
             display: block;
             font-size: 0.65rem;
-            color: var(--label-tertiary);
+            color: var(--text-auxiliary);
             margin-bottom: 4px;
             font-weight: 500;
         }
@@ -981,7 +1011,7 @@ See the Mulan PSL v2 for more details.
             display: block;
             font-size: 0.82rem;
             font-weight: 600;
-            color: var(--label);
+            color: var(--text-primary);
             font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
             word-break: break-all;
         }
@@ -990,18 +1020,18 @@ See the Mulan PSL v2 for more details.
             font-size: 0.75rem;
             border-collapse: collapse;
         }
+        /* 数据表：斑马纹替代行分隔线（设计语言适用边界条款） */
+        .kb-table tbody tr:nth-child(odd) { background: var(--input-bg); }
         .kb-table th {
             text-align: left;
             font-weight: 550;
-            color: var(--label-tertiary);
-            padding: 6px 0;
+            color: var(--text-auxiliary);
+            padding: 6px 10px;
             font-size: 0.68rem;
-            border-bottom: 1px solid var(--separator);
         }
         .kb-table td {
-            padding: 8px 0;
-            color: var(--label-secondary);
-            border-bottom: 1px solid var(--separator);
+            padding: 8px 10px;
+            color: var(--text-body);
         }
         .kb-table td:first-child {
             font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
@@ -1011,11 +1041,10 @@ See the Mulan PSL v2 for more details.
             font-size: 0.68rem;
             font-weight: 550;
             padding: 2px 7px;
-            background: var(--bg-secondary);
+            background: var(--code-bg);
             border-radius: 3px;
-            border: 1px solid var(--separator-opaque);
             font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
-            color: var(--label);
+            color: var(--code-text);
             margin: 0 1px;
         }
         .kb-badge {
@@ -1026,55 +1055,56 @@ See the Mulan PSL v2 for more details.
             border-radius: 3px;
         }
         .kb-badge-ready {
-            background: var(--green-bg);
-            color: var(--green);
+            background: color-mix(in srgb, var(--copy-success) 12%, transparent);
+            color: var(--copy-success);
         }
         .kb-hint {
             font-size: 0.68rem;
-            color: var(--green);
-            margin-top: 6px;
+            color: var(--copy-success);
+            margin-top: 8px;
             min-height: 1.2em;
         }
 
         /* ═════════════════════ 能力展示页：拖放区域 ═════════════════════ */
         .drop-zone {
-            border: 2px dashed var(--separator-opaque);
+            border: 2px dashed var(--border-soft);
             border-radius: var(--radius);
             padding: 28px 16px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s var(--ease);
-            background: var(--bg-tertiary);
+            transition: border-color var(--duration-normal) var(--ease), background var(--duration-normal) var(--ease);
+            background: var(--input-bg);
             outline: none;
         }
         .drop-zone:focus-visible {
-            box-shadow: 0 0 0 3px var(--blue-bg);
-            border-color: var(--blue);
+            box-shadow: 0 0 0 3px var(--accent-bg);
+            border-color: var(--accent);
         }
         .drop-zone.drag-over {
-            border-color: var(--blue);
-            background: var(--blue-bg);
+            border-color: var(--accent);
+            background: var(--accent-bg);
             border-style: solid;
             cursor: copy;
         }
         .drop-zone-icon {
-            font-size: 28px;
             margin-bottom: 8px;
             line-height: 1;
-            transition: transform 0.2s var(--ease);
+            color: var(--text-auxiliary);
+            transition: transform var(--duration-normal) var(--ease);
         }
+        .drop-zone-icon .icon { width: 28px; height: 28px; }
         .drop-zone.drag-over .drop-zone-icon {
             transform: scale(1.15);
         }
         .drop-zone-text {
             font-size: 0.82rem;
             font-weight: 550;
-            color: var(--label);
+            color: var(--text-primary);
             margin-bottom: 4px;
         }
         .drop-zone-hint {
             font-size: 0.7rem;
-            color: var(--label-tertiary);
+            color: var(--text-auxiliary);
         }
         .drop-zone-input {
             position: absolute;
@@ -1088,40 +1118,41 @@ See the Mulan PSL v2 for more details.
             border: 0;
         }
         .drop-file-list {
-            margin-top: 10px;
+            margin-top: 16px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
         .drop-file-item {
             display: flex;
             align-items: center;
             gap: 10px;
             padding: 8px 12px;
-            background: var(--bg-tertiary);
+            background: var(--input-bg);
             border-radius: var(--radius-sm);
-            border: 1px solid var(--separator-opaque);
             font-size: 0.76rem;
         }
         .drop-file-icon {
-            font-size: 18px;
+            display: flex;
+            align-items: center;
             flex-shrink: 0;
-            line-height: 1;
+            color: var(--text-auxiliary);
         }
+        .drop-file-icon .icon { width: 18px; height: 18px; }
         .drop-file-info {
             flex: 1;
             min-width: 0;
         }
         .drop-file-name {
             font-weight: 550;
-            color: var(--label);
+            color: var(--text-primary);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .drop-file-meta {
             font-size: 0.68rem;
-            color: var(--label-tertiary);
+            color: var(--text-auxiliary);
             margin-top: 2px;
         }
         .drop-file-remove {
@@ -1129,26 +1160,27 @@ See the Mulan PSL v2 for more details.
             width: 24px;
             height: 24px;
             border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border: none;
-            background: var(--bg-secondary);
-            color: var(--label-secondary);
+            background: var(--hover);
+            color: var(--text-body);
             cursor: pointer;
-            font-size: 14px;
-            line-height: 24px;
-            text-align: center;
             padding: 0;
-            transition: all 0.15s var(--ease);
+            transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
             font-family: var(--font);
         }
+        .drop-file-remove .icon { width: 12px; height: 12px; }
         .drop-file-remove:hover {
-            background: var(--red);
-            color: var(--white);
+            background: var(--danger);
+            color: var(--on-accent);
         }
         .drop-empty {
-            margin-top: 10px;
+            margin-top: 16px;
             text-align: center;
             font-size: 0.72rem;
-            color: var(--label-tertiary);
+            color: var(--text-auxiliary);
         }
 
         /* ═════════════════════ 能力展示页：Toast 通知 ═════════════════════ */
@@ -1171,11 +1203,10 @@ See the Mulan PSL v2 for more details.
             gap: 8px;
             padding: 10px 14px;
             border-radius: var(--radius-sm);
-            background: var(--bg-elevated);
-            border: 1px solid var(--separator-opaque);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            background: var(--card);
+            box-shadow: var(--shadow-flyout);
             font-size: 0.8rem;
-            color: var(--label);
+            color: var(--text-primary);
             pointer-events: auto;
             animation: toastSlideIn 0.25s var(--ease);
             max-width: 100%;
@@ -1198,22 +1229,20 @@ See the Mulan PSL v2 for more details.
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
             flex-shrink: 0;
-            line-height: 1;
-            font-weight: 700;
         }
+        .toast-icon .icon { width: 12px; height: 12px; }
         .toast-success .toast-icon {
-            background: var(--green-bg);
-            color: var(--green);
+            background: color-mix(in srgb, var(--copy-success) 12%, transparent);
+            color: var(--copy-success);
         }
         .toast-warning .toast-icon {
-            background: var(--orange-bg);
-            color: var(--orange);
+            background: var(--warning-bg);
+            color: var(--warning);
         }
         .toast-error .toast-icon {
-            background: var(--red-bg);
-            color: var(--red);
+            background: var(--danger-bg);
+            color: var(--danger);
         }
         .toast-message {
             flex: 1;
@@ -1226,29 +1255,74 @@ See the Mulan PSL v2 for more details.
             width: 22px;
             height: 22px;
             border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border: none;
             background: transparent;
-            color: var(--label-tertiary);
+            color: var(--text-auxiliary);
             cursor: pointer;
-            font-size: 14px;
-            line-height: 22px;
-            text-align: center;
             padding: 0;
-            transition: all 0.15s var(--ease);
+            transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
             font-family: var(--font);
         }
+        .toast-close .icon { width: 12px; height: 12px; }
         .toast-close:hover {
-            background: var(--bg-secondary);
-            color: var(--label);
+            background: var(--hover);
+            color: var(--text-primary);
         }
         .toast-demo-actions {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
         }
+
+        /* ───── 动效降级（同安装器 index.css） ───── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body oncontextmenu="return false;">
+
+    <!-- ═══════════ 图标雪碧图（Lucide 风格线性描边，currentColor 随主题） ═══════════ -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+        <symbol id="i-dashboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></symbol>
+        <symbol id="i-wrench" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+        <symbol id="i-window" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M10 4v4"/><path d="M2 8h20"/><path d="M6 4v4"/></symbol>
+        <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+        <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+        <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+        <symbol id="i-feather" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" x2="2" y1="8" y2="22"/><line x1="17.5" x2="9" y1="15" y2="15"/></symbol>
+        <symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></symbol>
+        <symbol id="i-file-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m10 13-2 2 2 2"/><path d="m14 17 2-2-2-2"/></symbol>
+        <symbol id="i-hash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="9" y2="9"/><line x1="4" x2="20" y1="15" y2="15"/><line x1="10" x2="8" y1="3" y2="21"/><line x1="16" x2="14" y1="3" y2="21"/></symbol>
+        <symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+        <symbol id="i-timer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></symbol>
+        <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+        <symbol id="i-braces" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5c0 1.1.9 2 2 2h1"/><path d="M16 21h1a2 2 0 0 0 2-2v-5c0-1.1.9-2 2-2a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1"/></symbol>
+        <symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.563-5.554C21.965 6.012 17.461 2 12 2z"/></symbol>
+        <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+        <symbol id="i-radio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></symbol>
+        <symbol id="i-keyboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="M6 8h.01"/><path d="M10 8h.01"/><path d="M14 8h.01"/><path d="M18 8h.01"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/><path d="M7 16h10"/></symbol>
+        <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+        <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+        <symbol id="i-folder-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H18a2 2 0 0 1 2 2v2"/></symbol>
+        <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></symbol>
+        <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></symbol>
+        <symbol id="i-film" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M3 7.5h4"/><path d="M3 12h18"/><path d="M3 16.5h4"/><path d="M17 3v18"/><path d="M17 7.5h4"/><path d="M17 16.5h4"/></symbol>
+        <symbol id="i-music" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+        <symbol id="i-file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></symbol>
+        <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></symbol>
+        <symbol id="i-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+        <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+        <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+    </svg>
 
     <!-- ═══════════ 标题栏 ═══════════ -->
     <div class="titlebar" data-tauri-drag-region>
@@ -1267,19 +1341,19 @@ See the Mulan PSL v2 for more details.
         <aside class="sidebar" aria-label="导航侧栏">
             <nav class="sidebar-nav">
                 <button class="nav-item active" data-page="dashboard">
-                    <span class="nav-icon">📊</span> 仪表盘
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-dashboard"></use></svg></span> 仪表盘
                 </button>
                 <button class="nav-item" data-page="tools">
-                    <span class="nav-icon">🛠</span> 工具
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-wrench"></use></svg></span> 工具
                 </button>
                 <button class="nav-item" data-page="tauri">
-                    <span class="nav-icon">🪟</span> 能力
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-window"></use></svg></span> 能力
                 </button>
                 <button class="nav-item" data-page="settings">
-                    <span class="nav-icon">⚙</span> 设置
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-settings"></use></svg></span> 设置
                 </button>
                 <button class="nav-item" data-page="about">
-                    <span class="nav-icon">ℹ</span> 关于
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg></span> 关于
                 </button>
             </nav>
             <div class="sidebar-footer">轻壳 v1.0.0</div>
@@ -1294,34 +1368,34 @@ See the Mulan PSL v2 for more details.
             <!-- 仪表盘页 -->
             <section class="page active" id="page-dashboard">
                 <div class="welcome-card">
-                    <h1>👋 欢迎使用轻壳</h1>
+                    <h1>欢迎使用轻壳</h1>
                     <p>这是一个基于 Tauri v2 的桌面应用模板。你可以在 <code>dist/index.html</code> 中编写任何网页内容，一键打包为 Windows 桌面程序。</p>
                 </div>
 
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-icon blue">⚡</div>
+                        <div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#i-zap"></use></svg></div>
                         <div>
                             <div class="stat-value">Tauri v2</div>
                             <div class="stat-label">桌面框架</div>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon green">🪶</div>
+                        <div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#i-feather"></use></svg></div>
                         <div>
                             <div class="stat-value">&lt; 5 MB</div>
                             <div class="stat-label">典型打包体积</div>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon orange">🖥</div>
+                        <div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#i-monitor"></use></svg></div>
                         <div>
                             <div class="stat-value">Windows</div>
                             <div class="stat-label">目标平台</div>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon purple">📄</div>
+                        <div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#i-file-code"></use></svg></div>
                         <div>
                             <div class="stat-value">纯 HTML</div>
                             <div class="stat-label">零框架依赖</div>
@@ -1329,14 +1403,14 @@ See the Mulan PSL v2 for more details.
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card dashboard-quickstart">
                     <h3 class="card-title-sm-lg">快速开始</h3>
-                    <p class="card-body">
-                        1️⃣ 修改 <code>dist/index.html</code> 编写你的界面<br>
-                        2️⃣ 替换 <code>src-tauri/icons/source.png</code> 为你的应用图标<br>
-                        3️⃣ 修改 <code>tauri.conf.json</code> 中的应用名称和标识<br>
-                        4️⃣ 运行 <code>npm run tauri build</code> 打包 EXE
-                    </p>
+                    <ol class="quickstart-list">
+                        <li>修改 <code>dist/index.html</code> 编写你的界面</li>
+                        <li>替换 <code>src-tauri/icons/source.png</code> 为你的应用图标</li>
+                        <li>修改 <code>tauri.conf.json</code> 中的应用名称和标识</li>
+                        <li>运行 <code>npm run tauri build</code> 打包 EXE</li>
+                    </ol>
                 </div>
             </section>
 
@@ -1346,8 +1420,8 @@ See the Mulan PSL v2 for more details.
                 <p class="page-desc">一些实用的交互组件示例，展示桌面应用中可以做什么。</p>
 
                 <div class="card card-spaced">
-                    <h2 class="card-title-sm">🔢 计数器</h2>
-                    <p class="card-subtitle-sm">一个简单的状态管理示例</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-hash"></use></svg> 计数器</h2>
+                    <p class="card-subtitle">一个简单的状态管理示例</p>
                     <div class="counter-display" id="counterValue" aria-live="polite" aria-atomic="true">0</div>
                     <div class="counter-actions">
                         <button class="counter-btn counter-btn-minus" id="counterDec">−</button>
@@ -1357,7 +1431,7 @@ See the Mulan PSL v2 for more details.
                 </div>
 
                 <div class="card card-spaced">
-                    <h2 class="card-title-sm">📋 剪贴板读写</h2>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-clipboard"></use></svg> 剪贴板读写</h2>
                     <p class="card-subtitle">使用 Web API 读写系统剪贴板</p>
                     <div class="clipboard-row">
                         <input class="form-input" id="clipboardInput" placeholder="输入一些文字…" value="Hello 轻壳！">
@@ -1370,7 +1444,7 @@ See the Mulan PSL v2 for more details.
                 </div>
 
                 <div class="card card-spaced">
-                    <h2 class="card-title-sm">⏱ 秒表/倒计时</h2>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-timer"></use></svg> 秒表/倒计时</h2>
                     <p class="card-subtitle">setInterval 定时器状态管理示例</p>
 
                     <div class="timer-tabs" role="tablist" aria-label="定时器模式">
@@ -1410,14 +1484,14 @@ See the Mulan PSL v2 for more details.
                 </div>
 
                 <div class="card card-spaced">
-                    <h2 class="card-title-sm">📝 便签本</h2>
-                    <p class="card-subtitle-sm">多行文本编辑器，localStorage 自动保存</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-pencil"></use></svg> 便签本</h2>
+                    <p class="card-subtitle">多行文本编辑器，localStorage 自动保存</p>
                     <textarea class="note-area" id="noteArea" placeholder="在这里写点什么…" aria-label="便签内容"></textarea>
                     <div class="note-status" id="noteStatus" role="status"></div>
                 </div>
 
                 <div class="card card-spaced">
-                    <h2 class="card-title-sm">🔤 JSON 格式化</h2>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-braces"></use></svg> JSON 格式化</h2>
                     <p class="card-subtitle">输入原始 JSON → 格式化或压缩输出</p>
                     <div class="tool-row">
                         <div class="tool-col">
@@ -1438,22 +1512,22 @@ See the Mulan PSL v2 for more details.
                 </div>
 
                 <div class="card card-spaced">
-                    <h2 class="card-title-sm">🎨 取色器</h2>
-                    <p class="card-subtitle-sm">选色并查看 HEX 值，保留取色历史</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-palette"></use></svg> 取色器</h2>
+                    <p class="card-subtitle">选色并查看 HEX 值，保留取色历史</p>
                     <div class="color-picker-row">
                         <div class="color-picker-wrapper">
-                            <input type="color" class="color-picker-input" id="colorPicker" value="#007AFF" aria-label="颜色选择器">
+                            <input type="color" class="color-picker-input" id="colorPicker" value="#005FB8" aria-label="颜色选择器">
                             <div class="color-preview" id="colorPreview" aria-hidden="true"></div>
                         </div>
-                        <span class="color-value" id="colorHex">#007AFF</span>
+                        <span class="color-value" id="colorHex">#005FB8</span>
                         <button class="btn btn-secondary color-copy-btn" id="colorCopyHex">复制</button>
                     </div>
-                    <p class="card-subtitle-sm color-history-label">取色历史（点击色块重新选取）</p>
+                    <p class="card-subtitle color-history-label">取色历史（点击色块重新选取）</p>
                     <div class="color-history" id="colorHistory" role="list" aria-label="取色历史"></div>
                 </div>
 
                 <div class="card card-spaced">
-                    <h2 class="card-title-sm">🔐 Base64 编解码</h2>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-lock"></use></svg> Base64 编解码</h2>
                     <p class="card-subtitle">文本与 Base64 互相转换，btoa / atob API</p>
                     <div class="base64-row">
                         <div class="tool-col">
@@ -1474,7 +1548,7 @@ See the Mulan PSL v2 for more details.
                 </div>
 
                 <div class="card">
-                    <h2 class="card-title-sm">📡 摩斯编码</h2>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-radio"></use></svg> 摩斯编码</h2>
                     <p class="card-subtitle">文本与摩斯电码互相转换</p>
                     <div class="morse-row">
                         <div class="tool-col">
@@ -1500,10 +1574,10 @@ See the Mulan PSL v2 for more details.
                 <h1 class="page-title">能力展示</h1>
                 <p class="page-desc">展示 Web 平台能力在桌面应用中的用法：键盘事件、拖放、通知。</p>
 
-                <!-- ⌨ 快捷键面板 -->
+                <!-- 快捷键面板 -->
                 <div class="card card-spaced">
-                    <h2 class="card-title-sm">⌨ 快捷键面板</h2>
-                    <p class="card-subtitle-sm">键盘事件处理示例，展示组合键注册与实时按键检测</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-keyboard"></use></svg> 快捷键面板</h2>
+                    <p class="card-subtitle">键盘事件处理示例，展示组合键注册与实时按键检测</p>
 
                     <div class="kb-display" id="kbDisplay" aria-live="polite">
                         <span class="kb-placeholder">按下任意键…</span>
@@ -1524,7 +1598,7 @@ See the Mulan PSL v2 for more details.
                         </div>
                     </div>
 
-                    <p class="card-subtitle-sm" style="margin-top:14px;">已注册的快捷键</p>
+                    <p class="card-subtitle" style="margin-top:16px;">已注册的快捷键</p>
                     <table class="kb-table" aria-label="已注册快捷键列表">
                         <thead>
                             <tr><th>快捷键</th><th>功能</th><th>状态</th></tr>
@@ -1539,14 +1613,14 @@ See the Mulan PSL v2 for more details.
                     <p class="kb-hint" id="kbHint"></p>
                 </div>
 
-                <!-- 📁 拖放区域 -->
+                <!-- 拖放区域 -->
                 <div class="card card-spaced">
-                    <h2 class="card-title-sm">📁 拖放区域</h2>
-                    <p class="card-subtitle-sm">Drag &amp; Drop API，拖入文件显示名称、大小与类型</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-folder"></use></svg> 拖放区域</h2>
+                    <p class="card-subtitle">Drag &amp; Drop API，拖入文件显示名称、大小与类型</p>
 
                     <div class="drop-zone" id="dropZone" role="region" aria-label="文件拖放区域" tabindex="0"
                          aria-describedby="dropZoneDesc">
-                        <div class="drop-zone-icon" aria-hidden="true">📂</div>
+                        <div class="drop-zone-icon" aria-hidden="true"><svg class="icon"><use href="#i-folder-open"></use></svg></div>
                         <p class="drop-zone-text" id="dropZoneDesc">拖放文件到此处</p>
                         <p class="drop-zone-hint">或点击此处选择文件</p>
                         <input type="file" class="drop-zone-input" id="dropFileInput" aria-label="选择文件" multiple>
@@ -1556,19 +1630,19 @@ See the Mulan PSL v2 for more details.
                     <div class="drop-empty" id="dropEmpty" role="status">尚未拖放任何文件</div>
                 </div>
 
-                <!-- 🔔 Toast 通知演示 -->
+                <!-- Toast 通知演示 -->
                 <div class="card">
-                    <h2 class="card-title-sm">🔔 应用内通知</h2>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-bell"></use></svg> 应用内通知</h2>
                     <p class="card-subtitle">点击按钮触发不同类型的 Toast 通知，自动消失</p>
                     <div class="toast-demo-actions">
                         <button class="btn btn-primary" id="toastSuccess" aria-label="触发成功通知">
-                            ✓ 成功通知
+                            <svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg> 成功通知
                         </button>
                         <button class="btn btn-secondary" id="toastWarning" aria-label="触发警告通知">
-                            ⚠ 警告通知
+                            <svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg> 警告通知
                         </button>
                         <button class="btn btn-secondary" id="toastError" aria-label="触发错误通知">
-                            ✕ 错误通知
+                            <svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg> 错误通知
                         </button>
                     </div>
                 </div>
@@ -1608,7 +1682,7 @@ See the Mulan PSL v2 for more details.
                             <option value="ja">日本語</option>
                         </select>
                     </div>
-                    <div class="toggle-row bordered">
+                    <div class="toggle-row">
                         <div>
                             <div class="toggle-label">自动保存</div>
                             <div class="toggle-hint">退出时自动保存设置</div>
@@ -1630,7 +1704,7 @@ See the Mulan PSL v2 for more details.
                 <p class="page-desc">了解这个应用和它的构建技术。</p>
 
                 <div class="card card-centered">
-                    <div class="about-icon">🪶</div>
+                    <img class="about-icon" src="logo.svg" alt="轻壳应用图标">
                     <h2 class="about-app-name">轻壳</h2>
                     <p class="about-app-desc">Tauri 桌面应用模板</p>
                     <p class="about-app-sub">
@@ -1646,7 +1720,7 @@ See the Mulan PSL v2 for more details.
                         <tr><td>框架</td><td>Tauri v2（Rust + WebView）</td></tr>
                         <tr><td>前端</td><td>纯 HTML / CSS / JavaScript</td></tr>
                         <tr><td>平台</td><td>Windows</td></tr>
-                        <tr><td>协议</td><td><a href="http://license.coscl.org.cn/MulanPSL2" style="color:var(--blue);text-decoration:none;">木兰宽松许可证 v2</a></td></tr>
+                        <tr><td>协议</td><td><a href="http://license.coscl.org.cn/MulanPSL2" style="color:var(--accent);text-decoration:none;">木兰宽松许可证 v2</a></td></tr>
                         <tr><td>作者</td><td>青山公仔</td></tr>
                     </table>
                 </div>
@@ -2146,7 +2220,7 @@ See the Mulan PSL v2 for more details.
             });
 
             loadHistory();
-            updateColor('#007AFF');
+            updateColor('#005FB8');
             renderHistory();
         }
 
@@ -2288,10 +2362,11 @@ See the Mulan PSL v2 for more details.
         {
             const toastContainer = document.getElementById('toastContainer');
 
+            // 雪碧图 symbol id，见 body 开头的图标定义
             const TOAST_ICONS = {
-                success: '✓',
-                warning: '!',
-                error: '✕'
+                success: 'i-check',
+                warning: 'i-alert',
+                error: 'i-x'
             };
 
             const TOAST_DURATION = 3000;
@@ -2303,7 +2378,7 @@ See the Mulan PSL v2 for more details.
 
                 const icon = document.createElement('span');
                 icon.className = 'toast-icon';
-                icon.textContent = TOAST_ICONS[type] || 'i';
+                icon.innerHTML = '<svg class="icon"><use href="#' + (TOAST_ICONS[type] || 'i-info') + '"></use></svg>';
                 icon.setAttribute('aria-hidden', 'true');
 
                 const msg = document.createElement('span');
@@ -2312,7 +2387,7 @@ See the Mulan PSL v2 for more details.
 
                 const closeBtn = document.createElement('button');
                 closeBtn.className = 'toast-close';
-                closeBtn.innerHTML = '&#x2715;';
+                closeBtn.innerHTML = '<svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg>';
                 closeBtn.setAttribute('aria-label', '关闭通知');
                 closeBtn.addEventListener('click', () => dismissToast(toast));
 
@@ -2478,15 +2553,16 @@ See the Mulan PSL v2 for more details.
                 return size + ' ' + units[i];
             }
 
+            // 返回雪碧图 symbol id，见 body 开头的图标定义
             function getFileIcon(type) {
-                if (!type) return '📄';
-                if (type.startsWith('image/')) return '🖼';
-                if (type.startsWith('video/')) return '🎬';
-                if (type.startsWith('audio/')) return '🎵';
-                if (type.startsWith('text/')) return '📝';
-                if (type.includes('pdf')) return '📕';
-                if (type.includes('zip') || type.includes('rar') || type.includes('compress')) return '📦';
-                return '📄';
+                if (!type) return 'i-file';
+                if (type.startsWith('image/')) return 'i-image';
+                if (type.startsWith('video/')) return 'i-film';
+                if (type.startsWith('audio/')) return 'i-music';
+                if (type.startsWith('text/')) return 'i-file-text';
+                if (type.includes('pdf')) return 'i-book';
+                if (type.includes('zip') || type.includes('rar') || type.includes('compress')) return 'i-archive';
+                return 'i-file';
             }
 
             function addFiles(newFiles) {
@@ -2518,7 +2594,7 @@ See the Mulan PSL v2 for more details.
 
                     const icon = document.createElement('span');
                     icon.className = 'drop-file-icon';
-                    icon.textContent = getFileIcon(file.type);
+                    icon.innerHTML = '<svg class="icon"><use href="#' + getFileIcon(file.type) + '"></use></svg>';
                     icon.setAttribute('aria-hidden', 'true');
 
                     const info = document.createElement('div');
@@ -2538,7 +2614,7 @@ See the Mulan PSL v2 for more details.
 
                     const removeBtn = document.createElement('button');
                     removeBtn.className = 'drop-file-remove';
-                    removeBtn.innerHTML = '&#x2715;';
+                    removeBtn.innerHTML = '<svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg>';
                     removeBtn.setAttribute('aria-label', '移除 ' + file.name);
                     removeBtn.addEventListener('click', () => removeFile(index));
 
