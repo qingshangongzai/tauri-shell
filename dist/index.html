@@ -484,6 +484,127 @@ See the Mulan PSL v2 for more details.
             flex-shrink: 0;
         }
 
+        /* ───── 仪表盘增强：时钟 / 系统信息 / 快捷操作 / 最近活动 ───── */
+        .dash-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .dash-clock-time {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            line-height: 1.2;
+            font-variant-numeric: tabular-nums;
+        }
+        .dash-clock-date {
+            font-size: 0.72rem;
+            color: var(--text-auxiliary);
+            margin-top: 8px;
+        }
+        .sysinfo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .sysinfo-row {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            font-size: 0.75rem;
+        }
+        .sysinfo-label {
+            flex-shrink: 0;
+            width: 56px;
+            color: var(--text-auxiliary);
+        }
+        .sysinfo-value {
+            color: var(--text-body);
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+        .sysinfo-value-sm {
+            font-size: 0.68rem;
+            color: var(--text-auxiliary);
+            line-height: 1.5;
+        }
+        .sysinfo-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--copy-success);
+            margin-right: 6px;
+            vertical-align: 1px;
+        }
+        .sysinfo-dot.offline { background: var(--danger); }
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .quick-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: var(--input-bg);
+            color: var(--text-body);
+            font-size: 0.78rem;
+            font-weight: 520;
+            font-family: var(--font);
+            cursor: pointer;
+            transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease), transform var(--duration-fast) var(--ease);
+        }
+        .quick-action:hover {
+            background: var(--input-bg-focus);
+            color: var(--text-primary);
+        }
+        .quick-action:active { transform: scale(0.96); }
+        .quick-action .icon {
+            width: 14px;
+            height: 14px;
+            color: var(--accent);
+        }
+        .activity-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+        }
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            margin: 0 -8px;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            transition: background var(--duration-fast) var(--ease);
+        }
+        .activity-item:hover { background: var(--input-bg-focus); }
+        .activity-item .icon {
+            width: 13px;
+            height: 13px;
+            color: var(--text-auxiliary);
+        }
+        .activity-text {
+            flex: 1;
+            min-width: 0;
+            color: var(--text-body);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .activity-time {
+            flex-shrink: 0;
+            font-size: 0.68rem;
+            color: var(--text-auxiliary);
+            font-variant-numeric: tabular-nums;
+        }
+
         /* ───── 按钮 ───── */
         .btn {
             display: inline-flex;
@@ -1179,6 +1300,7 @@ See the Mulan PSL v2 for more details.
             width: auto;
             max-width: 420px;
         }
+        /* 去线留白：无边框，类型用「微染色块 + 彩色图标 + 文字」三重编码，弥散阴影表达浮层层级 */
         .toast {
             display: flex;
             align-items: center;
@@ -1188,49 +1310,41 @@ See the Mulan PSL v2 for more details.
             background: var(--card);
             box-shadow: var(--shadow-flyout);
             font-size: 0.8rem;
-            color: var(--text-primary);
             pointer-events: auto;
-            animation: toastSlideIn 0.25s var(--ease);
+            /* 弹层动效 200–250ms（去线留白动效规范），复用项目令牌 */
+            animation: toastSlideIn var(--duration-normal) var(--ease);
             max-width: 100%;
         }
+        .toast-success { background: color-mix(in srgb, var(--copy-success) 8%, var(--card)); }
+        .toast-warning { background: color-mix(in srgb, var(--warning) 8%, var(--card)); }
+        .toast-error   { background: color-mix(in srgb, var(--danger) 8%, var(--card)); }
         @keyframes toastSlideIn {
             from { opacity: 0; transform: translateY(-12px); }
             to   { opacity: 1; transform: translateY(0); }
         }
         .toast.removing {
-            animation: toastSlideOut 0.2s var(--ease) forwards;
+            animation: toastSlideOut var(--duration-normal) var(--ease) forwards;
         }
         @keyframes toastSlideOut {
             from { opacity: 1; transform: translateY(0); }
             to   { opacity: 0; transform: translateY(-12px); }
         }
         .toast-icon {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
-        .toast-icon .icon { width: 12px; height: 12px; }
-        .toast-success .toast-icon {
-            background: color-mix(in srgb, var(--copy-success) 12%, transparent);
-            color: var(--copy-success);
-        }
-        .toast-warning .toast-icon {
-            background: var(--warning-bg);
-            color: var(--warning);
-        }
-        .toast-error .toast-icon {
-            background: var(--danger-bg);
-            color: var(--danger);
-        }
+        .toast-icon .icon { width: 14px; height: 14px; }
+        .toast-success .toast-icon { color: var(--copy-success); }
+        .toast-warning .toast-icon { color: var(--warning); }
+        .toast-error .toast-icon { color: var(--danger); }
         .toast-message {
             flex: 1;
             min-width: 0;
             font-weight: 450;
             line-height: 1.4;
+            color: var(--text-body);
         }
         .toast-close {
             flex-shrink: 0;
@@ -1250,7 +1364,7 @@ See the Mulan PSL v2 for more details.
         }
         .toast-close .icon { width: 12px; height: 12px; }
         .toast-close:hover {
-            background: var(--hover);
+            background: color-mix(in srgb, var(--text-primary) 8%, transparent);
             color: var(--text-primary);
         }
         .toast-demo-actions {
@@ -1540,6 +1654,9 @@ See the Mulan PSL v2 for more details.
         <symbol id="i-gauge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></symbol>
         <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></symbol>
         <symbol id="i-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></symbol>
+        <symbol id="i-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></symbol>
     </svg>
 
     <!-- ═══════════ 标题栏 ═══════════ -->
@@ -1624,6 +1741,68 @@ See the Mulan PSL v2 for more details.
                     </div>
                 </div>
 
+                <div class="dash-grid">
+                    <div class="card">
+                        <h3 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-clock"></use></svg> 实时时钟</h3>
+                        <p class="card-subtitle">每秒刷新的本地日期时间</p>
+                        <div class="dash-clock-time" id="dashClockTime">--:--:--</div>
+                        <div class="dash-clock-date" id="dashClockDate"></div>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-globe"></use></svg> 系统信息</h3>
+                        <p class="card-subtitle">来自 navigator API 的运行环境信息</p>
+                        <div class="sysinfo-list">
+                            <div class="sysinfo-row">
+                                <span class="sysinfo-label">语言</span>
+                                <span class="sysinfo-value" id="sysLang">—</span>
+                            </div>
+                            <div class="sysinfo-row">
+                                <span class="sysinfo-label">在线状态</span>
+                                <span class="sysinfo-value"><span class="sysinfo-dot" id="sysOnlineDot" aria-hidden="true"></span><span id="sysOnlineText">检测中…</span></span>
+                            </div>
+                            <div class="sysinfo-row">
+                                <span class="sysinfo-label">分辨率</span>
+                                <span class="sysinfo-value" id="sysScreen">—</span>
+                            </div>
+                            <div class="sysinfo-row">
+                                <span class="sysinfo-label">UA</span>
+                                <span class="sysinfo-value sysinfo-value-sm" id="sysUA">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-spaced">
+                    <h3 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-zap"></use></svg> 快捷操作</h3>
+                    <p class="card-subtitle">常用工具一键直达</p>
+                    <div class="quick-actions">
+                        <button class="quick-action" data-goto="tools" data-target="toolCardTimer" data-log="打开了秒表/倒计时">
+                            <svg class="icon" aria-hidden="true"><use href="#i-timer"></use></svg> 秒表/倒计时
+                        </button>
+                        <button class="quick-action" data-goto="tools" data-target="toolCardNote" data-log="打开了便签本">
+                            <svg class="icon" aria-hidden="true"><use href="#i-pencil"></use></svg> 便签本
+                        </button>
+                        <button class="quick-action" data-goto="tools" data-target="toolCardJson" data-log="打开了 JSON 格式化">
+                            <svg class="icon" aria-hidden="true"><use href="#i-braces"></use></svg> JSON 格式化
+                        </button>
+                        <button class="quick-action" data-goto="tools" data-target="toolCardColor" data-log="打开了取色器">
+                            <svg class="icon" aria-hidden="true"><use href="#i-palette"></use></svg> 取色器
+                        </button>
+                        <button class="quick-action" data-goto="tools" data-target="toolCardClipboard" data-log="打开了剪贴板读写">
+                            <svg class="icon" aria-hidden="true"><use href="#i-clipboard"></use></svg> 剪贴板
+                        </button>
+                        <button class="quick-action" data-goto="components" data-target="compCardToast" data-log="打开了 Toast 演示">
+                            <svg class="icon" aria-hidden="true"><use href="#i-bell"></use></svg> Toast 演示
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card card-spaced">
+                    <h3 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-history"></use></svg> 最近活动</h3>
+                    <p class="card-subtitle">本次会话的操作记录，最多保留 20 条</p>
+                    <ul class="activity-list" id="activityList" role="list" aria-live="polite" aria-label="最近活动记录"></ul>
+                </div>
+
                 <div class="card dashboard-quickstart">
                     <h3 class="card-title-sm-lg">快速开始</h3>
                     <ol class="quickstart-list">
@@ -1652,7 +1831,7 @@ See the Mulan PSL v2 for more details.
                     </div>
                 </div>
 
-                <div class="card card-spaced">
+                <div class="card card-spaced" id="toolCardClipboard">
                     <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-clipboard"></use></svg> 剪贴板读写</h2>
                     <p class="card-subtitle">使用 Web API 读写系统剪贴板</p>
                     <div class="clipboard-row">
@@ -1665,7 +1844,7 @@ See the Mulan PSL v2 for more details.
                     </div>
                 </div>
 
-                <div class="card card-spaced">
+                <div class="card card-spaced" id="toolCardTimer">
                     <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-timer"></use></svg> 秒表/倒计时</h2>
                     <p class="card-subtitle">setInterval 定时器状态管理示例</p>
 
@@ -1705,14 +1884,14 @@ See the Mulan PSL v2 for more details.
                     </div>
                 </div>
 
-                <div class="card card-spaced">
+                <div class="card card-spaced" id="toolCardNote">
                     <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-pencil"></use></svg> 便签本</h2>
                     <p class="card-subtitle">多行文本编辑器，localStorage 自动保存</p>
                     <textarea class="note-area" id="noteArea" placeholder="在这里写点什么…" aria-label="便签内容"></textarea>
                     <div class="note-status" id="noteStatus" role="status"></div>
                 </div>
 
-                <div class="card card-spaced">
+                <div class="card card-spaced" id="toolCardJson">
                     <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-braces"></use></svg> JSON 格式化</h2>
                     <p class="card-subtitle">输入原始 JSON → 格式化或压缩输出</p>
                     <div class="tool-row">
@@ -1733,7 +1912,7 @@ See the Mulan PSL v2 for more details.
                     </div>
                 </div>
 
-                <div class="card card-spaced">
+                <div class="card card-spaced" id="toolCardColor">
                     <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-palette"></use></svg> 取色器</h2>
                     <p class="card-subtitle">选色并查看 HEX 值，保留取色历史</p>
                     <div class="color-picker-row">
@@ -1876,7 +2055,7 @@ See the Mulan PSL v2 for more details.
                 <p class="page-desc">去线留白风格的常用 UI 组件：以空间、色块与弥散阴影表达层级，不依赖边框线条。</p>
 
                 <!-- Toast 通知 -->
-                <div class="card card-spaced">
+                <div class="card card-spaced" id="compCardToast">
                     <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-bell"></use></svg> Toast 通知</h2>
                     <p class="card-subtitle">顶部居中弹出，自动消失，支持 success / warning / error 三种类型</p>
                     <div class="toast-demo-actions">
@@ -2139,14 +2318,16 @@ See the Mulan PSL v2 for more details.
         const navItems = document.querySelectorAll('.nav-item');
         const pages = document.querySelectorAll('.page');
 
+        function switchPage(pageName) {
+            navItems.forEach(n => n.classList.toggle('active', n.dataset.page === pageName));
+            pages.forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + pageName).classList.add('active');
+            // 各页共用 .main-content 滚动容器，切页后归零，避免沿用上一页的滚动位置
+            document.querySelector('.main-content').scrollTop = 0;
+        }
+
         navItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const pageName = item.dataset.page;
-                navItems.forEach(n => n.classList.remove('active'));
-                item.classList.add('active');
-                pages.forEach(p => p.classList.remove('active'));
-                document.getElementById('page-' + pageName).classList.add('active');
-            });
+            item.addEventListener('click', () => switchPage(item.dataset.page));
         });
 
         /* ═══════════════════════ 深色模式 ═══════════════════════ */
@@ -2229,6 +2410,111 @@ See the Mulan PSL v2 for more details.
         if (savedLang) document.getElementById('settingsLang').value = savedLang;
         const savedAuto = localStorage.getItem('tauri-shell-autosave');
         if (savedAuto === '0') document.getElementById('autoSave').checked = false;
+
+        /* ═══════════ 仪表盘增强：实时时钟 / 系统信息 / 快捷操作 / 最近活动 ═══════════ */
+        {
+            const pad = n => String(n).padStart(2, '0');
+
+            /* ───── 实时时钟 ───── */
+            const clockTime = document.getElementById('dashClockTime');
+            const clockDate = document.getElementById('dashClockDate');
+            const WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+
+            function renderClock() {
+                const now = new Date();
+                clockTime.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+                clockDate.textContent = now.getFullYear() + ' 年 ' + (now.getMonth() + 1) + ' 月 ' + now.getDate() + ' 日 · ' + WEEKDAYS[now.getDay()];
+            }
+            renderClock();
+            setInterval(renderClock, 1000);
+
+            /* ───── 系统信息 ───── */
+            document.getElementById('sysLang').textContent = navigator.language;
+            document.getElementById('sysUA').textContent = navigator.userAgent;
+
+            // screen.width/height 是 CSS 像素，乘回 devicePixelRatio 才是物理分辨率
+            // （如 150% 缩放下 2560×1600 会被报为 1707×1067）；
+            // CSS 像素值本身已取整，乘回后带 ±dpr/2 误差（1707×1.5=2560.5），
+            // 物理分辨率实际总为偶数，取整到最近偶数以消除差 1 问题
+            const sysScreen = document.getElementById('sysScreen');
+            function renderScreen() {
+                const dpr = window.devicePixelRatio;
+                const phys = v => 2 * Math.round(v * dpr / 2);
+                sysScreen.textContent = phys(screen.width) + ' × ' + phys(screen.height)
+                    + ' @ ' + Math.round(dpr * 100) + '%';
+            }
+            renderScreen();
+            // 窗口移到不同缩放的显示器时 DPR 会变，随 resize 刷新
+            window.addEventListener('resize', renderScreen);
+
+            const onlineDot = document.getElementById('sysOnlineDot');
+            const onlineText = document.getElementById('sysOnlineText');
+            function renderOnline() {
+                const online = navigator.onLine;
+                onlineDot.classList.toggle('offline', !online);
+                onlineText.textContent = online ? '在线' : '离线';
+            }
+            renderOnline();
+            window.addEventListener('online', renderOnline);
+            window.addEventListener('offline', renderOnline);
+
+            /* ───── 最近活动日志（内存态，仅本次会话） ───── */
+            const activityList = document.getElementById('activityList');
+            const MAX_ACTIVITIES = 20;
+
+            function logActivity(text) {
+                const li = document.createElement('li');
+                li.className = 'activity-item';
+                li.innerHTML = '<svg class="icon" aria-hidden="true"><use href="#i-history"></use></svg>';
+                const msg = document.createElement('span');
+                msg.className = 'activity-text';
+                msg.textContent = text;
+                const time = document.createElement('span');
+                time.className = 'activity-time';
+                const now = new Date();
+                time.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+                li.appendChild(msg);
+                li.appendChild(time);
+                activityList.insertBefore(li, activityList.firstChild);
+                while (activityList.children.length > MAX_ACTIVITIES) {
+                    activityList.removeChild(activityList.lastChild);
+                }
+            }
+
+            // 预置模拟记录（新记录在前）
+            logActivity('欢迎使用轻壳');
+            logActivity('加载本地设置');
+            logActivity('应用启动完成');
+
+            /* ───── 快捷操作入口 ───── */
+            // 注意：不用 scrollIntoView，它会连带滚动 overflow:hidden 的 html/body，
+            // 导致整个布局被顶起且无法手动滚回；只滚动 .main-content 容器
+            const mainContent = document.querySelector('.main-content');
+            const SCROLL_TOP_GAP = 16; // 目标卡片顶部预留的呼吸空间
+            document.querySelectorAll('.quick-action').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchPage(btn.dataset.goto);
+                    logActivity(btn.dataset.log);
+                    const target = document.getElementById(btn.dataset.target);
+                    requestAnimationFrame(() => {
+                        const top = target.getBoundingClientRect().top
+                            - mainContent.getBoundingClientRect().top
+                            + mainContent.scrollTop - SCROLL_TOP_GAP;
+                        // CSS 的 prefers-reduced-motion 降级不覆盖 JS 平滑滚动，这里单独降级
+                        const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+                        mainContent.scrollTo({ top: Math.max(0, top), behavior });
+                    });
+                });
+            });
+
+            /* ───── 记录真实操作：主题切换 / 设置保存 ───── */
+            themeToggle.addEventListener('change', () => {
+                logActivity(themeToggle.checked ? '切换到深色模式' : '切换到浅色模式');
+            });
+            document.getElementById('saveSettings').addEventListener('click', () => {
+                logActivity('保存了应用设置');
+            });
+        }
 
         /* ═══════════════════════ 秒表/倒计时 Tab 切换 ═══════════════════════ */
         {
