@@ -1,6 +1,6 @@
 [package]
 name = "my-app-installer"
-version = "1.0.0"
+version = "0.1.0"
 description = "我的应用 安装向导"
 authors = ["My Company"]
 edition = "2021"
