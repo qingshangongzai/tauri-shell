@@ -431,6 +431,11 @@ See the Mulan PSL v2 for more details.
         }
 
         /* ═════════════════════ 通用组件样式 ═════════════════════ */
+        /* 浮层通用入场动效（右键菜单、下拉面板共用） */
+        @keyframes flyoutPopIn {
+            from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+            to   { opacity: 1; transform: none; }
+        }
         .page-title {
             font-size: 1.15rem;
             font-weight: 700;
@@ -762,10 +767,64 @@ See the Mulan PSL v2 for more details.
             font-size: 0.82rem;
             font-family: var(--font);
         }
-        .form-select {
-            appearance: auto;
+        /* ───── 自定义下拉选择器（去线留白：填充式触发 + 弥散阴影浮层） ───── */
+        .select-trigger {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.82rem;
+            font-family: var(--font);
             cursor: pointer;
+            text-align: left;
+            transition: background var(--duration-fast) var(--ease);
         }
+        .select-trigger:hover, .select-trigger[aria-expanded="true"] { background: var(--input-bg-focus); }
+        .select-trigger:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }
+        .select-trigger-label {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .select-trigger .chevron {
+            flex-shrink: 0;
+            transition: transform var(--duration-fast) var(--ease);
+        }
+        .select-trigger[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+        .select-dropdown {
+            position: fixed;
+            z-index: 2500;
+            padding: 4px 0;
+            background: var(--card);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-flyout);
+            animation: flyoutPopIn var(--duration-normal) var(--ease);
+        }
+        .select-option {
+            display: block;
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            background: none;
+            color: var(--text-primary);
+            font-size: 0.82rem;
+            font-family: var(--font);
+            cursor: pointer;
+            text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: background var(--duration-fast) var(--ease);
+        }
+        .select-option:hover { background: var(--hover); }
+        /* 选中态多维编码：强调色 + 字重，不依赖边框 */
+        .select-option[aria-selected="true"] { color: var(--accent); font-weight: 550; }
 
         /* ───── 工具页：计数器 ───── */
         .counter-display {
@@ -1720,11 +1779,7 @@ See the Mulan PSL v2 for more details.
         }
         .context-menu.open {
             display: flex;
-            animation: ctxPopIn var(--duration-normal) var(--ease);
-        }
-        @keyframes ctxPopIn {
-            from { opacity: 0; transform: translateY(-4px) scale(0.98); }
-            to   { opacity: 1; transform: none; }
+            animation: flyoutPopIn var(--duration-normal) var(--ease);
         }
         .context-menu-item {
             display: flex;
@@ -2344,11 +2399,7 @@ See the Mulan PSL v2 for more details.
                     </div>
                     <div class="form-group">
                         <label class="form-label">语言</label>
-                        <select class="form-input form-select" id="settingsLang">
-                            <option value="zh-CN" selected>简体中文</option>
-                            <option value="en">English</option>
-                            <option value="ja">日本語</option>
-                        </select>
+                        <div id="settingsLang"></div>
                     </div>
                     <div class="toggle-row">
                         <div>
@@ -2662,11 +2713,117 @@ See the Mulan PSL v2 for more details.
             }
         });
 
+        /* ═══════════════════════ 通用下拉选择器 ═══════════════════════ */
+        // 去线留白：填充式触发按钮 + 弥散阴影浮层（挂到 body，随滚动/缩放刷新位置）
+        function createSelect(host, options, { value, ariaLabel } = {}) {
+            let current = value !== undefined ? value : options[0]?.value;
+            let dropdown = null;
+
+            const trigger = document.createElement('button');
+            trigger.type = 'button';
+            trigger.className = 'select-trigger';
+            trigger.setAttribute('aria-haspopup', 'listbox');
+            trigger.setAttribute('aria-expanded', 'false');
+            if (ariaLabel) trigger.setAttribute('aria-label', ariaLabel);
+            trigger.innerHTML = '<span class="select-trigger-label"></span>'
+                + '<svg class="chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">'
+                + '<path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+            const label = trigger.querySelector('.select-trigger-label');
+            host.appendChild(trigger);
+
+            const render = () => {
+                label.textContent = options.find(o => o.value === current)?.label ?? String(current);
+            };
+            render();
+
+            // 面板紧贴按钮下方 4px，宽度不小于按钮；下方空间不足时向上翻转，避免被窗口截断
+            const updatePosition = () => {
+                if (!dropdown) return;
+                const rect = trigger.getBoundingClientRect();
+                dropdown.style.left = rect.left + 'px';
+                dropdown.style.minWidth = rect.width + 'px';
+                const panelH = dropdown.offsetHeight;
+                const below = rect.bottom + 4;
+                if (below + panelH > window.innerHeight && rect.top - 4 - panelH >= 0) {
+                    dropdown.style.top = (rect.top - 4 - panelH) + 'px';
+                } else {
+                    dropdown.style.top = below + 'px';
+                }
+            };
+
+            const close = () => {
+                if (!dropdown) return;
+                dropdown.remove();
+                dropdown = null;
+                trigger.setAttribute('aria-expanded', 'false');
+                window.removeEventListener('scroll', updatePosition, true);
+                window.removeEventListener('resize', updatePosition);
+            };
+
+            const open = () => {
+                dropdown = document.createElement('div');
+                dropdown.className = 'select-dropdown';
+                dropdown.setAttribute('role', 'listbox');
+                options.forEach(opt => {
+                    const item = document.createElement('button');
+                    item.type = 'button';
+                    item.className = 'select-option';
+                    item.setAttribute('role', 'option');
+                    item.setAttribute('aria-selected', String(opt.value === current));
+                    item.textContent = opt.label;
+                    item.addEventListener('click', () => {
+                        current = opt.value;
+                        render();
+                        close();
+                    });
+                    dropdown.appendChild(item);
+                });
+                dropdown.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+                document.body.appendChild(dropdown);
+                trigger.setAttribute('aria-expanded', 'true');
+                updatePosition();
+                window.addEventListener('scroll', updatePosition, true);
+                window.addEventListener('resize', updatePosition);
+            };
+
+            trigger.addEventListener('click', () => dropdown ? close() : open());
+
+            // 点击外部关闭（capture 阶段确保不被内部元素拦截）
+            document.addEventListener('pointerdown', e => {
+                if (dropdown && !host.contains(e.target) && !dropdown.contains(e.target)) close();
+            }, true);
+
+            // 键盘支持：闭合时 Enter/Space/ArrowDown 打开，展开时 Escape 关闭
+            host.addEventListener('keydown', e => {
+                if (!dropdown) {
+                    if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') { e.preventDefault(); open(); }
+                } else if (e.key === 'Escape') {
+                    close();
+                }
+            });
+
+            return {
+                getValue: () => current,
+                // 非法值静默忽略，与原生 select 赋值行为一致（防 localStorage 脏值）
+                setValue(v) {
+                    if (!options.some(o => o.value === v)) return;
+                    current = v;
+                    render();
+                },
+            };
+        }
+
+        const langSelect = createSelect(document.getElementById('settingsLang'), [
+            { label: '简体中文', value: 'zh-CN' },
+            { label: 'English', value: 'en' },
+            { label: '日本語', value: 'ja' },
+        ], { value: 'zh-CN', ariaLabel: '语言' });
+
         /* ═══════════════════════ 设置保存 ═══════════════════════ */
         const settingsMsg = document.getElementById('settingsMsg');
         document.getElementById('saveSettings').addEventListener('click', () => {
             const name = document.getElementById('settingsName').value;
-            const lang = document.getElementById('settingsLang').value;
+            const lang = langSelect.getValue();
             const autoSave = document.getElementById('autoSave').checked;
             // 模拟保存到 localStorage
             localStorage.setItem('tauri-shell-name', name);
@@ -2681,7 +2838,7 @@ See the Mulan PSL v2 for more details.
         const savedName = localStorage.getItem('tauri-shell-name');
         if (savedName) document.getElementById('settingsName').value = savedName;
         const savedLang = localStorage.getItem('tauri-shell-lang');
-        if (savedLang) document.getElementById('settingsLang').value = savedLang;
+        if (savedLang) langSelect.setValue(savedLang);
         const savedAuto = localStorage.getItem('tauri-shell-autosave');
         if (savedAuto === '0') document.getElementById('autoSave').checked = false;
 
