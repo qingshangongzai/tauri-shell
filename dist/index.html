@@ -326,19 +326,29 @@ See the Mulan PSL v2 for more details.
             flex-direction: column;
             flex-shrink: 0;
             overflow: hidden;
+            transition: width var(--duration-slow) var(--ease);
         }
+        /* 折叠态：宽度收窄为纯图标列；图标原位不动，标签随宽度裁剪并淡出，过渡连贯 */
+        .sidebar.collapsed { width: 52px; }
+        .sidebar.collapsed .nav-label { opacity: 0; }
         .sidebar-nav {
             flex: 1;
-            padding: 16px 8px;
+            padding: 12px 8px 16px;
             display: flex;
             flex-direction: column;
             gap: 2px;
+        }
+        /* 底部固定区（关于/设置入口，WinUI 3 惯例） */
+        .sidebar-nav-bottom {
+            flex: 0 0 auto;
+            padding-top: 0;
         }
         .nav-item {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 7px 10px;
+            /* 水平 8px：折叠后图标恰居 36px 列中心，两态图标原位不动 */
+            padding: 7px 8px;
             border-radius: var(--radius-sm);
             font-size: 0.78rem;
             font-weight: 450;
@@ -367,13 +377,26 @@ See the Mulan PSL v2 for more details.
             flex-shrink: 0;
         }
         .nav-icon .icon { width: 16px; height: 16px; }
+        .nav-label { transition: opacity var(--duration-normal) var(--ease); }
 
-        /* 侧边栏底部版本号 */
-        .sidebar-footer {
-            padding: 16px;
-            font-size: 0.65rem;
-            color: var(--text-auxiliary);
+        /* 侧边栏折叠切换按钮（WinUI 3 风格汉堡按钮，置顶、纯图标） */
+        .sidebar-toggle {
+            width: 36px;
+            height: 32px;
+            margin: 8px 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: none;
+            color: var(--text-body);
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
         }
+        .sidebar-toggle .icon { width: 16px; height: 16px; }
+        .sidebar-toggle:hover { background: var(--hover); color: var(--text-primary); }
 
         /* ───── 主内容区 ───── */
         .main-content {
@@ -1317,7 +1340,7 @@ See the Mulan PSL v2 for more details.
             width: auto;
             max-width: 420px;
         }
-        /* 去线留白：无边框，类型用「微染色块 + 彩色图标 + 文字」三重编码，弥散阴影表达浮层层级 */
+        /* 去线留白：无边框，三类共用中性卡片底，类型用「彩色图标 + 文字」双重编码，弥散阴影表达浮层层级 */
         .toast {
             display: flex;
             align-items: center;
@@ -1332,9 +1355,6 @@ See the Mulan PSL v2 for more details.
             animation: toastSlideIn var(--duration-normal) var(--ease);
             max-width: 100%;
         }
-        .toast-success { background: color-mix(in srgb, var(--copy-success) 8%, var(--card)); }
-        .toast-warning { background: color-mix(in srgb, var(--warning) 8%, var(--card)); }
-        .toast-error   { background: color-mix(in srgb, var(--danger) 8%, var(--card)); }
         @keyframes toastSlideIn {
             from { opacity: 0; transform: translateY(-12px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -1549,16 +1569,16 @@ See the Mulan PSL v2 for more details.
         }
 
         /* ═════════════════════ UI 组件：Tooltip ═════════════════════ */
-        .tooltip {
-            position: relative;
-            /* 组件级变量：气泡深底浅字与主题反转，不进共享设计令牌块 */
+        /* 组件级变量：气泡深底浅字与主题反转（.tooltip 与 .side-tip 共享），不进共享设计令牌块 */
+        .tooltip, .side-tip {
             --tip-bg: rgba(0, 0, 0, 0.78);
             --tip-text: #ffffff;
         }
-        [data-theme="dark"] .tooltip {
+        [data-theme="dark"] .tooltip, [data-theme="dark"] .side-tip {
             --tip-bg: rgba(255, 255, 255, 0.87);
             --tip-text: rgba(0, 0, 0, 0.87);
         }
+        .tooltip { position: relative; }
         .tooltip::after {
             content: attr(data-tip);
             position: absolute;
@@ -1621,6 +1641,86 @@ See the Mulan PSL v2 for more details.
         .tooltip-icon-btn .icon { width: 14px; height: 14px; }
         .tooltip-icon-btn:hover { background: var(--divider); color: var(--text-primary); }
 
+        /* 侧边栏悬浮提示：与 Tooltip 组件同款气泡（共享 --tip-* 变量），fixed 定位不受侧边栏 overflow 裁剪 */
+        .side-tip {
+            position: fixed;
+            z-index: 5000;
+            padding: 5px 10px;
+            border-radius: var(--radius-sm);
+            background: var(--tip-bg);
+            color: var(--tip-text);
+            font-size: 0.7rem;
+            font-weight: 450;
+            line-height: 1.4;
+            white-space: nowrap;
+            box-shadow: var(--shadow-flyout);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateX(-2px);
+            transition: opacity var(--duration-fast) var(--ease) 150ms, transform var(--duration-fast) var(--ease) 150ms;
+        }
+        .side-tip.visible { opacity: 1; transform: none; }
+        .side-tip::before {
+            content: '';
+            position: absolute;
+            right: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-left: none;
+            border-right-color: var(--tip-bg);
+        }
+
+        /* ═════════════════════ 自定义右键菜单 ═════════════════════ */
+        /* 去线留白：卡片底色 + 弥散阴影建立浮层层级，分组间以留白代替分割线 */
+        .context-menu {
+            position: fixed;
+            z-index: 4000;
+            min-width: 168px;
+            padding: 6px;
+            background: var(--card);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-flyout);
+            display: none;
+            flex-direction: column;
+        }
+        .context-menu.open {
+            display: flex;
+            animation: ctxPopIn var(--duration-normal) var(--ease);
+        }
+        @keyframes ctxPopIn {
+            from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+            to   { opacity: 1; transform: none; }
+        }
+        .context-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 10px;
+            border: none;
+            border-radius: calc(var(--radius-sm) - 2px);
+            background: none;
+            color: var(--text-body);
+            font-size: 0.78rem;
+            font-weight: 450;
+            font-family: var(--font);
+            cursor: pointer;
+            text-align: left;
+            white-space: nowrap;
+            transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
+        }
+        .context-menu-item .icon { width: 14px; height: 14px; color: var(--text-auxiliary); }
+        .context-menu-item:hover { background: var(--hover); color: var(--text-primary); }
+        /* 禁用态用占位符级不透明度表达，不用边框或删除线 */
+        .context-menu-item:disabled,
+        .context-menu-item:disabled:hover {
+            background: none;
+            color: var(--text-placeholder);
+            cursor: default;
+        }
+        .context-menu-item:disabled .icon { color: var(--text-placeholder); }
+        .context-menu-gap { height: 8px; flex-shrink: 0; }
+
         /* ───── 动效降级（同安装器 index.css） ───── */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
@@ -1631,7 +1731,7 @@ See the Mulan PSL v2 for more details.
         }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
     <!-- ═══════════ 图标雪碧图（Lucide 风格线性描边，currentColor 随主题） ═══════════ -->
     <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
@@ -1674,6 +1774,10 @@ See the Mulan PSL v2 for more details.
         <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
         <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></symbol>
         <symbol id="i-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></symbol>
+        <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></symbol>
+        <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+        <symbol id="i-arrow-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></symbol>
+        <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
     </svg>
 
     <!-- ═══════════ 标题栏 ═══════════ -->
@@ -1691,27 +1795,31 @@ See the Mulan PSL v2 for more details.
 
         <!-- ───── 侧边栏 ───── -->
         <aside class="sidebar" aria-label="导航侧栏">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="折叠侧边栏" aria-expanded="true">
+                <svg class="icon" aria-hidden="true"><use href="#i-menu"></use></svg>
+            </button>
             <nav class="sidebar-nav">
                 <button class="nav-item active" data-page="dashboard">
-                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-dashboard"></use></svg></span> 仪表盘
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-dashboard"></use></svg></span> <span class="nav-label">仪表盘</span>
                 </button>
                 <button class="nav-item" data-page="tools">
-                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-wrench"></use></svg></span> 工具
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-wrench"></use></svg></span> <span class="nav-label">工具</span>
                 </button>
                 <button class="nav-item" data-page="tauri">
-                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-window"></use></svg></span> 能力
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-window"></use></svg></span> <span class="nav-label">能力</span>
                 </button>
                 <button class="nav-item" data-page="components">
-                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-layers"></use></svg></span> 组件
-                </button>
-                <button class="nav-item" data-page="settings">
-                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-settings"></use></svg></span> 设置
-                </button>
-                <button class="nav-item" data-page="about">
-                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg></span> 关于
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-layers"></use></svg></span> <span class="nav-label">组件</span>
                 </button>
             </nav>
-            <div class="sidebar-footer">轻壳 v0.1.0</div>
+            <nav class="sidebar-nav sidebar-nav-bottom" aria-label="关于与设置入口">
+                <button class="nav-item" data-page="about">
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg></span> <span class="nav-label">关于</span>
+                </button>
+                <button class="nav-item" data-page="settings">
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-settings"></use></svg></span> <span class="nav-label">设置</span>
+                </button>
+            </nav>
         </aside>
 
         <!-- ───── 主内容区 ───── -->
@@ -2026,6 +2134,8 @@ See the Mulan PSL v2 for more details.
                             <tr><td><kbd>Ctrl</kbd> + <kbd>Z</kbd></td><td>撤销</td><td><span class="kb-badge kb-badge-ready">就绪</span></td></tr>
                             <tr><td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd></td><td>新建窗口</td><td><span class="kb-badge kb-badge-ready">就绪</span></td></tr>
                             <tr><td><kbd>Ctrl</kbd> + <kbd>K</kbd></td><td>搜索</td><td><span class="kb-badge kb-badge-ready">就绪</span></td></tr>
+                            <tr><td><kbd>Ctrl</kbd> + <kbd>1</kbd> ~ <kbd>6</kbd></td><td>切换页面</td><td><span class="kb-badge kb-badge-ready">已启用</span></td></tr>
+                            <tr><td><kbd>Ctrl</kbd> + <kbd>B</kbd></td><td>折叠侧边栏</td><td><span class="kb-badge kb-badge-ready">已启用</span></td></tr>
                         </tbody>
                     </table>
                     <p class="kb-hint" id="kbHint"></p>
@@ -2192,7 +2302,7 @@ See the Mulan PSL v2 for more details.
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card card-spaced">
                     <h2 class="card-title">偏好设置</h2>
                     <div class="form-group">
                         <label class="form-label">用户名</label>
@@ -2219,6 +2329,16 @@ See the Mulan PSL v2 for more details.
                     </div>
                     <button class="btn btn-primary btn-row" id="saveSettings">保存设置</button>
                     <span class="settings-msg" id="settingsMsg">✓ 已保存</span>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title-xs">备份与恢复</h2>
+                    <p class="card-subtitle">将本地设置导出为 JSON 文件，或从文件恢复</p>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" id="settingsExport">导出设置</button>
+                        <button class="btn btn-secondary" id="settingsImportBtn">导入设置</button>
+                        <input type="file" id="settingsImportFile" accept=".json,application/json" hidden aria-label="选择设置文件">
+                    </div>
                 </div>
             </section>
 
@@ -2265,12 +2385,30 @@ See the Mulan PSL v2 for more details.
         </div>
     </div>
 
+    <!-- 自定义右键菜单（全局挂载，替代浏览器默认菜单；菜单项 tabindex=-1 走 roving 焦点，方向键导航） -->
+    <div class="context-menu" id="contextMenu" role="menu" aria-label="应用右键菜单">
+        <button class="context-menu-item" id="ctxCopy" role="menuitem" tabindex="-1">
+            <svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg> 复制
+        </button>
+        <button class="context-menu-item" id="ctxPaste" role="menuitem" tabindex="-1">
+            <svg class="icon" aria-hidden="true"><use href="#i-clipboard"></use></svg> 粘贴
+        </button>
+        <div class="context-menu-gap" aria-hidden="true"></div>
+        <button class="context-menu-item" id="ctxTop" role="menuitem" tabindex="-1">
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-up"></use></svg> 返回顶部
+        </button>
+        <button class="context-menu-item" id="ctxTheme" role="menuitem" tabindex="-1">
+            <svg class="icon" aria-hidden="true"><use href="#i-moon"></use></svg> <span id="ctxThemeLabel">切换深色模式</span>
+        </button>
+        <div class="context-menu-gap" aria-hidden="true"></div>
+        <button class="context-menu-item" id="ctxAbout" role="menuitem" tabindex="-1">
+            <svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg> 关于轻壳
+        </button>
+    </div>
+
     <!-- ═══════════ 脚本 ═══════════ -->
     <script type="module">
     {
-        /* ───── 禁用右键菜单 ───── */
-        document.addEventListener('contextmenu', e => e.preventDefault());
-
         /* ═══════════════════════ 窗口控制 ═══════════════════════ */
         const titlebar = document.querySelector('.titlebar');
         const internals = window.__TAURI_INTERNALS__;
@@ -2341,11 +2479,78 @@ See the Mulan PSL v2 for more details.
             document.getElementById('page-' + pageName).classList.add('active');
             // 各页共用 .main-content 滚动容器，切页后归零，避免沿用上一页的滚动位置
             document.querySelector('.main-content').scrollTop = 0;
+            // 页面状态保持：记住最后访问页，下次启动恢复
+            localStorage.setItem('tauri-shell-last-page', pageName);
         }
 
         navItems.forEach(item => {
             item.addEventListener('click', () => switchPage(item.dataset.page));
         });
+
+        // 启动时恢复最后访问的页面
+        const lastPage = localStorage.getItem('tauri-shell-last-page');
+        if (lastPage && lastPage !== 'dashboard' && document.getElementById('page-' + lastPage)) {
+            switchPage(lastPage);
+        }
+
+        /* ═══════════════════════ 侧边栏折叠 ═══════════════════════ */
+        const sidebar = document.querySelector('.sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+
+        function applySidebarCollapsed(collapsed) {
+            sidebar.classList.toggle('collapsed', collapsed);
+            const label = collapsed ? '展开侧边栏' : '折叠侧边栏';
+            sidebarToggle.setAttribute('aria-label', label);
+            sidebarToggle.setAttribute('aria-expanded', String(!collapsed));
+            // 折叠后标签仅视觉隐藏（opacity 0），可访问名称仍在，无需 title 补充
+        }
+
+        function toggleSidebar() {
+            const collapsed = !sidebar.classList.contains('collapsed');
+            applySidebarCollapsed(collapsed);
+            localStorage.setItem('tauri-shell-sidebar-collapsed', collapsed ? '1' : '0');
+        }
+
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        if (localStorage.getItem('tauri-shell-sidebar-collapsed') === '1') applySidebarCollapsed(true);
+
+        /* 统一悬浮提示：汉堡按钮与折叠态导航项用 Tooltip 同款气泡，替代原生 title */
+        const sideTip = document.createElement('div');
+        sideTip.className = 'side-tip';
+        sideTip.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(sideTip);
+
+        function showSideTip(btn, text) {
+            sideTip.textContent = text;
+            const r = btn.getBoundingClientRect();
+            sideTip.style.left = (r.right + 10) + 'px';
+            sideTip.classList.add('visible');
+            sideTip.style.top = (r.top + (r.height - sideTip.offsetHeight) / 2) + 'px';
+        }
+        function hideSideTip() {
+            sideTip.classList.remove('visible');
+        }
+        function bindSideTip(btn, getText) {
+            const refresh = () => {
+                const text = getText();
+                if (text) showSideTip(btn, text);
+                else hideSideTip();
+            };
+            btn.addEventListener('mouseenter', refresh);
+            btn.addEventListener('focus', refresh);
+            btn.addEventListener('mouseleave', hideSideTip);
+            btn.addEventListener('blur', hideSideTip);
+            // 点击后折叠态变化，若仍悬停则刷新文案与位置
+            btn.addEventListener('click', () => {
+                if (sideTip.classList.contains('visible')) requestAnimationFrame(refresh);
+            });
+        }
+
+        bindSideTip(sidebarToggle, () =>
+            (sidebar.classList.contains('collapsed') ? '展开侧边栏' : '折叠侧边栏') + '（Ctrl+B）');
+        // 展开态标签可见，不出提示；折叠态用气泡补充文字信息（多维编码，不仅靠图标）
+        navItems.forEach(n => bindSideTip(n, () =>
+            sidebar.classList.contains('collapsed') ? n.querySelector('.nav-label').textContent : ''));
 
         /* ═══════════════════════ 深色模式 ═══════════════════════ */
         const themeToggle = document.getElementById('themeToggle');
@@ -2362,19 +2567,27 @@ See the Mulan PSL v2 for more details.
         });
 
         /* ═══════════════════════ 计数器 ═══════════════════════ */
-        let counter = 0;
+        // 页面状态保持：计数器值持久化，重启后恢复
+        let counter = parseInt(localStorage.getItem('tauri-shell-counter'), 10) || 0;
         const counterDisplay = document.getElementById('counterValue');
+
+        function renderCounter() {
+            counterDisplay.textContent = counter;
+            localStorage.setItem('tauri-shell-counter', String(counter));
+        }
+        counterDisplay.textContent = counter;
+
         document.getElementById('counterInc').addEventListener('click', () => {
             counter++;
-            counterDisplay.textContent = counter;
+            renderCounter();
         });
         document.getElementById('counterDec').addEventListener('click', () => {
             counter--;
-            counterDisplay.textContent = counter;
+            renderCounter();
         });
         document.getElementById('counterReset').addEventListener('click', () => {
             counter = 0;
-            counterDisplay.textContent = counter;
+            renderCounter();
         });
 
         /* ═══════════════════════ 剪贴板 ═══════════════════════ */
@@ -2427,6 +2640,60 @@ See the Mulan PSL v2 for more details.
         if (savedLang) document.getElementById('settingsLang').value = savedLang;
         const savedAuto = localStorage.getItem('tauri-shell-autosave');
         if (savedAuto === '0') document.getElementById('autoSave').checked = false;
+
+        /* ═══════════════════════ 设置导入/导出 ═══════════════════════ */
+        {
+            const SETTINGS_PREFIX = 'tauri-shell-';
+            const importFile = document.getElementById('settingsImportFile');
+
+            document.getElementById('settingsExport').addEventListener('click', () => {
+                const data = {};
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key.startsWith(SETTINGS_PREFIX)) data[key] = localStorage.getItem(key);
+                }
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'qingke-settings.json';
+                a.click();
+                // 延迟释放 blob URL，避免个别 WebView 实现在下载排队前释放导致失败
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+                window._showToast && window._showToast('success', '设置已导出为 qingke-settings.json');
+                window._logActivity && window._logActivity('导出了应用设置');
+            });
+
+            document.getElementById('settingsImportBtn').addEventListener('click', () => importFile.click());
+
+            importFile.addEventListener('change', () => {
+                const file = importFile.files[0];
+                importFile.value = '';
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = () => {
+                    try {
+                        const data = JSON.parse(reader.result);
+                        if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+                            throw new Error('文件格式不正确');
+                        }
+                        // 仅接受本应用前缀的字符串键，其余忽略
+                        const keys = Object.keys(data).filter(k => k.startsWith(SETTINGS_PREFIX) && typeof data[k] === 'string');
+                        if (keys.length === 0) throw new Error('未找到可导入的设置项');
+                        keys.forEach(k => localStorage.setItem(k, data[k]));
+                        window._showToast && window._showToast('success', '导入成功，正在应用…');
+                        // 整页刷新，使各模块从 localStorage 重新初始化
+                        setTimeout(() => location.reload(), 800);
+                    } catch (e) {
+                        window._showToast && window._showToast('error', '导入失败：' + e.message);
+                    }
+                };
+                reader.onerror = () => {
+                    window._showToast && window._showToast('error', '文件读取失败');
+                };
+                reader.readAsText(file);
+            });
+        }
 
         /* ═══════════ 仪表盘增强：实时时钟 / 系统信息 / 快捷操作 / 最近活动 ═══════════ */
         {
@@ -2502,6 +2769,9 @@ See the Mulan PSL v2 for more details.
             logActivity('欢迎使用轻壳');
             logActivity('加载本地设置');
             logActivity('应用启动完成');
+
+            // 暴露到页面作用域，供右键菜单 / 设置导入导出等模块记录操作
+            window._logActivity = logActivity;
 
             /* ───── 快捷操作入口 ───── */
             // 注意：不用 scrollIntoView，它会连带滚动 overflow:hidden 的 html/body，
@@ -3538,6 +3808,161 @@ See the Mulan PSL v2 for more details.
             document.getElementById('progressReset').addEventListener('click', () => {
                 percent = 40;
                 renderProgress();
+            });
+        }
+
+        /* ═══════════════════════ 自定义右键菜单 ═══════════════════════ */
+        {
+            const menu = document.getElementById('contextMenu');
+            const ctxCopy = document.getElementById('ctxCopy');
+            const ctxPaste = document.getElementById('ctxPaste');
+            const ctxThemeLabel = document.getElementById('ctxThemeLabel');
+            const menuItems = [...menu.querySelectorAll('.context-menu-item')];
+            let ctxTarget = null; // 右键时的目标元素，供复制/粘贴定位
+            let lastFocusEl = null; // 打开前的焦点元素，关闭时归还
+
+            // 支持选区/插入的文本类控件（排除 color 等无选区概念的 input）
+            const isTextField = el => el && (el.tagName === 'TEXTAREA' ||
+                (el.tagName === 'INPUT' && ['text', 'search', 'url', 'tel', 'password'].includes(el.type)));
+            const isEditable = el => isTextField(el) && !el.readOnly && !el.disabled;
+
+            function hasCopyableSelection(target) {
+                if (isTextField(target)) return target.selectionStart !== target.selectionEnd;
+                return String(window.getSelection()).length > 0;
+            }
+
+            function openMenu(x, y, target) {
+                ctxTarget = target;
+                lastFocusEl = document.activeElement;
+                ctxCopy.disabled = !hasCopyableSelection(target);
+                ctxPaste.disabled = !isEditable(target);
+                ctxThemeLabel.textContent = themeToggle.checked ? '切换浅色模式' : '切换深色模式';
+                // 先显示再测量，坐标钳制在视口内
+                menu.classList.add('open');
+                const rect = menu.getBoundingClientRect();
+                menu.style.left = Math.max(8, Math.min(x, window.innerWidth - rect.width - 8)) + 'px';
+                menu.style.top = Math.max(8, Math.min(y, window.innerHeight - rect.height - 8)) + 'px';
+                // ARIA menu 模式：打开即聚焦首个可用项（程序聚焦不会清除页面选区）
+                const first = menuItems.find(i => !i.disabled);
+                if (first) first.focus();
+            }
+
+            function closeMenu() {
+                if (!menu.classList.contains('open')) return;
+                menu.classList.remove('open');
+                // 焦点若仍在菜单内，归还给打开前的元素，避免焦点丢失
+                if (menu.contains(document.activeElement) && lastFocusEl && lastFocusEl.focus) {
+                    lastFocusEl.focus();
+                }
+            }
+
+            // 方向键在可用项间循环移动焦点（roving tabindex，菜单项 tabindex=-1）
+            function moveFocus(delta) {
+                const enabled = menuItems.filter(i => !i.disabled);
+                if (enabled.length === 0) return;
+                const idx = enabled.indexOf(document.activeElement);
+                const next = idx === -1
+                    ? (delta > 0 ? enabled[0] : enabled[enabled.length - 1])
+                    : enabled[(idx + delta + enabled.length) % enabled.length];
+                next.focus();
+            }
+
+            // 屏蔽浏览器默认菜单，改在光标处弹出应用风格菜单
+            document.addEventListener('contextmenu', e => {
+                e.preventDefault();
+                openMenu(e.clientX, e.clientY, e.target);
+            });
+            // 菜单内 mousedown 不夺焦点，避免点击菜单项时清除页面选区
+            menu.addEventListener('mousedown', e => e.preventDefault());
+            document.addEventListener('click', e => {
+                if (!menu.contains(e.target)) closeMenu();
+            });
+            document.addEventListener('keydown', e => {
+                if (!menu.classList.contains('open')) return;
+                if (e.key === 'Escape') {
+                    closeMenu();
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    moveFocus(1);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    moveFocus(-1);
+                } else if (e.key === 'Tab') {
+                    // 菜单不参与 Tab 序，Tab 直接关闭并归还焦点
+                    e.preventDefault();
+                    closeMenu();
+                }
+            });
+            window.addEventListener('blur', closeMenu);
+            window.addEventListener('resize', closeMenu);
+
+            ctxCopy.addEventListener('click', async () => {
+                closeMenu();
+                const t = ctxTarget;
+                const text = isTextField(t)
+                    ? t.value.slice(t.selectionStart, t.selectionEnd)
+                    : String(window.getSelection());
+                if (!text) return;
+                try {
+                    await navigator.clipboard.writeText(text);
+                    window._showToast && window._showToast('success', '已复制到剪贴板');
+                } catch {
+                    window._showToast && window._showToast('error', '复制失败');
+                }
+            });
+
+            ctxPaste.addEventListener('click', async () => {
+                closeMenu();
+                const t = ctxTarget;
+                if (!isEditable(t)) return;
+                try {
+                    const text = await navigator.clipboard.readText();
+                    t.setRangeText(text, t.selectionStart, t.selectionEnd, 'end');
+                    t.focus();
+                    // 便签本等模块依赖 input 事件自动保存
+                    t.dispatchEvent(new Event('input', { bubbles: true }));
+                } catch {
+                    window._showToast && window._showToast('error', '无法读取剪贴板（需权限）');
+                }
+            });
+
+            document.getElementById('ctxTop').addEventListener('click', () => {
+                closeMenu();
+                const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+                document.querySelector('.main-content').scrollTo({ top: 0, behavior });
+            });
+
+            document.getElementById('ctxTheme').addEventListener('click', () => {
+                closeMenu();
+                themeToggle.checked = !themeToggle.checked;
+                // 复用开关的 change 监听（主题切换 + 活动日志）
+                themeToggle.dispatchEvent(new Event('change'));
+            });
+
+            document.getElementById('ctxAbout').addEventListener('click', () => {
+                closeMenu();
+                switchPage('about');
+                window._logActivity && window._logActivity('通过右键菜单打开关于页');
+            });
+        }
+
+        /* ═══════════════════════ 键盘全局导航 ═══════════════════════ */
+        {
+            // 与侧边栏导航视觉同序（设置居底）：Ctrl+1~6 切页，Ctrl+B 折叠侧边栏
+            const PAGE_ORDER = ['dashboard', 'tools', 'tauri', 'components', 'about', 'settings'];
+            document.addEventListener('keydown', e => {
+                if (!e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) return;
+                if (e.key.toLowerCase() === 'b') {
+                    e.preventDefault();
+                    toggleSidebar();
+                    return;
+                }
+                const idx = '123456'.indexOf(e.key);
+                if (idx === -1) return;
+                // Modal 打开时不切页，避免遮罩下方内容变化
+                if (document.getElementById('modalOverlay').classList.contains('open')) return;
+                e.preventDefault();
+                switchPage(PAGE_ORDER[idx]);
             });
         }
     }
