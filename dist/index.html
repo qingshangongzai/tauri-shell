@@ -276,7 +276,7 @@ See the Mulan PSL v2 for more details.
             color: var(--copy-success);
             margin-left: 8px;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity var(--duration-slow) var(--ease);
         }
         .about-app-name {
             font-size: 1rem;
@@ -405,14 +405,29 @@ See the Mulan PSL v2 for more details.
             overscroll-behavior: none;
             padding: 24px;
         }
-        .page {
-            display: none;
-            animation: fadeSlide 0.25s var(--ease);
-        }
+        .page { display: none; }
         .page.active { display: block; }
+        /* 页面切换：子元素 staggered 入场，逐项错开 40ms，第 7 项起封顶，长页面不拖沓；
+           backwards 让延迟期间停在首帧，避免闪现 */
+        .page.active > * {
+            animation: fadeSlide var(--duration-slow) var(--ease) backwards;
+        }
+        .page.active > :nth-child(2) { animation-delay: 40ms; }
+        .page.active > :nth-child(3) { animation-delay: 80ms; }
+        .page.active > :nth-child(4) { animation-delay: 120ms; }
+        .page.active > :nth-child(5) { animation-delay: 160ms; }
+        .page.active > :nth-child(6) { animation-delay: 200ms; }
+        .page.active > :nth-child(n+7) { animation-delay: 240ms; }
         @keyframes fadeSlide {
             from { opacity: 0; transform: translateY(6px); }
             to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 主题切换过渡：view-transition 整页交叉淡变（不支持时 JS 侧直接切换） */
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+            animation-duration: var(--duration-slow);
+            animation-timing-function: var(--ease);
         }
 
         /* ═════════════════════ 通用组件样式 ═════════════════════ */
@@ -1419,12 +1434,27 @@ See the Mulan PSL v2 for more details.
             align-items: center;
             justify-content: center;
             z-index: 3000;
-            animation: modalFadeIn 0.2s var(--ease);
+            animation: modalFadeIn var(--duration-normal) var(--ease);
         }
         .modal-overlay.open { display: flex; }
         @keyframes modalFadeIn {
             from { opacity: 0; }
             to   { opacity: 1; }
+        }
+        /* 退场：与入场对称（同 Toast 的 .removing 模式），animationend 后由 JS 摘除 open */
+        .modal-overlay.closing {
+            animation: modalFadeOut var(--duration-normal) var(--ease) forwards;
+        }
+        @keyframes modalFadeOut {
+            from { opacity: 1; }
+            to   { opacity: 0; }
+        }
+        .modal-overlay.closing .modal {
+            animation: modalPopOut var(--duration-normal) var(--ease) forwards;
+        }
+        @keyframes modalPopOut {
+            from { opacity: 1; transform: translateY(0) scale(1); }
+            to   { opacity: 0; transform: translateY(12px) scale(0.96); }
         }
         .modal {
             width: min(420px, calc(100vw - 48px));
@@ -1433,7 +1463,7 @@ See the Mulan PSL v2 for more details.
             box-shadow: var(--shadow-flyout);
             padding: 24px;
             outline: none;
-            animation: modalPopIn 0.25s var(--ease);
+            animation: modalPopIn var(--duration-normal) var(--ease);
         }
         @keyframes modalPopIn {
             from { opacity: 0; transform: translateY(12px) scale(0.96); }
@@ -1484,7 +1514,11 @@ See the Mulan PSL v2 for more details.
             box-shadow: var(--shadow-card);
         }
         .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
+        .tab-panel.active {
+            display: block;
+            /* 面板切换复用页面入场关键帧，更短时长体现层级差异 */
+            animation: fadeSlide var(--duration-normal) var(--ease);
+        }
         .tab-panel-text {
             font-size: 0.78rem;
             color: var(--text-body);
@@ -2562,9 +2596,19 @@ See the Mulan PSL v2 for more details.
         }
         themeToggle.addEventListener('change', () => {
             const isDark = themeToggle.checked;
-            document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
+            applyTheme(isDark);
             localStorage.setItem('tauri-shell-theme', isDark ? 'dark' : 'light');
         });
+
+        // view-transition 整页交叉淡变切主题；不支持或用户减弱动效时直接切换
+        function applyTheme(isDark) {
+            const apply = () => document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
+            if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.startViewTransition(apply);
+            } else {
+                apply();
+            }
+        }
 
         /* ═══════════════════════ 计数器 ═══════════════════════ */
         // 页面状态保持：计数器值持久化，重启后恢复
@@ -3726,12 +3770,22 @@ See the Mulan PSL v2 for more details.
 
             function openModal() {
                 lastFocus = document.activeElement;
+                // 退场未结束即重开：取消收尾监听，避免 open 被误摘
+                overlay.removeEventListener('animationend', finishClose);
+                overlay.classList.remove('closing');
                 overlay.classList.add('open');
                 modal.focus();
             }
 
+            function finishClose() {
+                overlay.classList.remove('open', 'closing');
+            }
+
             function closeModal() {
-                overlay.classList.remove('open');
+                if (overlay.classList.contains('closing')) return;
+                // 先播退场动画，animationend 后再真正隐藏（同 Toast 的 .removing 模式）
+                overlay.classList.add('closing');
+                overlay.addEventListener('animationend', finishClose, { once: true });
                 if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
             }
 
