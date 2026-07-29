@@ -2027,10 +2027,10 @@ See the Mulan PSL v2 for more details.
                 <div class="card dashboard-quickstart">
                     <h3 class="card-title-sm-lg">快速开始</h3>
                     <ol class="quickstart-list">
-                        <li>修改 <code>dist/index.html</code> 编写你的界面</li>
+                        <li>修改 <code>dist/index.html</code> 编写你的界面（同风格开发可从 <code>components/starter.html</code> 起步，组件按需从 <code>components/</code> 拆用）</li>
                         <li>替换 <code>src-tauri/icons/logo.svg</code> 为你的应用图标（构建时自动同步安装器）</li>
-                        <li>修改 <code>tauri.conf.json</code> 中的应用名称和标识</li>
-                        <li>同步安装向导产品信息，改名清单见 <code>docs/安装器说明.md</code></li>
+                        <li>修改 <code>tauri.conf.json</code> 中的应用名称和标识，完整改名清单见 <code>docs/使用说明.md</code></li>
+                        <li>同步安装向导产品信息，详见 <code>docs/安装器说明.md</code></li>
                         <li>运行 <code>npm run build</code> 打包单文件安装器（或 <code>npm run build:nsis</code> 走 NSIS）</li>
                     </ol>
                 </div>
@@ -2194,7 +2194,7 @@ See the Mulan PSL v2 for more details.
             <!-- Tauri 能力展示页 -->
             <section class="page" id="page-tauri">
                 <h1 class="page-title">能力展示</h1>
-                <p class="page-desc">展示 Web 平台能力在桌面应用中的用法：键盘事件、拖放、通知。</p>
+                <p class="page-desc">展示 Web 平台能力在桌面应用中的用法：键盘事件与拖放。</p>
 
                 <!-- 快捷键面板 -->
                 <div class="card card-spaced">
@@ -2238,7 +2238,7 @@ See the Mulan PSL v2 for more details.
                 </div>
 
                 <!-- 拖放区域 -->
-                <div class="card card-spaced">
+                <div class="card">
                     <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-folder"></use></svg> 拖放区域</h2>
                     <p class="card-subtitle">Drag &amp; Drop API，拖入文件显示名称、大小与类型</p>
 
@@ -2252,23 +2252,6 @@ See the Mulan PSL v2 for more details.
 
                     <div class="drop-file-list" id="dropFileList" role="list" aria-label="已拖放的文件列表"></div>
                     <div class="drop-empty" id="dropEmpty" role="status">尚未拖放任何文件</div>
-                </div>
-
-                <!-- Toast 通知演示 -->
-                <div class="card">
-                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-bell"></use></svg> 应用内通知</h2>
-                    <p class="card-subtitle">点击按钮触发不同类型的 Toast 通知，自动消失</p>
-                    <div class="toast-demo-actions">
-                        <button class="btn btn-primary" id="toastSuccess" aria-label="触发成功通知">
-                            <svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg> 成功通知
-                        </button>
-                        <button class="btn btn-secondary" id="toastWarning" aria-label="触发警告通知">
-                            <svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg> 警告通知
-                        </button>
-                        <button class="btn btn-secondary" id="toastError" aria-label="触发错误通知">
-                            <svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg> 错误通知
-                        </button>
-                    </div>
                 </div>
             </section>
 
@@ -3936,7 +3919,7 @@ See the Mulan PSL v2 for more details.
             renderFileList();
         }
 
-        /* ═══════════════════════ Toast 演示按钮（能力页 + 组件页共用绑定） ═══════════════════════ */
+        /* ═══════════════════════ Toast 演示按钮（组件页） ═══════════════════════ */
         {
             const bindToastDemo = (id, type, message) => {
                 const btn = document.getElementById(id);
@@ -3944,9 +3927,6 @@ See the Mulan PSL v2 for more details.
                     window._showToast && window._showToast(type, message);
                 });
             };
-            bindToastDemo('toastSuccess', 'success', '操作已成功完成！');
-            bindToastDemo('toastWarning', 'warning', '请注意，存储空间不足。');
-            bindToastDemo('toastError', 'error', '发生了错误，请稍后重试。');
             bindToastDemo('compToastSuccess', 'success', '操作已成功完成！');
             bindToastDemo('compToastWarning', 'warning', '请注意，存储空间不足。');
             bindToastDemo('compToastError', 'error', '发生了错误，请稍后重试。');
