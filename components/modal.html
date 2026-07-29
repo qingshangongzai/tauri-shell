@@ -1,0 +1,267 @@
+<!--
+Copyright (c) 2026 青山公仔
+轻壳 (Tauri Shell) is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details.
+-->
+<!--
+═══════════ Modal 弹窗 — 自包含 demo ═══════════
+来源：拷贝自 dist/index.html「UI 组件：Modal 弹窗」CSS 分节 + 同名 JS 分节，
+      改动请双向同步（dist/index.html 为权威源）。
+依赖：设计令牌子集（已内联，完整版见 tokens.css）、.btn 基础样式。
+特性：ESC / 点击遮罩关闭、退场动画（.closing + animationend）、
+      Tab 焦点圈禁（焦点不逃逸出对话框）、关闭后焦点归还触发元素。
+用法：双击本文件即可在浏览器预览；移植时复制「组件 CSS」「组件 HTML」「组件 JS」三段。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal 弹窗 · 组件 demo</title>
+    <style>
+        /* ───── 设计令牌子集（拷贝自 tokens.css，勿单侧改动） ───── */
+        :root {
+            --bg: #fcfcfc;
+            --card: #feffff;
+            --hover: #e0e0e0;
+            --accent: #005fb8;
+            --accent-hover: #004a94;
+            --on-accent: #ffffff;
+            --text-primary: rgba(0, 0, 0, 0.87);
+            --text-body: rgba(0, 0, 0, 0.78);
+            --text-auxiliary: rgba(0, 0, 0, 0.52);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --duration-fast: 100ms;
+            --duration-normal: 200ms;
+            --duration-slow: 300ms;
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.14);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --font: "Noto Serif SC", "edit Han Serif SC", "SimSun", "宋体", serif;
+        }
+        [data-theme="dark"] {
+            --bg: #202020;
+            --card: #232323;
+            --hover: #3d3d3d;
+            --accent: #60cdff;
+            --accent-hover: #8ad6ff;
+            --on-accent: rgba(0, 0, 0, 0.87);
+            --text-primary: rgba(255, 255, 255, 0.87);
+            --text-body: rgba(255, 255, 255, 0.6);
+            --text-auxiliary: rgba(255, 255, 255, 0.4);
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ───── demo 页面骨架（非组件本体） ───── */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 32px;
+        }
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow-card);
+            max-width: 560px;
+            margin: 0 auto 16px;
+        }
+        .card-title-sm { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+        .card-subtitle { font-size: 0.7rem; color: var(--text-auxiliary); margin-bottom: 8px; }
+        .demo-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 520;
+            font-family: var(--font);
+            cursor: pointer;
+            border: none;
+            transition: background var(--duration-fast) var(--ease), opacity var(--duration-fast) var(--ease), transform var(--duration-fast) var(--ease);
+        }
+        .btn:active { transform: scale(0.97); opacity: 0.8; }
+        .btn-primary { background: var(--accent); color: var(--on-accent); }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-secondary { background: var(--hover); color: var(--text-primary); }
+        .btn-secondary:hover { opacity: 0.8; }
+
+        /* ═════════════════════ 组件 CSS：Modal 弹窗（拷贝自 dist/index.html） ═════════════════════ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            animation: modalFadeIn var(--duration-normal) var(--ease);
+        }
+        .modal-overlay.open { display: flex; }
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        /* 退场：与入场对称（同 Toast 的 .removing 模式），animationend 后由 JS 摘除 open */
+        .modal-overlay.closing {
+            animation: modalFadeOut var(--duration-normal) var(--ease) forwards;
+        }
+        @keyframes modalFadeOut {
+            from { opacity: 1; }
+            to   { opacity: 0; }
+        }
+        .modal-overlay.closing .modal {
+            animation: modalPopOut var(--duration-normal) var(--ease) forwards;
+        }
+        @keyframes modalPopOut {
+            from { opacity: 1; transform: translateY(0) scale(1); }
+            to   { opacity: 0; transform: translateY(12px) scale(0.96); }
+        }
+        .modal {
+            width: min(420px, calc(100vw - 48px));
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-flyout);
+            padding: 24px;
+            outline: none;
+            animation: modalPopIn var(--duration-normal) var(--ease);
+        }
+        @keyframes modalPopIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.96); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .modal-title {
+            font-size: 0.92rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .modal-body {
+            font-size: 0.8rem;
+            color: var(--text-body);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        /* ───── 动效降级 ───── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- demo 触发按钮 -->
+    <div class="card">
+        <h2 class="card-title-sm">Modal 弹窗</h2>
+        <p class="card-subtitle">居中遮罩层，支持 ESC 键与点击遮罩关闭</p>
+        <div class="demo-actions">
+            <button class="btn btn-primary" id="modalOpen">打开弹窗</button>
+            <button class="btn btn-secondary" id="themeBtn">切换深色</button>
+        </div>
+    </div>
+
+    <!-- ═════════ 组件 HTML：遮罩层全局挂载（放 body 内任意位置，fixed 定位） ═════════ -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+            <h3 class="modal-title" id="modalTitle">确认操作</h3>
+            <div class="modal-body">这是一个居中弹窗示例：按 ESC 键或点击遮罩均可关闭。弹窗通过弥散阴影与遮罩建立空间层级，不使用边框线条。</div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="modalCancel">取消</button>
+                <button class="btn btn-primary" id="modalConfirm">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    /* ═════════════════════ 组件 JS：Modal 弹窗（拷贝自 dist/index.html） ═════════════════════ */
+    {
+        const overlay = document.getElementById('modalOverlay');
+        const modal = overlay.querySelector('.modal');
+        let lastFocus = null;
+
+        function openModal() {
+            lastFocus = document.activeElement;
+            // 退场未结束即重开：取消收尾监听，避免 open 被误摘
+            overlay.removeEventListener('animationend', finishClose);
+            overlay.classList.remove('closing');
+            overlay.classList.add('open');
+            modal.focus();
+        }
+
+        function finishClose() {
+            overlay.classList.remove('open', 'closing');
+        }
+
+        function closeModal() {
+            if (overlay.classList.contains('closing')) return;
+            // 先播退场动画，animationend 后再真正隐藏（同 Toast 的 .removing 模式）
+            overlay.classList.add('closing');
+            overlay.addEventListener('animationend', finishClose, { once: true });
+            if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+        }
+
+        document.getElementById('modalOpen').addEventListener('click', openModal);
+        document.getElementById('modalCancel').addEventListener('click', closeModal);
+        document.getElementById('modalConfirm').addEventListener('click', () => {
+            closeModal();
+            // 页面里有 Toast 组件时可在此给出反馈
+            window._showToast && window._showToast('success', '操作已确认');
+        });
+
+        // 点击遮罩自身关闭（点击弹窗内部不触发）
+        overlay.addEventListener('click', e => {
+            if (e.target === overlay) closeModal();
+        });
+
+        // ESC 关闭 + Tab 焦点圈禁（aria-modal 需配合焦点不逃逸出对话框）
+        document.addEventListener('keydown', e => {
+            if (!overlay.classList.contains('open')) return;
+            if (e.key === 'Escape') {
+                closeModal();
+                return;
+            }
+            if (e.key === 'Tab') {
+                const focusables = modal.querySelectorAll('button');
+                const first = focusables[0];
+                const last = focusables[focusables.length - 1];
+                if (e.shiftKey && (document.activeElement === first || document.activeElement === modal)) {
+                    e.preventDefault();
+                    last.focus();
+                } else if (!e.shiftKey && document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            }
+        });
+    }
+
+    /* ───── demo 绑定（非组件本体） ───── */
+    document.getElementById('themeBtn').addEventListener('click', () => {
+        const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute('data-theme', dark ? '' : 'dark');
+    });
+    </script>
+</body>
+</html>

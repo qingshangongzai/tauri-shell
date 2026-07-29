@@ -1,0 +1,352 @@
+<!--
+Copyright (c) 2026 青山公仔
+轻壳 (Tauri Shell) is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details.
+-->
+<!--
+═══════════ 自定义右键菜单 — 自包含 demo ═══════════
+来源：拷贝自 dist/index.html「自定义右键菜单」CSS 分节 + 同名 JS 分节，
+      改动请双向同步（dist/index.html 为权威源）。
+      与 index.html 的差异：主题项直接切换 data-theme、「返回顶部」滚动 window、
+      「关于」项换成演示回调（原为切换到关于页）；反馈从 Toast 改为状态行。
+依赖：设计令牌子集（已内联，完整版见 tokens.css）、flyoutPopIn keyframe（浮层入场，
+      在 dist/index.html 中位于「通用组件样式」分节）、SVG symbol：i-copy / i-clipboard /
+      i-arrow-up / i-moon / i-info。
+特性：屏蔽浏览器默认菜单、坐标钳制在视口内、复制/粘贴按选区与可编辑性置灰、
+      roving 焦点 + 方向键循环导航、Esc/失焦/缩放关闭、关闭归还焦点。
+用法：双击本文件即可在浏览器预览；移植时复制「组件 CSS」「组件 HTML」「组件 JS」三段，
+      按需增删菜单项（分组间用 .context-menu-gap 留白，不用分割线）。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自定义右键菜单 · 组件 demo</title>
+    <style>
+        /* ───── 设计令牌子集（拷贝自 tokens.css，勿单侧改动） ───── */
+        :root {
+            --bg: #fcfcfc;
+            --card: #feffff;
+            --hover: #e0e0e0;
+            --accent: #005fb8;
+            --text-primary: rgba(0, 0, 0, 0.87);
+            --text-body: rgba(0, 0, 0, 0.78);
+            --text-auxiliary: rgba(0, 0, 0, 0.52);
+            --text-placeholder: rgba(0, 0, 0, 0.3);
+            --input-bg: rgba(0, 0, 0, 0.02);
+            --input-bg-focus: rgba(0, 0, 0, 0.04);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --duration-fast: 100ms;
+            --duration-normal: 200ms;
+            --duration-slow: 300ms;
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.14);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --font: "Noto Serif SC", "edit Han Serif SC", "SimSun", "宋体", serif;
+        }
+        [data-theme="dark"] {
+            --bg: #202020;
+            --card: #232323;
+            --hover: #3d3d3d;
+            --accent: #60cdff;
+            --text-primary: rgba(255, 255, 255, 0.87);
+            --text-body: rgba(255, 255, 255, 0.6);
+            --text-auxiliary: rgba(255, 255, 255, 0.4);
+            --text-placeholder: rgba(255, 255, 255, 0.25);
+            --input-bg: rgba(255, 255, 255, 0.04);
+            --input-bg-focus: rgba(255, 255, 255, 0.07);
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ───── demo 页面骨架（非组件本体） ───── */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 32px;
+        }
+        .icon { width: 1em; height: 1em; flex-shrink: 0; vertical-align: -0.15em; }
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow-card);
+            max-width: 560px;
+            margin: 0 auto 16px;
+        }
+        .card-title-sm { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+        .card-subtitle { font-size: 0.7rem; color: var(--text-auxiliary); margin-bottom: 8px; }
+        .demo-textarea {
+            width: 100%;
+            min-height: 72px;
+            margin-top: 8px;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            caret-color: var(--accent);
+            outline: none;
+            font-size: 0.82rem;
+            font-family: var(--font);
+            resize: vertical;
+            transition: background var(--duration-fast) var(--ease);
+        }
+        .demo-textarea::placeholder { color: var(--text-placeholder); }
+        .demo-textarea:focus { background: var(--input-bg-focus); }
+        .demo-status { font-size: 0.75rem; color: var(--text-auxiliary); margin-top: 8px; min-height: 1.2em; }
+
+        /* ═════════════════════ 组件 CSS：自定义右键菜单（拷贝自 dist/index.html） ═════════════════════ */
+        /* 浮层通用入场动效（在 dist/index.html 中位于「通用组件样式」分节，与下拉面板共用） */
+        @keyframes flyoutPopIn {
+            from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+            to   { opacity: 1; transform: none; }
+        }
+        /* 去线留白：卡片底色 + 弥散阴影建立浮层层级，分组间以留白代替分割线 */
+        .context-menu {
+            position: fixed;
+            z-index: 4000;
+            min-width: 168px;
+            padding: 6px;
+            background: var(--card);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-flyout);
+            display: none;
+            flex-direction: column;
+        }
+        .context-menu.open {
+            display: flex;
+            animation: flyoutPopIn var(--duration-normal) var(--ease);
+        }
+        .context-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 10px;
+            border: none;
+            border-radius: calc(var(--radius-sm) - 2px);
+            background: none;
+            color: var(--text-body);
+            font-size: 0.78rem;
+            font-weight: 450;
+            font-family: var(--font);
+            cursor: pointer;
+            text-align: left;
+            white-space: nowrap;
+            transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
+        }
+        .context-menu-item .icon { width: 14px; height: 14px; color: var(--text-auxiliary); }
+        .context-menu-item:hover { background: var(--hover); color: var(--text-primary); }
+        /* 禁用态用占位符级不透明度表达，不用边框或删除线 */
+        .context-menu-item:disabled,
+        .context-menu-item:disabled:hover {
+            background: none;
+            color: var(--text-placeholder);
+            cursor: default;
+        }
+        .context-menu-item:disabled .icon { color: var(--text-placeholder); }
+        .context-menu-gap { height: 8px; flex-shrink: 0; }
+
+        /* ───── 动效降级 ───── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 组件依赖的 SVG symbol（Lucide 风格线性描边，currentColor 随主题） -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+        <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+        <symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+        <symbol id="i-arrow-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></symbol>
+        <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+        <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+    </svg>
+
+    <!-- demo 说明与试验区 -->
+    <div class="card">
+        <h2 class="card-title-sm">自定义右键菜单</h2>
+        <p class="card-subtitle">在页面任意位置点击右键弹出应用风格菜单；选中文字后「复制」可用，在文本框上「粘贴」可用；支持 Esc / 方向键键盘导航</p>
+        <textarea class="demo-textarea" placeholder="在这里输入或选中文字，然后点右键试试复制 / 粘贴"></textarea>
+        <p class="demo-status" id="demoStatus"></p>
+    </div>
+
+    <!-- ═════════ 组件 HTML：全局挂载（替代浏览器默认菜单；菜单项 tabindex=-1 走 roving 焦点，方向键导航） ═════════ -->
+    <div class="context-menu" id="contextMenu" role="menu" aria-label="应用右键菜单">
+        <button class="context-menu-item" id="ctxCopy" role="menuitem" tabindex="-1">
+            <svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg> 复制
+        </button>
+        <button class="context-menu-item" id="ctxPaste" role="menuitem" tabindex="-1">
+            <svg class="icon" aria-hidden="true"><use href="#i-clipboard"></use></svg> 粘贴
+        </button>
+        <div class="context-menu-gap" aria-hidden="true"></div>
+        <button class="context-menu-item" id="ctxTop" role="menuitem" tabindex="-1">
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-up"></use></svg> 返回顶部
+        </button>
+        <button class="context-menu-item" id="ctxTheme" role="menuitem" tabindex="-1">
+            <svg class="icon" aria-hidden="true"><use href="#i-moon"></use></svg> <span id="ctxThemeLabel">切换深色模式</span>
+        </button>
+        <div class="context-menu-gap" aria-hidden="true"></div>
+        <button class="context-menu-item" id="ctxAbout" role="menuitem" tabindex="-1">
+            <svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg> 关于轻壳
+        </button>
+    </div>
+
+    <script>
+    /* ═════════════════════ 组件 JS：自定义右键菜单（拷贝自 dist/index.html，反馈改为状态行） ═════════════════════ */
+    {
+        const menu = document.getElementById('contextMenu');
+        const ctxCopy = document.getElementById('ctxCopy');
+        const ctxPaste = document.getElementById('ctxPaste');
+        const ctxThemeLabel = document.getElementById('ctxThemeLabel');
+        const menuItems = [...menu.querySelectorAll('.context-menu-item')];
+        let ctxTarget = null; // 右键时的目标元素，供复制/粘贴定位
+        let lastFocusEl = null; // 打开前的焦点元素，关闭时归还
+
+        // demo 反馈：index.html 中此处调用 window._showToast
+        const demoStatus = document.getElementById('demoStatus');
+        const showStatus = text => { demoStatus.textContent = text; };
+
+        const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
+
+        // 支持选区/插入的文本类控件（排除 color 等无选区概念的 input）
+        const isTextField = el => el && (el.tagName === 'TEXTAREA' ||
+            (el.tagName === 'INPUT' && ['text', 'search', 'url', 'tel', 'password'].includes(el.type)));
+        const isEditable = el => isTextField(el) && !el.readOnly && !el.disabled;
+
+        function hasCopyableSelection(target) {
+            if (isTextField(target)) return target.selectionStart !== target.selectionEnd;
+            return String(window.getSelection()).length > 0;
+        }
+
+        function openMenu(x, y, target) {
+            ctxTarget = target;
+            lastFocusEl = document.activeElement;
+            ctxCopy.disabled = !hasCopyableSelection(target);
+            ctxPaste.disabled = !isEditable(target);
+            ctxThemeLabel.textContent = isDark() ? '切换浅色模式' : '切换深色模式';
+            // 先显示再测量，坐标钳制在视口内
+            menu.classList.add('open');
+            const rect = menu.getBoundingClientRect();
+            menu.style.left = Math.max(8, Math.min(x, window.innerWidth - rect.width - 8)) + 'px';
+            menu.style.top = Math.max(8, Math.min(y, window.innerHeight - rect.height - 8)) + 'px';
+            // ARIA menu 模式：打开即聚焦首个可用项（程序聚焦不会清除页面选区）
+            const first = menuItems.find(i => !i.disabled);
+            if (first) first.focus();
+        }
+
+        function closeMenu() {
+            if (!menu.classList.contains('open')) return;
+            menu.classList.remove('open');
+            // 焦点若仍在菜单内，归还给打开前的元素，避免焦点丢失
+            if (menu.contains(document.activeElement) && lastFocusEl && lastFocusEl.focus) {
+                lastFocusEl.focus();
+            }
+        }
+
+        // 方向键在可用项间循环移动焦点（roving tabindex，菜单项 tabindex=-1）
+        function moveFocus(delta) {
+            const enabled = menuItems.filter(i => !i.disabled);
+            if (enabled.length === 0) return;
+            const idx = enabled.indexOf(document.activeElement);
+            const next = idx === -1
+                ? (delta > 0 ? enabled[0] : enabled[enabled.length - 1])
+                : enabled[(idx + delta + enabled.length) % enabled.length];
+            next.focus();
+        }
+
+        // 屏蔽浏览器默认菜单，改在光标处弹出应用风格菜单
+        document.addEventListener('contextmenu', e => {
+            e.preventDefault();
+            openMenu(e.clientX, e.clientY, e.target);
+        });
+        // 菜单内 mousedown 不夺焦点，避免点击菜单项时清除页面选区
+        menu.addEventListener('mousedown', e => e.preventDefault());
+        document.addEventListener('click', e => {
+            if (!menu.contains(e.target)) closeMenu();
+        });
+        document.addEventListener('keydown', e => {
+            if (!menu.classList.contains('open')) return;
+            if (e.key === 'Escape') {
+                closeMenu();
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                moveFocus(1);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                moveFocus(-1);
+            } else if (e.key === 'Tab') {
+                // 菜单不参与 Tab 序，Tab 直接关闭并归还焦点
+                e.preventDefault();
+                closeMenu();
+            }
+        });
+        window.addEventListener('blur', closeMenu);
+        window.addEventListener('resize', closeMenu);
+
+        ctxCopy.addEventListener('click', async () => {
+            closeMenu();
+            const t = ctxTarget;
+            const text = isTextField(t)
+                ? t.value.slice(t.selectionStart, t.selectionEnd)
+                : String(window.getSelection());
+            if (!text) return;
+            try {
+                await navigator.clipboard.writeText(text);
+                showStatus('已复制到剪贴板');
+            } catch {
+                showStatus('复制失败');
+            }
+        });
+
+        ctxPaste.addEventListener('click', async () => {
+            closeMenu();
+            const t = ctxTarget;
+            if (!isEditable(t)) return;
+            try {
+                const text = await navigator.clipboard.readText();
+                t.setRangeText(text, t.selectionStart, t.selectionEnd, 'end');
+                t.focus();
+                // 依赖 input 事件的模块（如自动保存）能收到通知
+                t.dispatchEvent(new Event('input', { bubbles: true }));
+            } catch {
+                showStatus('无法读取剪贴板（需权限）');
+            }
+        });
+
+        document.getElementById('ctxTop').addEventListener('click', () => {
+            closeMenu();
+            const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+            window.scrollTo({ top: 0, behavior });
+        });
+
+        document.getElementById('ctxTheme').addEventListener('click', () => {
+            closeMenu();
+            document.documentElement.setAttribute('data-theme', isDark() ? '' : 'dark');
+        });
+
+        document.getElementById('ctxAbout').addEventListener('click', () => {
+            closeMenu();
+            // index.html 中此处切换到关于页，demo 里用状态行代替
+            showStatus('轻壳 · 去线留白风格右键菜单 demo');
+        });
+    }
+    </script>
+</body>
+</html>

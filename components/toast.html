@@ -1,0 +1,299 @@
+<!--
+Copyright (c) 2026 青山公仔
+轻壳 (Tauri Shell) is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details.
+-->
+<!--
+═══════════ Toast 通知 — 自包含 demo ═══════════
+来源：拷贝自 dist/index.html「UI 组件：Toast 通知」CSS 分节 + 「Toast 通知组件」JS 分节，
+      改动请双向同步（dist/index.html 为权威源）。
+依赖：设计令牌子集（已内联，完整版见 tokens.css）、SVG symbol：i-check / i-alert / i-x / i-info、
+      全局挂载点 <div class="toast-container" id="toastContainer">。
+用法：双击本文件即可在浏览器预览；移植时复制「组件 CSS」「组件 HTML」「组件 JS」三段，
+      调用 window._showToast(type, message)，type 为 success / warning / error。
+注意：.toast-container 顶部偏移使用 --titlebar-h，本 demo 无标题栏故设为 0px，
+      带自定义标题栏的页面应保持 40px。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toast 通知 · 组件 demo</title>
+    <style>
+        /* ───── 设计令牌子集（拷贝自 tokens.css，勿单侧改动） ───── */
+        :root {
+            --bg: #fcfcfc;
+            --card: #feffff;
+            --hover: #e0e0e0;
+            --danger: #c42b1c;
+            --warning: #b26b00;
+            --copy-success: #107c10;
+            --accent: #005fb8;
+            --accent-hover: #004a94;
+            --on-accent: #ffffff;
+            --text-primary: rgba(0, 0, 0, 0.87);
+            --text-body: rgba(0, 0, 0, 0.78);
+            --text-auxiliary: rgba(0, 0, 0, 0.52);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --duration-fast: 100ms;
+            --duration-normal: 200ms;
+            --duration-slow: 300ms;
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.14);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --font: "Noto Serif SC", "edit Han Serif SC", "SimSun", "宋体", serif;
+            --titlebar-h: 0px; /* demo 无标题栏；带标题栏页面用 40px */
+        }
+        [data-theme="dark"] {
+            --bg: #202020;
+            --card: #232323;
+            --hover: #3d3d3d;
+            --danger: #ff6b6b;
+            --warning: #ffb84d;
+            --copy-success: #4ade80;
+            --accent: #60cdff;
+            --accent-hover: #8ad6ff;
+            --on-accent: rgba(0, 0, 0, 0.87);
+            --text-primary: rgba(255, 255, 255, 0.87);
+            --text-body: rgba(255, 255, 255, 0.6);
+            --text-auxiliary: rgba(255, 255, 255, 0.4);
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ───── demo 页面骨架（非组件本体） ───── */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 32px;
+        }
+        .icon { width: 1em; height: 1em; flex-shrink: 0; vertical-align: -0.15em; }
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow-card);
+            max-width: 560px;
+            margin: 0 auto 16px;
+        }
+        .card-title-sm { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+        .card-subtitle { font-size: 0.7rem; color: var(--text-auxiliary); margin-bottom: 8px; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 520;
+            font-family: var(--font);
+            cursor: pointer;
+            border: none;
+            transition: background var(--duration-fast) var(--ease), opacity var(--duration-fast) var(--ease), transform var(--duration-fast) var(--ease);
+        }
+        .btn:active { transform: scale(0.97); opacity: 0.8; }
+        .btn-primary { background: var(--accent); color: var(--on-accent); }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-secondary { background: var(--hover); color: var(--text-primary); }
+        .btn-secondary:hover { opacity: 0.8; }
+
+        /* ═════════════════════ 组件 CSS：Toast 通知（拷贝自 dist/index.html） ═════════════════════ */
+        .toast-container {
+            position: fixed;
+            top: calc(var(--titlebar-h) + 16px);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+            width: auto;
+            max-width: 420px;
+        }
+        /* 去线留白：无边框，三类共用中性卡片底，类型用「彩色图标 + 文字」双重编码，弥散阴影表达浮层层级 */
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            background: var(--card);
+            box-shadow: var(--shadow-flyout);
+            font-size: 0.8rem;
+            pointer-events: auto;
+            /* 弹层动效 200–250ms（去线留白动效规范），复用项目令牌 */
+            animation: toastSlideIn var(--duration-normal) var(--ease);
+            max-width: 100%;
+        }
+        @keyframes toastSlideIn {
+            from { opacity: 0; transform: translateY(-12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .toast.removing {
+            animation: toastSlideOut var(--duration-normal) var(--ease) forwards;
+        }
+        @keyframes toastSlideOut {
+            from { opacity: 1; transform: translateY(0); }
+            to   { opacity: 0; transform: translateY(-12px); }
+        }
+        .toast-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .toast-icon .icon { width: 14px; height: 14px; }
+        .toast-success .toast-icon { color: var(--copy-success); }
+        .toast-warning .toast-icon { color: var(--warning); }
+        .toast-error .toast-icon { color: var(--danger); }
+        .toast-message {
+            flex: 1;
+            min-width: 0;
+            font-weight: 450;
+            line-height: 1.4;
+            color: var(--text-body);
+        }
+        .toast-close {
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            color: var(--text-auxiliary);
+            cursor: pointer;
+            padding: 0;
+            transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
+            font-family: var(--font);
+        }
+        .toast-close .icon { width: 12px; height: 12px; }
+        .toast-close:hover {
+            background: color-mix(in srgb, var(--text-primary) 8%, transparent);
+            color: var(--text-primary);
+        }
+        .toast-demo-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* ───── 动效降级 ───── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 组件依赖的 SVG symbol（Lucide 风格线性描边，currentColor 随主题） -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+        <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+        <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+        <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+        <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+    </svg>
+
+    <!-- ═════════ 组件 HTML：全局挂载点（放 body 内任意位置，fixed 定位） ═════════ -->
+    <div class="toast-container" id="toastContainer" aria-live="polite" aria-relevant="additions"></div>
+
+    <!-- demo 触发按钮 -->
+    <div class="card">
+        <h2 class="card-title-sm">Toast 通知</h2>
+        <p class="card-subtitle">顶部居中弹出，自动消失，支持 success / warning / error 三种类型</p>
+        <div class="toast-demo-actions">
+            <button class="btn btn-primary" id="toastSuccess">成功通知</button>
+            <button class="btn btn-secondary" id="toastWarning">警告通知</button>
+            <button class="btn btn-secondary" id="toastError">错误通知</button>
+            <button class="btn btn-secondary" id="themeBtn">切换深色</button>
+        </div>
+    </div>
+
+    <script>
+    /* ═════════════════════ 组件 JS：Toast 通知（拷贝自 dist/index.html） ═════════════════════ */
+    {
+        const toastContainer = document.getElementById('toastContainer');
+
+        // 雪碧图 symbol id，见 body 开头的图标定义
+        const TOAST_ICONS = {
+            success: 'i-check',
+            warning: 'i-alert',
+            error: 'i-x'
+        };
+
+        const TOAST_DURATION = 3000;
+
+        function createToast(type, message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast toast-' + type;
+            toast.setAttribute('role', 'alert');
+
+            const icon = document.createElement('span');
+            icon.className = 'toast-icon';
+            icon.innerHTML = '<svg class="icon"><use href="#' + (TOAST_ICONS[type] || 'i-info') + '"></use></svg>';
+            icon.setAttribute('aria-hidden', 'true');
+
+            const msg = document.createElement('span');
+            msg.className = 'toast-message';
+            msg.textContent = message;
+
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'toast-close';
+            closeBtn.innerHTML = '<svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg>';
+            closeBtn.setAttribute('aria-label', '关闭通知');
+            closeBtn.addEventListener('click', () => dismissToast(toast));
+
+            toast.appendChild(icon);
+            toast.appendChild(msg);
+            toast.appendChild(closeBtn);
+            toastContainer.appendChild(toast);
+
+            const timer = setTimeout(() => dismissToast(toast), TOAST_DURATION);
+            toast._dismissTimer = timer;
+
+            return toast;
+        }
+
+        function dismissToast(toast) {
+            if (toast._dismissed) return;
+            toast._dismissed = true;
+            clearTimeout(toast._dismissTimer);
+            toast.classList.add('removing');
+            toast.addEventListener('animationend', () => {
+                if (toast.parentNode) toast.parentNode.removeChild(toast);
+            }, { once: true });
+        }
+
+        // 暴露到页面作用域，供任意位置调用
+        window._showToast = createToast;
+    }
+
+    /* ───── demo 绑定（非组件本体） ───── */
+    document.getElementById('toastSuccess').addEventListener('click', () => window._showToast('success', '操作已成功完成！'));
+    document.getElementById('toastWarning').addEventListener('click', () => window._showToast('warning', '请注意，存储空间不足。'));
+    document.getElementById('toastError').addEventListener('click', () => window._showToast('error', '发生了错误，请稍后重试。'));
+    document.getElementById('themeBtn').addEventListener('click', () => {
+        const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute('data-theme', dark ? '' : 'dark');
+    });
+    </script>
+</body>
+</html>

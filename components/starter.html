@@ -1,0 +1,809 @@
+<!--
+Copyright (c) 2026 青山公仔
+轻壳 (Tauri Shell) is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details.
+-->
+<!--
+═══════════ starter.html — 「去线留白」风格骨架模板 ═══════════
+用法：复制本文件为 dist/index.html，即得一个同风格的空应用骨架：
+      标题栏（拖拽 + 最小化/最大化/关闭）+ 可折叠侧边栏 + 页面切换 + 深色模式。
+      在各 page 的占位卡片里填入你的内容，需要新页面时照抄「加页面三步」注释。
+来源：拷贝自 dist/index.html 对应分节（掏空了示例功能），改动请双向同步。
+      各组件（Toast / Modal / Tab 等）的自包含 demo 见同目录其他 HTML 文件。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的应用</title>
+    <style>
+        /* ═════════════════════ 设计令牌（与 dist/index.html、installer/src/styles/tokens.css 共享，勿单侧改动） ═════════════════════ */
+        :root {
+            /* 配色 - 浅色 */
+            --bg: #fcfcfc;
+            --sidebar: #feffff;
+            --card: #feffff;
+            --titlebar: #feffff;
+            --divider: #d9d9d9;
+            --border-soft: color-mix(in srgb, #d9d9d9 40%, transparent);
+            --hover: #e0e0e0;
+            --code-bg: #e8e8e8;
+            --code-text: #2b2b2b;
+            --danger: #c42b1c;
+            --danger-bg: rgba(196, 43, 28, 0.08);
+            --warning: #b26b00;
+            --warning-bg: rgba(255, 179, 0, 0.1);
+            --copy-success: #107c10;
+
+            /* Accent 强调色系统 - 浅色 */
+            --accent: #005fb8;
+            --accent-bg: #e8f4fd;
+            --accent-hover: #004a94;
+            --on-accent: #ffffff;
+
+            /* 双主题恒白（红底关闭键文字、开关滑块，深色下不反转） */
+            --static-white: #ffffff;
+
+            /* 文字不透明度阶梯（"去线留白"） */
+            --text-primary: rgba(0, 0, 0, 0.87);
+            --text-body: rgba(0, 0, 0, 0.78);
+            --text-auxiliary: rgba(0, 0, 0, 0.52);
+            --text-placeholder: rgba(0, 0, 0, 0.3);
+
+            /* 填充式输入框背景（"去线留白"） */
+            --input-bg: rgba(0, 0, 0, 0.02);
+            --input-bg-focus: rgba(0, 0, 0, 0.04);
+
+            /* 动效规范 */
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --duration-fast: 100ms;
+            --duration-normal: 200ms;
+            --duration-slow: 300ms;
+
+            /* Elevation 弥散阴影层级 */
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.14);
+
+            /* 标题栏关闭键（Windows 惯例色，双主题一致） */
+            --close-hover: #c42b1c;
+            --close-active: #b3271a;
+
+            /* 布局与字体 */
+            --radius: 10px;
+            --radius-sm: 6px;
+            --font: "Noto Serif SC", "edit Han Serif SC", "SimSun", "宋体", serif;
+            --sidebar-w: 164px;
+            --titlebar-h: 40px;
+        }
+
+        /* ───── 暗色主题 ───── */
+        [data-theme="dark"] {
+            --bg: #202020;
+            --sidebar: #232323;
+            --card: #232323;
+            --titlebar: #232323;
+            --divider: #454545;
+            --border-soft: color-mix(in srgb, #454545 40%, transparent);
+            --hover: #3d3d3d;
+            --code-bg: #2d2d2d;
+            --code-text: #e8e8e8;
+            --danger: #ff6b6b;
+            --danger-bg: rgba(255, 107, 107, 0.1);
+            --warning: #ffb84d;
+            --warning-bg: rgba(255, 184, 77, 0.1);
+            --copy-success: #4ade80;
+
+            --accent: #60cdff;
+            --accent-bg: #2a3f5c;
+            --accent-hover: #8ad6ff;
+            --on-accent: rgba(0, 0, 0, 0.87);
+
+            --text-primary: rgba(255, 255, 255, 0.87);
+            --text-body: rgba(255, 255, 255, 0.6);
+            --text-auxiliary: rgba(255, 255, 255, 0.4);
+            --text-placeholder: rgba(255, 255, 255, 0.25);
+
+            --input-bg: rgba(255, 255, 255, 0.04);
+            --input-bg-focus: rgba(255, 255, 255, 0.07);
+
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ═════════════════════ 基础重置 ═════════════════════ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: var(--bg);
+            /* 禁用边界回弹与滚动链，避免拉扯时露出画布背景（网页感） */
+            overscroll-behavior: none;
+        }
+
+        /* ───── 内嵌图标（SVG 雪碧图引用） ───── */
+        .icon {
+            width: 1em;
+            height: 1em;
+            flex-shrink: 0;
+            vertical-align: -0.15em;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* ═════════════════════ 自定义标题栏 ═════════════════════ */
+        /* 拖拽统一走 data-tauri-drag-region（JS 通道，仅响应左键）；
+           禁用 -webkit-app-region: drag：它会被 WebView2 按非客户区标题栏处理，
+           右键时在引擎层直接弹出 Windows 系统菜单，顶层窗口侧无法拦截 */
+        .titlebar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--titlebar-h);
+            display: flex;
+            align-items: center;
+            padding-left: 16px;
+            background: var(--titlebar);
+            -webkit-user-select: none;
+            user-select: none;
+            z-index: 1000;
+        }
+        .titlebar-title {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-body);
+            letter-spacing: 0.01em;
+            /* 点击穿透到带 data-tauri-drag-region 的父容器，保证标题文字上也可拖拽 */
+            pointer-events: none;
+        }
+        .window-controls {
+            position: absolute;
+            right: 0; top: 0; bottom: 0;
+            display: flex;
+            align-items: stretch;
+        }
+        .win-btn {
+            width: 46px;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            background: transparent;
+            transition: background var(--duration-fast) var(--ease);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-body);
+        }
+        .win-btn:hover { background: var(--hover); }
+        .win-btn:active { background: var(--divider); }
+        .win-btn-close:hover { background: var(--close-hover); color: var(--static-white); }
+        .win-btn-close:active { background: var(--close-active); color: var(--static-white); }
+        .win-btn::after {
+            content: '';
+            display: block;
+            opacity: 1;
+            line-height: 1;
+            pointer-events: none;
+        }
+        .win-btn-close::after {
+            content: '\2715';
+            font-size: 10px;
+            font-weight: 400;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .win-btn-min::after {
+            content: '';
+            width: 10px;
+            height: 1.5px;
+            background: currentColor;
+            border-radius: 1px;
+        }
+        .win-btn-max::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border: 1.5px solid currentColor;
+            border-radius: 1px;
+            box-sizing: border-box;
+        }
+        /* 还原图标：Windows 经典双层方块，前方块完整描边，后方块只露出右上边角 */
+        .win-btn.maximized {
+            position: relative;
+        }
+        .win-btn.maximized::after {
+            width: 8px;
+            height: 8px;
+            border: 1.5px solid currentColor;
+            border-radius: 1px;
+            box-sizing: border-box;
+            transform: translate(-1px, 1px);
+        }
+        .win-btn.maximized::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            border-top: 1.5px solid currentColor;
+            border-right: 1.5px solid currentColor;
+            border-top-right-radius: 2px;
+            box-sizing: border-box;
+            transform: translate(calc(-50% + 2px), calc(-50% - 2px));
+            pointer-events: none;
+        }
+
+        /* ═════════════════════ 主布局 ═════════════════════ */
+        .app-layout {
+            display: flex;
+            height: calc(100vh - var(--titlebar-h));
+            margin-top: var(--titlebar-h);
+        }
+
+        /* ───── 侧边栏 ───── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--sidebar);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            overflow: hidden;
+            transition: width var(--duration-slow) var(--ease);
+        }
+        /* 折叠态：宽度收窄为纯图标列；图标原位不动，标签随宽度裁剪并淡出，过渡连贯 */
+        .sidebar.collapsed { width: 52px; }
+        .sidebar.collapsed .nav-label { opacity: 0; }
+        .sidebar-nav {
+            flex: 1;
+            padding: 12px 8px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        /* 底部固定区（关于/设置入口，WinUI 3 惯例） */
+        .sidebar-nav-bottom {
+            flex: 0 0 auto;
+            padding-top: 0;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            /* 水平 8px：折叠后图标恰居 36px 列中心，两态图标原位不动 */
+            padding: 7px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 0.78rem;
+            font-weight: 450;
+            color: var(--text-body);
+            cursor: pointer;
+            transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
+            border: none;
+            background: none;
+            font-family: var(--font);
+            width: 100%;
+            text-align: left;
+            white-space: nowrap;
+        }
+        .nav-item:hover { background: var(--hover); }
+        .nav-item.active {
+            background: var(--accent-bg);
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .nav-icon .icon { width: 16px; height: 16px; }
+        .nav-label { transition: opacity var(--duration-normal) var(--ease); }
+
+        /* 侧边栏折叠切换按钮（WinUI 3 风格汉堡按钮，置顶、纯图标） */
+        .sidebar-toggle {
+            width: 36px;
+            height: 32px;
+            margin: 8px 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: none;
+            color: var(--text-body);
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
+        }
+        .sidebar-toggle .icon { width: 16px; height: 16px; }
+        .sidebar-toggle:hover { background: var(--hover); color: var(--text-primary); }
+
+        /* ───── 主内容区 ───── */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            overscroll-behavior: none;
+            padding: 24px;
+        }
+        .page { display: none; }
+        .page.active { display: block; }
+        /* 页面切换：子元素 staggered 入场，逐项错开 40ms，第 7 项起封顶，长页面不拖沓；
+           backwards 让延迟期间停在首帧，避免闪现 */
+        .page.active > * {
+            animation: fadeSlide var(--duration-slow) var(--ease) backwards;
+        }
+        .page.active > :nth-child(2) { animation-delay: 40ms; }
+        .page.active > :nth-child(3) { animation-delay: 80ms; }
+        .page.active > :nth-child(4) { animation-delay: 120ms; }
+        .page.active > :nth-child(5) { animation-delay: 160ms; }
+        .page.active > :nth-child(6) { animation-delay: 200ms; }
+        .page.active > :nth-child(n+7) { animation-delay: 240ms; }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 主题切换过渡：view-transition 整页交叉淡变（不支持时 JS 侧直接切换） */
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+            animation-duration: var(--duration-slow);
+            animation-timing-function: var(--ease);
+        }
+
+        /* ═════════════════════ 通用组件样式 ═════════════════════ */
+        .page-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            letter-spacing: -0.01em;
+        }
+        .page-desc {
+            font-size: 0.78rem;
+            color: var(--text-auxiliary);
+            margin-bottom: 16px;
+        }
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow-card);
+        }
+        .card-spaced { margin-bottom: 16px; }
+        .card-title-xs {
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .card-subtitle {
+            font-size: 0.7rem;
+            color: var(--text-auxiliary);
+            margin-bottom: 8px;
+        }
+
+        /* ───── 按钮 ───── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 520;
+            font-family: var(--font);
+            cursor: pointer;
+            border: none;
+            transition: background var(--duration-fast) var(--ease), opacity var(--duration-fast) var(--ease), transform var(--duration-fast) var(--ease);
+        }
+        .btn:active { transform: scale(0.97); opacity: 0.8; }
+        .btn-primary {
+            background: var(--accent);
+            color: var(--on-accent);
+        }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-secondary {
+            background: var(--hover);
+            color: var(--text-primary);
+        }
+        .btn-secondary:hover { opacity: 0.8; }
+
+        /* ───── 开关组件 ───── */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+        }
+        .toggle-label {
+            font-size: 0.85rem;
+            font-weight: 450;
+            color: var(--text-primary);
+        }
+        .toggle-hint {
+            font-size: 0.7rem;
+            color: var(--text-auxiliary);
+            margin-top: 2px;
+        }
+        .toggle {
+            position: relative;
+            width: 44px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+        .toggle input { display: none; }
+        .toggle-track {
+            position: absolute;
+            inset: 0;
+            background: var(--hover);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background var(--duration-normal) var(--ease);
+        }
+        .toggle input:checked + .toggle-track { background: var(--accent); }
+        .toggle-thumb {
+            position: absolute;
+            top: 3px; left: 3px;
+            width: 20px;
+            height: 20px;
+            background: var(--static-white);
+            border-radius: 50%;
+            transition: transform var(--duration-normal) var(--ease);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+        .toggle input:checked ~ .toggle-thumb { transform: translateX(18px); }
+
+        /* ───── 侧边栏悬浮提示气泡（深底浅字，主题反转） ───── */
+        .side-tip {
+            --tip-bg: rgba(0, 0, 0, 0.78);
+            --tip-text: #ffffff;
+        }
+        [data-theme="dark"] .side-tip {
+            --tip-bg: rgba(255, 255, 255, 0.87);
+            --tip-text: rgba(0, 0, 0, 0.87);
+        }
+        .side-tip {
+            position: fixed;
+            z-index: 5000;
+            padding: 5px 10px;
+            border-radius: var(--radius-sm);
+            background: var(--tip-bg);
+            color: var(--tip-text);
+            font-size: 0.7rem;
+            font-weight: 450;
+            line-height: 1.4;
+            white-space: nowrap;
+            box-shadow: var(--shadow-flyout);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateX(-2px);
+            transition: opacity var(--duration-fast) var(--ease) 150ms, transform var(--duration-fast) var(--ease) 150ms;
+        }
+        .side-tip.visible { opacity: 1; transform: none; }
+        .side-tip::before {
+            content: '';
+            position: absolute;
+            right: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-left: none;
+            border-right-color: var(--tip-bg);
+        }
+
+        /* ───── 滚动条美化 ───── */
+        .main-content::-webkit-scrollbar { width: 6px; }
+        .main-content::-webkit-scrollbar-track { background: transparent; }
+        .main-content::-webkit-scrollbar-thumb { background: var(--divider); border-radius: 3px; }
+
+        /* ───── 动效降级 ───── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════ 图标雪碧图（Lucide 风格线性描边，currentColor 随主题；按需增删 symbol） ═══════════ -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+        <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></symbol>
+        <symbol id="i-dashboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></symbol>
+        <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+        <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+    </svg>
+
+    <!-- ═══════════ 标题栏 ═══════════ -->
+    <div class="titlebar" data-tauri-drag-region>
+        <span class="titlebar-title">我的应用</span>
+        <div class="window-controls">
+            <button class="win-btn win-btn-min" id="winMin" title="最小化" aria-label="最小化"></button>
+            <button class="win-btn win-btn-max" id="winMax" title="最大化" aria-label="最大化"></button>
+            <button class="win-btn win-btn-close" id="winClose" title="关闭" aria-label="关闭"></button>
+        </div>
+    </div>
+
+    <!-- ═══════════ 主体布局 ═══════════ -->
+    <div class="app-layout">
+
+        <!-- ───── 侧边栏 ─────
+             加页面三步：① 这里加一个 nav-item（data-page 与页面 id 后缀一致）
+                         ② main-content 里加一个 <section class="page" id="page-xxx">
+                         ③ 尾部脚本 PAGE_ORDER 数组里加入页名（获得 Ctrl+数字 快捷键） -->
+        <aside class="sidebar" aria-label="导航侧栏">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="折叠侧边栏" aria-expanded="true">
+                <svg class="icon" aria-hidden="true"><use href="#i-menu"></use></svg>
+            </button>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-page="home">
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-dashboard"></use></svg></span> <span class="nav-label">首页</span>
+                </button>
+            </nav>
+            <nav class="sidebar-nav sidebar-nav-bottom" aria-label="关于与设置入口">
+                <button class="nav-item" data-page="about">
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg></span> <span class="nav-label">关于</span>
+                </button>
+                <button class="nav-item" data-page="settings">
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-settings"></use></svg></span> <span class="nav-label">设置</span>
+                </button>
+            </nav>
+        </aside>
+
+        <!-- ───── 主内容区 ───── -->
+        <main class="main-content">
+
+            <!-- 首页 -->
+            <section class="page active" id="page-home">
+                <h1 class="page-title">首页</h1>
+                <p class="page-desc">在这里开始编写你的应用内容。</p>
+
+                <div class="card card-spaced">
+                    <h2 class="card-title-xs">占位卡片</h2>
+                    <p class="card-subtitle">把这里替换成你的内容。需要 Toast / Modal / Tab 等组件时，从 components/ 目录对应 demo 复制即可。</p>
+                </div>
+            </section>
+
+            <!-- 关于页 -->
+            <section class="page" id="page-about">
+                <h1 class="page-title">关于</h1>
+                <p class="page-desc">应用信息。</p>
+
+                <div class="card">
+                    <h2 class="card-title-xs">我的应用</h2>
+                    <p class="card-subtitle">基于轻壳（Tauri v2）构建。</p>
+                </div>
+            </section>
+
+            <!-- 设置页 -->
+            <section class="page" id="page-settings">
+                <h1 class="page-title">设置</h1>
+                <p class="page-desc">个性化你的应用体验。</p>
+
+                <div class="card">
+                    <h2 class="card-title-xs">外观</h2>
+                    <div class="toggle-row">
+                        <div>
+                            <div class="toggle-label">深色模式</div>
+                            <div class="toggle-hint">切换浅色 / 深色主题</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="themeToggle" aria-label="深色模式">
+                            <span class="toggle-track"></span>
+                            <span class="toggle-thumb"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ═══════════ 脚本 ═══════════ -->
+    <script type="module">
+    {
+        /* ═══════════════════════ 窗口控制 ═══════════════════════ */
+        const titlebar = document.querySelector('.titlebar');
+        const internals = window.__TAURI_INTERNALS__;
+
+        if (!internals) {
+            // 浏览器环境：隐藏标题栏
+            if (titlebar) titlebar.style.display = 'none';
+            document.querySelector('.app-layout').style.marginTop = '0';
+            document.querySelector('.app-layout').style.height = '100vh';
+        } else {
+            // Tauri 环境：绑定窗口控制
+            const invoke = cmd => internals.invoke(cmd);
+
+            document.getElementById('winMin').addEventListener('click', () => invoke('plugin:window|minimize'));
+            // 关闭按钮：按设置隐藏到托盘或退出（挂托盘后 close 只销窗口不退进程，退出须走 exit_app）
+            // 若已按 docs/托盘说明.md 移除托盘，请改为始终 invoke('exit_app')
+            document.getElementById('winClose').addEventListener('click', () =>
+                invoke(localStorage.getItem('tauri-shell-tray-min') === '0' ? 'exit_app' : 'plugin:window|hide'));
+
+            const maxBtn = document.getElementById('winMax');
+            maxBtn.addEventListener('click', () => invoke('plugin:window|toggle_maximize'));
+
+            const updateMaxBtn = async () => {
+                try {
+                    const maximized = await invoke('plugin:window|is_maximized');
+                    maxBtn.classList.toggle('maximized', maximized);
+                    maxBtn.title = maximized ? '还原' : '最大化';
+                } catch { /* ignore */ }
+            };
+            window.addEventListener('resize', updateMaxBtn);
+            updateMaxBtn();
+
+            // 页面加载完成后显示窗口
+            invoke('plugin:window|show');
+        }
+
+        /* ═══════════════════════ 屏蔽浏览器加速键（仅打包版） ═══════════════════════ */
+        // 仅在打包产物（tauri.localhost / tauri: 协议）中生效，
+        // 浏览器预览与 npm run dev（localhost:1420）保留 F5/F12 便于调试
+        if (location.protocol === 'tauri:' || location.hostname === 'tauri.localhost') {
+            // 刷新/查源/打印/查找/下载/缩放类 Ctrl 组合键
+            const BLOCKED_CTRL_KEYS = ['r', 'p', 'u', 'f', 'g', 'j', '+', '-', '=', '0'];
+            document.addEventListener('keydown', e => {
+                const key = e.key.toLowerCase();
+                if (
+                    key === 'f5' || key === 'f3' || key === 'f12' ||
+                    (e.ctrlKey && e.shiftKey && ['i', 'j', 'c'].includes(key)) ||
+                    (e.ctrlKey && !e.altKey && BLOCKED_CTRL_KEYS.includes(key)) ||
+                    (e.altKey && (key === 'arrowleft' || key === 'arrowright'))
+                ) {
+                    e.preventDefault();
+                }
+            }, { capture: true });
+            // Ctrl+滚轮页面缩放
+            document.addEventListener('wheel', e => {
+                if (e.ctrlKey) e.preventDefault();
+            }, { passive: false, capture: true });
+            // 鼠标侧键历史前进/后退
+            document.addEventListener('mouseup', e => {
+                if (e.button === 3 || e.button === 4) e.preventDefault();
+            });
+        }
+
+        /* ═══════════════════════ 侧边栏导航 ═══════════════════════ */
+        const navItems = document.querySelectorAll('.nav-item');
+        const pages = document.querySelectorAll('.page');
+
+        function switchPage(pageName) {
+            navItems.forEach(n => n.classList.toggle('active', n.dataset.page === pageName));
+            pages.forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + pageName).classList.add('active');
+            // 各页共用 .main-content 滚动容器，切页后归零，避免沿用上一页的滚动位置
+            document.querySelector('.main-content').scrollTop = 0;
+            // 页面状态保持：记住最后访问页，下次启动恢复
+            localStorage.setItem('tauri-shell-last-page', pageName);
+        }
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => switchPage(item.dataset.page));
+        });
+
+        // 启动时恢复最后访问的页面
+        const lastPage = localStorage.getItem('tauri-shell-last-page');
+        if (lastPage && lastPage !== 'home' && document.getElementById('page-' + lastPage)) {
+            switchPage(lastPage);
+        }
+
+        /* ═══════════════════════ 侧边栏折叠 ═══════════════════════ */
+        const sidebar = document.querySelector('.sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+
+        function applySidebarCollapsed(collapsed) {
+            sidebar.classList.toggle('collapsed', collapsed);
+            const label = collapsed ? '展开侧边栏' : '折叠侧边栏';
+            sidebarToggle.setAttribute('aria-label', label);
+            sidebarToggle.setAttribute('aria-expanded', String(!collapsed));
+            // 折叠后标签仅视觉隐藏（opacity 0），可访问名称仍在，无需 title 补充
+        }
+
+        function toggleSidebar() {
+            const collapsed = !sidebar.classList.contains('collapsed');
+            applySidebarCollapsed(collapsed);
+            localStorage.setItem('tauri-shell-sidebar-collapsed', collapsed ? '1' : '0');
+        }
+
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        if (localStorage.getItem('tauri-shell-sidebar-collapsed') === '1') applySidebarCollapsed(true);
+
+        /* 统一悬浮提示：汉堡按钮与折叠态导航项用气泡替代原生 title */
+        const sideTip = document.createElement('div');
+        sideTip.className = 'side-tip';
+        sideTip.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(sideTip);
+
+        function showSideTip(btn, text) {
+            sideTip.textContent = text;
+            const r = btn.getBoundingClientRect();
+            sideTip.style.left = (r.right + 10) + 'px';
+            sideTip.classList.add('visible');
+            sideTip.style.top = (r.top + (r.height - sideTip.offsetHeight) / 2) + 'px';
+        }
+        function hideSideTip() {
+            sideTip.classList.remove('visible');
+        }
+        function bindSideTip(btn, getText) {
+            const refresh = () => {
+                const text = getText();
+                if (text) showSideTip(btn, text);
+                else hideSideTip();
+            };
+            btn.addEventListener('mouseenter', refresh);
+            btn.addEventListener('focus', refresh);
+            btn.addEventListener('mouseleave', hideSideTip);
+            btn.addEventListener('blur', hideSideTip);
+            // 点击后折叠态变化，若仍悬停则刷新文案与位置
+            btn.addEventListener('click', () => {
+                if (sideTip.classList.contains('visible')) requestAnimationFrame(refresh);
+            });
+        }
+
+        bindSideTip(sidebarToggle, () =>
+            (sidebar.classList.contains('collapsed') ? '展开侧边栏' : '折叠侧边栏') + '（Ctrl+B）');
+        // 展开态标签可见，不出提示；折叠态用气泡补充文字信息（多维编码，不仅靠图标）
+        navItems.forEach(n => bindSideTip(n, () =>
+            sidebar.classList.contains('collapsed') ? n.querySelector('.nav-label').textContent : ''));
+
+        /* ═══════════════════════ 深色模式 ═══════════════════════ */
+        const themeToggle = document.getElementById('themeToggle');
+        // 尝试读取本地存储的主题偏好
+        const savedTheme = localStorage.getItem('tauri-shell-theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeToggle.checked = true;
+        }
+        themeToggle.addEventListener('change', () => {
+            const isDark = themeToggle.checked;
+            applyTheme(isDark);
+            localStorage.setItem('tauri-shell-theme', isDark ? 'dark' : 'light');
+        });
+
+        // view-transition 整页交叉淡变切主题；不支持或用户减弱动效时直接切换
+        function applyTheme(isDark) {
+            const apply = () => document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
+            if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.startViewTransition(apply);
+            } else {
+                apply();
+            }
+        }
+
+        /* ═══════════════════════ 键盘全局导航 ═══════════════════════ */
+        {
+            // 与侧边栏导航视觉同序（设置居底）：Ctrl+1~3 切页，Ctrl+B 折叠侧边栏
+            const PAGE_ORDER = ['home', 'about', 'settings'];
+            document.addEventListener('keydown', e => {
+                if (!e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) return;
+                if (e.key.toLowerCase() === 'b') {
+                    e.preventDefault();
+                    toggleSidebar();
+                    return;
+                }
+                const idx = '123456789'.slice(0, PAGE_ORDER.length).indexOf(e.key);
+                if (idx === -1) return;
+                e.preventDefault();
+                switchPage(PAGE_ORDER[idx]);
+            });
+        }
+    }
+    </script>
+</body>
+</html>

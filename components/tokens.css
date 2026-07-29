@@ -1,0 +1,120 @@
+/*
+Copyright (c) 2026 青山公仔
+轻壳 (Tauri Shell) is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details.
+*/
+
+/* ═════════════════════ 「去线留白」设计令牌 ═════════════════════
+   三处同源，勿单侧改动：
+   - dist/index.html（权威源，<style> 开头的设计令牌块）
+   - installer/src/styles/tokens.css
+   - components/tokens.css（本文件）
+   用法：<link rel="stylesheet" href="tokens.css">，或直接内联进单文件 HTML。
+   深色模式：给 <html> 设置 data-theme="dark" 即整体反转。 */
+
+:root {
+    /* 配色 - 浅色 */
+    --bg: #fcfcfc;
+    --sidebar: #feffff;
+    --card: #feffff;
+    --titlebar: #feffff;
+    --divider: #d9d9d9;
+    --border-soft: color-mix(in srgb, #d9d9d9 40%, transparent);
+    --hover: #e0e0e0;
+    --code-bg: #e8e8e8;
+    --code-text: #2b2b2b;
+    --danger: #c42b1c;
+    --danger-bg: rgba(196, 43, 28, 0.08);
+    --warning: #b26b00;
+    --warning-bg: rgba(255, 179, 0, 0.1);
+    --copy-success: #107c10;
+
+    /* Accent 强调色系统 - 浅色 */
+    --accent: #005fb8;
+    --accent-bg: #e8f4fd;
+    --accent-hover: #004a94;
+    --on-accent: #ffffff;
+
+    /* 双主题恒白（红底关闭键文字、开关滑块，深色下不反转） */
+    --static-white: #ffffff;
+
+    /* 文字不透明度阶梯（"去线留白"） */
+    --text-primary: rgba(0, 0, 0, 0.87);
+    --text-body: rgba(0, 0, 0, 0.78);
+    --text-auxiliary: rgba(0, 0, 0, 0.52);
+    --text-placeholder: rgba(0, 0, 0, 0.3);
+
+    /* 填充式输入框背景（"去线留白"） */
+    --input-bg: rgba(0, 0, 0, 0.02);
+    --input-bg-focus: rgba(0, 0, 0, 0.04);
+
+    /* 动效规范 */
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --duration-fast: 100ms;
+    --duration-normal: 200ms;
+    --duration-slow: 300ms;
+
+    /* Elevation 弥散阴影层级 */
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.14);
+
+    /* 标题栏关闭键（Windows 惯例色，双主题一致） */
+    --close-hover: #c42b1c;
+    --close-active: #b3271a;
+
+    /* 布局与字体 */
+    --radius: 10px;
+    --radius-sm: 6px;
+    --font: "Noto Serif SC", "edit Han Serif SC", "SimSun", "宋体", serif;
+    --sidebar-w: 164px;
+    --titlebar-h: 40px;
+}
+
+/* ───── 暗色主题 ───── */
+[data-theme="dark"] {
+    --bg: #202020;
+    --sidebar: #232323;
+    --card: #232323;
+    --titlebar: #232323;
+    --divider: #454545;
+    --border-soft: color-mix(in srgb, #454545 40%, transparent);
+    --hover: #3d3d3d;
+    --code-bg: #2d2d2d;
+    --code-text: #e8e8e8;
+    --danger: #ff6b6b;
+    --danger-bg: rgba(255, 107, 107, 0.1);
+    --warning: #ffb84d;
+    --warning-bg: rgba(255, 184, 77, 0.1);
+    --copy-success: #4ade80;
+
+    --accent: #60cdff;
+    --accent-bg: #2a3f5c;
+    --accent-hover: #8ad6ff;
+    --on-accent: rgba(0, 0, 0, 0.87);
+
+    --text-primary: rgba(255, 255, 255, 0.87);
+    --text-body: rgba(255, 255, 255, 0.6);
+    --text-auxiliary: rgba(255, 255, 255, 0.4);
+    --text-placeholder: rgba(255, 255, 255, 0.25);
+
+    --input-bg: rgba(255, 255, 255, 0.04);
+    --input-bg-focus: rgba(255, 255, 255, 0.07);
+
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* ───── 动效降级 ───── */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

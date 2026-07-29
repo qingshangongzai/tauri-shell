@@ -1,0 +1,206 @@
+<!--
+Copyright (c) 2026 青山公仔
+轻壳 (Tauri Shell) is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details.
+-->
+<!--
+═══════════ Progress 进度条 — 自包含 demo ═══════════
+来源：拷贝自 dist/index.html「UI 组件：Progress 进度条」CSS 分节 + 同名 JS 分节，
+      改动请双向同步（dist/index.html 为权威源）。
+依赖：设计令牌子集（已内联，完整版见 tokens.css）、.btn 基础样式（demo 按钮）。
+特性：确定进度（width 过渡 + aria-valuenow）与不确定进度（色块循环滑动）两种状态。
+用法：双击本文件即可在浏览器预览；移植时复制「组件 CSS」「组件 HTML」两段，
+      确定进度用 JS 改 .progress-bar 的 width 并同步 aria-valuenow 即可。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress 进度条 · 组件 demo</title>
+    <style>
+        /* ───── 设计令牌子集（拷贝自 tokens.css，勿单侧改动） ───── */
+        :root {
+            --bg: #fcfcfc;
+            --card: #feffff;
+            --hover: #e0e0e0;
+            --accent: #005fb8;
+            --accent-hover: #004a94;
+            --on-accent: #ffffff;
+            --text-primary: rgba(0, 0, 0, 0.87);
+            --text-body: rgba(0, 0, 0, 0.78);
+            --text-auxiliary: rgba(0, 0, 0, 0.52);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --duration-fast: 100ms;
+            --duration-normal: 200ms;
+            --duration-slow: 300ms;
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --font: "Noto Serif SC", "edit Han Serif SC", "SimSun", "宋体", serif;
+        }
+        [data-theme="dark"] {
+            --bg: #202020;
+            --card: #232323;
+            --hover: #3d3d3d;
+            --accent: #60cdff;
+            --accent-hover: #8ad6ff;
+            --on-accent: rgba(0, 0, 0, 0.87);
+            --text-primary: rgba(255, 255, 255, 0.87);
+            --text-body: rgba(255, 255, 255, 0.6);
+            --text-auxiliary: rgba(255, 255, 255, 0.4);
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ───── demo 页面骨架（非组件本体） ───── */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 32px;
+        }
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow-card);
+            max-width: 560px;
+            margin: 0 auto 16px;
+        }
+        .card-title-sm { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+        .card-subtitle { font-size: 0.7rem; color: var(--text-auxiliary); margin-bottom: 8px; }
+        .tool-actions { display: flex; gap: 8px; margin-top: 16px; align-items: center; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 520;
+            font-family: var(--font);
+            cursor: pointer;
+            border: none;
+            transition: background var(--duration-fast) var(--ease), opacity var(--duration-fast) var(--ease), transform var(--duration-fast) var(--ease);
+        }
+        .btn:active { transform: scale(0.97); opacity: 0.8; }
+        .btn-secondary { background: var(--hover); color: var(--text-primary); }
+        .btn-secondary:hover { opacity: 0.8; }
+
+        /* ═════════════════════ 组件 CSS：Progress 进度条（拷贝自 dist/index.html） ═════════════════════ */
+        .progress-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .progress {
+            flex: 1;
+            height: 4px;
+            background: var(--hover);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            /* width 过渡；4px 高小元素的 layout 开销可忽略 */
+            transition: width var(--duration-slow) var(--ease);
+        }
+        .progress-value {
+            flex-shrink: 0;
+            width: 40px;
+            text-align: right;
+            font-size: 0.78rem;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            color: var(--text-body);
+        }
+        .progress-indeterminate .progress-bar {
+            width: 30%;
+            animation: progressSlide 1.2s ease-in-out infinite;
+        }
+        @keyframes progressSlide {
+            from { transform: translateX(-100%); }
+            /* 334% ≈ 100% / 30%（色块自身宽度占轨道 30%），保证完全滑出右缘；改 width 需同步此值 */
+            to   { transform: translateX(334%); }
+        }
+
+        /* ───── 动效降级 ───── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═════════ 组件 HTML：Progress 进度条 ═════════ -->
+    <div class="card">
+        <h2 class="card-title-sm">Progress 进度条</h2>
+        <p class="card-subtitle">确定与不确定两种进度状态</p>
+        <div class="progress-row">
+            <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" aria-label="确定进度">
+                <div class="progress-bar" id="progressBar" style="width:40%"></div>
+            </div>
+            <span class="progress-value" id="progressValue">40%</span>
+        </div>
+        <div class="tool-actions">
+            <button class="btn btn-secondary" id="progressDec">−10%</button>
+            <button class="btn btn-secondary" id="progressInc">+10%</button>
+            <button class="btn btn-secondary" id="progressReset">重置</button>
+            <button class="btn btn-secondary" id="themeBtn">切换深色</button>
+        </div>
+        <p class="card-subtitle" style="margin-top:16px;">不确定进度（加载中）</p>
+        <div class="progress progress-indeterminate" role="progressbar" aria-label="加载中">
+            <div class="progress-bar"></div>
+        </div>
+    </div>
+
+    <script>
+    /* ═════════════════════ 组件 JS：Progress 进度条演示（拷贝自 dist/index.html） ═════════════════════ */
+    {
+        const progressBar = document.getElementById('progressBar');
+        const progressValue = document.getElementById('progressValue');
+        const progressTrack = progressBar.parentElement;
+        let percent = 40;
+
+        function renderProgress() {
+            progressBar.style.width = percent + '%';
+            progressValue.textContent = percent + '%';
+            progressTrack.setAttribute('aria-valuenow', percent);
+        }
+
+        document.getElementById('progressDec').addEventListener('click', () => {
+            percent = Math.max(0, percent - 10);
+            renderProgress();
+        });
+        document.getElementById('progressInc').addEventListener('click', () => {
+            percent = Math.min(100, percent + 10);
+            renderProgress();
+        });
+        document.getElementById('progressReset').addEventListener('click', () => {
+            percent = 40;
+            renderProgress();
+        });
+    }
+
+    /* ───── demo 绑定（非组件本体） ───── */
+    document.getElementById('themeBtn').addEventListener('click', () => {
+        const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute('data-theme', dark ? '' : 'dark');
+    });
+    </script>
+</body>
+</html>

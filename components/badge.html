@@ -1,0 +1,174 @@
+<!--
+Copyright (c) 2026 青山公仔
+轻壳 (Tauri Shell) is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details.
+-->
+<!--
+═══════════ Badge / Tag — 自包含 demo ═══════════
+来源：拷贝自 dist/index.html「UI 组件：Badge / Tag」CSS 分节，纯 CSS 无 JS，
+      改动请双向同步（dist/index.html 为权威源）。
+依赖：设计令牌子集（已内联，完整版见 tokens.css）。
+特性：透明色底 + 同色文字的无边框徽章；badge-dot 状态圆点、badge-count 数字角标。
+用法：双击本文件即可在浏览器预览；移植时复制「组件 CSS」一段，按需组合修饰类：
+      badge-accent / badge-success / badge-warning / badge-danger / badge-dot / badge-count。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badge / Tag · 组件 demo</title>
+    <style>
+        /* ───── 设计令牌子集（拷贝自 tokens.css，勿单侧改动） ───── */
+        :root {
+            --bg: #fcfcfc;
+            --card: #feffff;
+            --hover: #e0e0e0;
+            --danger: #c42b1c;
+            --danger-bg: rgba(196, 43, 28, 0.08);
+            --warning: #b26b00;
+            --warning-bg: rgba(255, 179, 0, 0.1);
+            --copy-success: #107c10;
+            --accent: #005fb8;
+            --accent-bg: #e8f4fd;
+            --on-accent: #ffffff;
+            --text-primary: rgba(0, 0, 0, 0.87);
+            --text-body: rgba(0, 0, 0, 0.78);
+            --text-auxiliary: rgba(0, 0, 0, 0.52);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --duration-fast: 100ms;
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --font: "Noto Serif SC", "edit Han Serif SC", "SimSun", "宋体", serif;
+        }
+        [data-theme="dark"] {
+            --bg: #202020;
+            --card: #232323;
+            --hover: #3d3d3d;
+            --danger: #ff6b6b;
+            --danger-bg: rgba(255, 107, 107, 0.1);
+            --warning: #ffb84d;
+            --warning-bg: rgba(255, 184, 77, 0.1);
+            --copy-success: #4ade80;
+            --accent: #60cdff;
+            --accent-bg: #2a3f5c;
+            --on-accent: rgba(0, 0, 0, 0.87);
+            --text-primary: rgba(255, 255, 255, 0.87);
+            --text-body: rgba(255, 255, 255, 0.6);
+            --text-auxiliary: rgba(255, 255, 255, 0.4);
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ───── demo 页面骨架（非组件本体） ───── */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 32px;
+        }
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow-card);
+            max-width: 560px;
+            margin: 0 auto 16px;
+        }
+        .card-title-sm { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+        .card-subtitle { font-size: 0.7rem; color: var(--text-auxiliary); margin-bottom: 8px; }
+        .theme-btn {
+            display: block;
+            margin: 0 auto;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-family: var(--font);
+            cursor: pointer;
+            border: none;
+            background: var(--hover);
+            color: var(--text-primary);
+        }
+
+        /* ═════════════════════ 组件 CSS：Badge / Tag（拷贝自 dist/index.html） ═════════════════════ */
+        .badge-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.68rem;
+            font-weight: 550;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: var(--hover);
+            color: var(--text-body);
+        }
+        .badge-accent  { background: var(--accent-bg); color: var(--accent); }
+        .badge-success { background: color-mix(in srgb, var(--copy-success) 12%, transparent); color: var(--copy-success); }
+        .badge-warning { background: var(--warning-bg); color: var(--warning); }
+        .badge-danger  { background: var(--danger-bg); color: var(--danger); }
+        .badge-dot::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        .badge-count {
+            min-width: 20px;
+            justify-content: center;
+            padding: 3px 6px;
+            font-variant-numeric: tabular-nums;
+            background: var(--danger);
+            color: var(--on-accent);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═════════ 组件 HTML：Badge / Tag ═════════ -->
+    <div class="card">
+        <h2 class="card-title-sm">Badge / Tag</h2>
+        <p class="card-subtitle">透明色底 + 同色文字的无边框徽章，展示状态或分类</p>
+        <p class="card-subtitle">状态徽章</p>
+        <div class="badge-row">
+            <span class="badge badge-dot badge-success">运行中</span>
+            <span class="badge badge-dot badge-warning">待处理</span>
+            <span class="badge badge-dot badge-danger">已中断</span>
+            <span class="badge badge-dot">已离线</span>
+        </div>
+        <p class="card-subtitle" style="margin-top:16px;">分类标签与数字角标</p>
+        <div class="badge-row">
+            <span class="badge badge-accent">Tauri v2</span>
+            <span class="badge badge-accent">前端</span>
+            <span class="badge">模板</span>
+            <span class="badge">文档</span>
+            <span class="badge badge-count">3</span>
+            <span class="badge badge-count">99+</span>
+        </div>
+    </div>
+
+    <button class="theme-btn" id="themeBtn">切换深色</button>
+
+    <script>
+    /* ───── demo 绑定（非组件本体，组件本身纯 CSS） ───── */
+    document.getElementById('themeBtn').addEventListener('click', () => {
+        const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute('data-theme', dark ? '' : 'dark');
+    });
+    </script>
+</body>
+</html>

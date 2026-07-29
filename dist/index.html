@@ -16,7 +16,7 @@ See the Mulan PSL v2 for more details.
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>轻壳 · 示例</title>
     <style>
-        /* ═════════════════════ 设计令牌（与 installer/src/styles/tokens.css 共享，勿单侧改动） ═════════════════════ */
+        /* ═════════════════════ 设计令牌（与 installer/src/styles/tokens.css、components/tokens.css 共享，勿单侧改动） ═════════════════════ */
         :root {
             /* 配色 - 浅色 */
             --bg: #fcfcfc;
@@ -1401,6 +1401,7 @@ See the Mulan PSL v2 for more details.
         }
 
         /* ═════════════════════ UI 组件：Toast 通知 ═════════════════════ */
+        /* 已拆出 components/toast.html，改动请同步 */
         .toast-container {
             position: fixed;
             top: calc(var(--titlebar-h) + 16px);
@@ -1485,6 +1486,7 @@ See the Mulan PSL v2 for more details.
         }
 
         /* ═════════════════════ UI 组件：Modal 弹窗 ═════════════════════ */
+        /* 已拆出 components/modal.html，改动请同步 */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -1546,6 +1548,7 @@ See the Mulan PSL v2 for more details.
         }
 
         /* ═════════════════════ UI 组件：Tab 标签页 ═════════════════════ */
+        /* 已拆出 components/tabs.html，改动请同步 */
         .tabs {
             display: flex;
             margin-bottom: 16px;
@@ -1585,6 +1588,7 @@ See the Mulan PSL v2 for more details.
         }
 
         /* ═════════════════════ UI 组件：Progress 进度条 ═════════════════════ */
+        /* 已拆出 components/progress.html，改动请同步 */
         .progress-row {
             display: flex;
             align-items: center;
@@ -1624,6 +1628,7 @@ See the Mulan PSL v2 for more details.
         }
 
         /* ═════════════════════ UI 组件：Badge / Tag ═════════════════════ */
+        /* 已拆出 components/badge.html，改动请同步 */
         .badge-row {
             display: flex;
             align-items: center;
@@ -1662,6 +1667,7 @@ See the Mulan PSL v2 for more details.
         }
 
         /* ═════════════════════ UI 组件：Tooltip ═════════════════════ */
+        /* 已拆出 components/tooltip.html，改动请同步 */
         /* 组件级变量：气泡深底浅字与主题反转（.tooltip 与 .side-tip 共享），不进共享设计令牌块 */
         .tooltip, .side-tip {
             --tip-bg: rgba(0, 0, 0, 0.78);
@@ -1765,6 +1771,7 @@ See the Mulan PSL v2 for more details.
         }
 
         /* ═════════════════════ 自定义右键菜单 ═════════════════════ */
+        /* 已拆出 components/context-menu.html，改动请同步 */
         /* 去线留白：卡片底色 + 弥散阴影建立浮层层级，分组间以留白代替分割线 */
         .context-menu {
             position: fixed;
@@ -3525,6 +3532,7 @@ See the Mulan PSL v2 for more details.
         }
 
         /* ═══════════════════════ Toast 通知组件 ═══════════════════════ */
+        /* 已拆出 components/toast.html，改动请同步 */
         {
             const toastContainer = document.getElementById('toastContainer');
 
@@ -3945,6 +3953,7 @@ See the Mulan PSL v2 for more details.
         }
 
         /* ═══════════════════════ UI 组件：Modal 弹窗 ═══════════════════════ */
+        /* 已拆出 components/modal.html，改动请同步 */
         {
             const overlay = document.getElementById('modalOverlay');
             const modal = overlay.querySelector('.modal');
@@ -4006,6 +4015,7 @@ See the Mulan PSL v2 for more details.
         }
 
         /* ═══════════════════════ UI 组件：Tab 标签页 ═══════════════════════ */
+        /* 已拆出 components/tabs.html，改动请同步 */
         {
             // 选中态与面板均限定在当前卡片内，多组 Tab 互不干扰
             document.querySelectorAll('#page-components .tab').forEach(tab => {
@@ -4021,6 +4031,7 @@ See the Mulan PSL v2 for more details.
         }
 
         /* ═══════════════════════ UI 组件：Progress 进度条 ═══════════════════════ */
+        /* 已拆出 components/progress.html，改动请同步 */
         {
             const progressBar = document.getElementById('progressBar');
             const progressValue = document.getElementById('progressValue');
@@ -4048,6 +4059,7 @@ See the Mulan PSL v2 for more details.
         }
 
         /* ═══════════════════════ 自定义右键菜单 ═══════════════════════ */
+        /* 已拆出 components/context-menu.html，改动请同步 */
         {
             const menu = document.getElementById('contextMenu');
             const ctxCopy = document.getElementById('ctxCopy');

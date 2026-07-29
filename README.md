@@ -2,7 +2,7 @@
 
 一个极简的 Tauri v2 启动模板——将任何 HTML 页面打包成 Windows 桌面程序。Rust 层几乎零逻辑（仅拖放示例的文件大小命令与系统托盘两处能力，均可按需移除），故名「轻壳」。
 
-除了作为壳模板，示例页内置的 Toast / Modal / Tab / Tooltip / 右键菜单等组件均遵循统一的「去线留白」设计语言（见 [docs/“去线留白”设计语言.md](docs/“去线留白”设计语言.md)），纯 CSS + 原生 JS、零依赖，也可当作**轻量参考组件库**按需拆用。
+除了作为壳模板，示例页内置的 Toast / Modal / Tab / Tooltip / 右键菜单等组件均遵循统一的「去线留白」设计语言（见 [docs/“去线留白”设计语言.md](docs/“去线留白”设计语言.md)），纯 CSS + 原生 JS、零依赖，也可当作**轻量参考组件库**按需拆用——独立拆分版见 [components/](components/) 目录。
 
 > 🏠 [Gitee 仓库](https://gitee.com/qingshangongzai/tauri-shell/) · 开发者 [青山公仔](https://gitee.com/qingshangongzai)
 
@@ -24,7 +24,9 @@
 
 **② 同风格开发 — 复用组件与样式**
 
-认可示例页的「去线留白」风格，可以在示例页基础上改造出自己的应用，或从组件页复制 Toast / Modal / Tab 等组件的样式与逻辑到自己的页面。规划中的 `components/` 目录将提供设计令牌（tokens.css）、风格骨架模板（starter.html，替换 `dist/index.html` 即得同风格空应用）与各组件自包含 demo。
+认可示例页的「去线留白」风格，可以从 `components/` 目录起步：`tokens.css`（设计令牌）、`starter.html`（风格骨架模板，替换 `dist/index.html` 即得同风格空应用）、以及 Toast / Modal / Tab / Progress / Badge / Tooltip / 右键菜单七个自包含 demo（双击浏览器即可预览，复制三段注释标出的 CSS/HTML/JS 即可移植）。
+
+两条路径的详细步骤（标题栏取舍、改名清单、设计令牌速查、组件复制指引等）见 [docs/使用说明.md](docs/使用说明.md)。
 
 ## 目录结构
 
@@ -51,7 +53,12 @@
 │   │   └── product.ts      ← 安装器前端文案配置（改名时修改）
 │   └── src-tauri/
 │       └── src/config.rs   ← 安装器产品常量（改名时修改）
+├── components/             ← 参考组件库（不进构建产物，dist/index.html 为权威源）
+│   ├── tokens.css          ← 「去线留白」设计令牌
+│   ├── starter.html        ← 风格骨架模板（替换 dist/index.html 即得同风格空应用）
+│   └── *.html              ← Toast / Modal / Tab / Progress / Badge / Tooltip / 右键菜单 demo
 ├── docs/
+│   ├── 使用说明.md         ← 两条使用路径详解（改名清单、组件复制指引）
 │   ├── 安装器说明.md       ← 安装器详细说明
 │   └── 托盘说明.md         ← 托盘原理、定制与移除步骤
 ├── scripts/
@@ -140,34 +147,8 @@ npm run tauri build -- --no-bundle
 
 ## 自定义配置
 
-需要修改的地方（按优先级）：
-
-### 必改项
-
-| 文件 | 字段 | 说明 |
-|------|------|------|
-| `tauri.conf.json` | `productName` | 应用名称 |
-| `tauri.conf.json` | `identifier` | 唯一标识，建议 `com.xxx.yyy` |
-| `tauri.conf.json` | `windows[0].title` | 窗口标题 |
-| `tauri.conf.json` | `windows[0].width/height` | 窗口尺寸 |
-| `Cargo.toml` | `name` | 内部名称（需与 `bin.name`、`lib.name` 一致） |
-| `Cargo.toml` | `[package.metadata.tauri-winres]` 下所有字段 | Windows EXE 属性（右键文件 → 属性 → 详细信息） |
-| `package.json` | `name` | npm 包名 |
-| `dist/index.html` | `<title>`、`.titlebar-title` | 页面标题、标题栏文字 |
-| `installer/src-tauri/src/config.rs` | 全部常量 | 安装器产品信息（显示名、exe 名、注册表键等，文件内有逐项说明） |
-| `installer/src/product.ts` | 全部常量 | 安装器前端文案（与 `config.rs` 保持一致） |
-| `installer/src-tauri/tauri.conf.json` | `productName` / `identifier` / 窗口 `title` | 安装器窗口信息 |
-| `installer/src-tauri/Cargo.toml` | `[[bin]] name`（需等于 config.rs 的 `WIZARD_EXE_NAME` 去掉 `.exe`）及 `tauri-winres` 字段 | 安装器 EXE 名与属性 |
-| `installer/index.html` | `<title>` | 安装器页面标题 |
-
-### 可选改动
-
-| 文件 | 字段 | 说明 |
-|------|------|------|
-| `tauri.conf.json` | `version` | 版本号（`sync-version.cjs` 会自动同步到其他文件） |
-| `tauri.conf.json` | `windows[0].resizable` | 是否可调整大小 |
-| `tauri.conf.json` | `windows[0].decorations` | `false`= 无边框 + 自定义标题栏，`true`= 系统原生标题栏 |
-| `src-tauri/icons/logo.svg` | — | 替换为你的应用图标（正方形、透明背景 SVG），构建时自动生成 EXE 图标并同步给安装器 |
+改成你自己的应用需要动哪些文件（`productName`、`identifier`、EXE 属性、安装器常量等），
+见 [docs/使用说明.md](docs/使用说明.md) 中的「改名清单」（必改项 / 可选改动两张表，逐项说明）。
 
 ### 版本号规则
 
