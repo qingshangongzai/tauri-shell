@@ -20,6 +20,21 @@
         "center": true,
         "visible": false,
         "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection,ElasticOverscroll,OverscrollHistoryNavigation"
+      },
+      {
+        "label": "tray-menu",
+        "url": "tray-menu.html",
+        "width": 220,
+        "height": 120,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "resizable": false,
+        "shadow": false,
+        "visible": false,
+        "focus": false,
+        "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection,ElasticOverscroll,OverscrollHistoryNavigation"
       }
     ],
     "security": {

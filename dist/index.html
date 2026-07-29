@@ -2384,7 +2384,22 @@ See the Mulan PSL v2 for more details.
                             <div class="toggle-hint">切换浅色 / 深色主题</div>
                         </div>
                         <label class="toggle">
-                            <input type="checkbox" id="themeToggle">
+                            <input type="checkbox" id="themeToggle" aria-label="深色模式">
+                            <span class="toggle-track"></span>
+                            <span class="toggle-thumb"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card card-spaced">
+                    <h2 class="card-title-xs">窗口</h2>
+                    <div class="toggle-row">
+                        <div>
+                            <div class="toggle-label">关闭时最小化到托盘</div>
+                            <div class="toggle-hint">关闭窗口时隐藏到系统托盘，可从托盘菜单退出</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="trayMinToggle" checked aria-label="关闭时最小化到托盘">
                             <span class="toggle-track"></span>
                             <span class="toggle-thumb"></span>
                         </label>
@@ -2407,7 +2422,7 @@ See the Mulan PSL v2 for more details.
                             <div class="toggle-hint">退出时自动保存设置</div>
                         </div>
                         <label class="toggle">
-                            <input type="checkbox" id="autoSave" checked>
+                            <input type="checkbox" id="autoSave" checked aria-label="自动保存">
                             <span class="toggle-track"></span>
                             <span class="toggle-thumb"></span>
                         </label>
@@ -2508,7 +2523,9 @@ See the Mulan PSL v2 for more details.
             const invoke = cmd => internals.invoke(cmd);
 
             document.getElementById('winMin').addEventListener('click', () => invoke('plugin:window|minimize'));
-            document.getElementById('winClose').addEventListener('click', () => invoke('plugin:window|close'));
+            // 关闭按钮：按设置隐藏到托盘或退出（挂托盘后 close 只销窗口不退进程，退出须走 exit_app）
+            document.getElementById('winClose').addEventListener('click', () =>
+                invoke(localStorage.getItem('tauri-shell-tray-min') === '0' ? 'exit_app' : 'plugin:window|hide'));
 
             const maxBtn = document.getElementById('winMax');
             maxBtn.addEventListener('click', () => invoke('plugin:window|toggle_maximize'));
@@ -2660,6 +2677,14 @@ See the Mulan PSL v2 for more details.
                 apply();
             }
         }
+
+        /* ═══════════════════════ 托盘：关闭按钮行为 ═══════════════════════ */
+        // 开关即时持久化（同深色模式），关闭按钮点击时读取最新值
+        const trayMinToggle = document.getElementById('trayMinToggle');
+        if (localStorage.getItem('tauri-shell-tray-min') === '0') trayMinToggle.checked = false;
+        trayMinToggle.addEventListener('change', () => {
+            localStorage.setItem('tauri-shell-tray-min', trayMinToggle.checked ? '1' : '0');
+        });
 
         /* ═══════════════════════ 计数器 ═══════════════════════ */
         // 页面状态保持：计数器值持久化，重启后恢复

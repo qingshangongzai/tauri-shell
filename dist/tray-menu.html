@@ -1,0 +1,170 @@
+<!--
+  Copyright (c) 2026 青山公仔
+  轻壳 (Tauri Shell) is licensed under Mulan PSL v2.
+  You can use this software according to the terms and conditions of the Mulan PSL v2.
+  You may obtain a copy of Mulan PSL v2 at:
+           http://license.coscl.org.cn/MulanPSL2
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  See the Mulan PSL v2 for more details.
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>托盘菜单</title>
+    <script>
+        // 渲染前同步套用主题，避免菜单弹出瞬间闪烁（两窗口同源，localStorage 与主窗口共享）
+        if (localStorage.getItem('tauri-shell-theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+    <style>
+        /* ───── 设计令牌子集（与 dist/index.html 逐项一致，勿单侧改动） ───── */
+        :root {
+            --card: #feffff;
+            --hover: #e0e0e0;
+            --danger: #c42b1c;
+            --danger-bg: rgba(196, 43, 28, 0.08);
+            --text-primary: rgba(0, 0, 0, 0.87);
+            --text-body: rgba(0, 0, 0, 0.78);
+            --text-auxiliary: rgba(0, 0, 0, 0.52);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --duration-fast: 100ms;
+            --duration-normal: 200ms;
+            --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.14);
+            --radius-sm: 6px;
+            --font: "Noto Serif SC", "Source Han Serif SC", "SimSun", "宋体", serif;
+        }
+        [data-theme="dark"] {
+            --card: #232323;
+            --hover: #3d3d3d;
+            --danger: #ff6b6b;
+            --danger-bg: rgba(255, 107, 107, 0.1);
+            --text-primary: rgba(255, 255, 255, 0.87);
+            --text-body: rgba(255, 255, 255, 0.6);
+            --text-auxiliary: rgba(255, 255, 255, 0.4);
+            --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* 整页透明：背景由菜单卡片自绘，四周透明边距承载弥散阴影 */
+        html, body {
+            background: transparent;
+            overflow: hidden;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+        }
+        .icon {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+            color: var(--text-auxiliary);
+        }
+
+        /* ───── 菜单卡片（同 dist/index.html 的 .context-menu，去掉 fixed 定位） ─────
+           去线留白：卡片底色 + 弥散阴影建立浮层层级，分组间以留白代替分割线 */
+        .shadow-pad { padding: 16px; width: fit-content; } /* 与 Rust SHADOW_MARGIN 一致 */
+        .context-menu {
+            min-width: 168px;
+            padding: 6px;
+            background: var(--card);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-flyout);
+            display: flex;
+            flex-direction: column;
+            animation: flyoutPopIn var(--duration-normal) var(--ease);
+        }
+        @keyframes flyoutPopIn {
+            from { opacity: 0; transform: translateY(4px) scale(0.98); }
+            to   { opacity: 1; transform: none; }
+        }
+        .context-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 10px;
+            border: none;
+            border-radius: calc(var(--radius-sm) - 2px);
+            background: none;
+            color: var(--text-body);
+            font-size: 0.78rem;
+            font-weight: 450;
+            font-family: var(--font);
+            cursor: pointer;
+            text-align: left;
+            white-space: nowrap;
+            transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
+        }
+        .context-menu-item:hover { background: var(--hover); color: var(--text-primary); }
+        /* 危险操作：透明色底 + 同色文字，不用边框强调 */
+        .context-menu-item--danger { color: var(--danger); }
+        .context-menu-item--danger .icon { color: var(--danger); }
+        .context-menu-item--danger:hover { background: var(--danger-bg); color: var(--danger); }
+        .context-menu-gap { height: 8px; flex-shrink: 0; }
+
+        /* ───── 动效降级（同 dist/index.html） ───── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div class="shadow-pad">
+        <div class="context-menu" id="trayMenu" role="menu" aria-label="托盘菜单">
+            <button class="context-menu-item" id="trayShow" role="menuitem">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M10 4v4"/><path d="M2 8h20"/><path d="M6 4v4"/></svg>
+                打开主界面
+            </button>
+            <div class="context-menu-gap" aria-hidden="true"></div>
+            <button class="context-menu-item context-menu-item--danger" id="trayQuit" role="menuitem">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                退出
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+    {
+        const internals = window.__TAURI_INTERNALS__;
+        const invoke = (cmd, args) => internals ? internals.invoke(cmd, args) : Promise.resolve();
+        const menu = document.getElementById('trayMenu');
+        const SHADOW = 16; // 与 Rust 侧 SHADOW_MARGIN 一致
+
+        // 按内容测量，一次性设窗口尺寸（卡片 + 四周透明投影边距）
+        const rect = menu.getBoundingClientRect();
+        invoke('plugin:window|set_size', {
+            value: { Logical: { width: rect.width + SHADOW * 2, height: rect.height + SHADOW * 2 } }
+        });
+
+        const hideMenu = () => invoke('plugin:window|hide');
+
+        // 每次弹出（Rust 侧 show + set_focus）：重读主题、重放入场动画
+        window.addEventListener('focus', () => {
+            const dark = localStorage.getItem('tauri-shell-theme') === 'dark';
+            document.documentElement.setAttribute('data-theme', dark ? 'dark' : '');
+            menu.style.animation = 'none';
+            void menu.offsetWidth; // 强制回流以重放动画
+            menu.style.animation = '';
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') hideMenu();
+        });
+
+        document.getElementById('trayShow').addEventListener('click', () => {
+            invoke('show_main_window').finally(hideMenu);
+        });
+        document.getElementById('trayQuit').addEventListener('click', () => {
+            invoke('exit_app');
+        });
+    }
+    </script>
+</body>
+</html>

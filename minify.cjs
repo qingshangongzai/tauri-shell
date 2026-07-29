@@ -10,16 +10,26 @@
 
 const { minify } = require("html-minifier-terser");
 const fs = require("fs");
-const html = fs.readFileSync("dist/index.html", "utf8");
-minify(html, {
+
+const OPTIONS = {
   collapseWhitespace: true,
   removeComments: true,
   minifyCSS: true,
   minifyJS: true,
-}).then((r) => {
-  fs.mkdirSync("dist-min", { recursive: true });
-  fs.writeFileSync("dist-min/index.html", r);
+};
+
+// 主页面 + 托盘菜单页（白名单式拷贝，dist 内其余文件不进打包产物）
+const PAGES = ["index.html", "tray-menu.html"];
+
+fs.mkdirSync("dist-min", { recursive: true });
+Promise.all(
+  PAGES.map(async (name) => {
+    const html = fs.readFileSync(`dist/${name}`, "utf8");
+    const r = await minify(html, OPTIONS);
+    fs.writeFileSync(`dist-min/${name}`, r);
+    console.log(`Minified ${name}:`, html.length, "->", r.length);
+  }),
+).then(() => {
   // 非 HTML 静态资源直接拷贝（关于页 logo 等）
   fs.copyFileSync("dist/logo.svg", "dist-min/logo.svg");
-  console.log("Minified:", html.length, "->", r.length);
 });
