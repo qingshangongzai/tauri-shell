@@ -10,7 +10,8 @@
 - 无边框窗口 + 仿原生标题栏（最小化 / 最大化 / 关闭）
 - 系统托盘：关闭窗口最小化到托盘（设置页可关），托盘右键为「去线留白」自绘菜单，可按需移除
 - 内置丰富的示例界面：侧边栏导航、仪表盘、工具页、能力展示、组件页、设置页（含深色模式）、关于页
-- 可拆用的内置组件：Toast 通知、Modal 弹窗、Tab 标签页、Progress 进度条、Badge 徽章、Tooltip、自定义右键菜单
+- 可拆用的内置组件：Toast 通知、Modal 弹窗、Tab 标签页、Progress 进度条、Badge 徽章、Button 按钮、Input 输入框、Switch 开关、Select 下拉选择器、Tooltip、自定义右键菜单
+- 示例界面三语切换（简体中文 / English / 日本語），零依赖内联字典，切换即时生效
 - 自带安装/卸载向导（Tauri 2 + React 自绘 UI，替代 NSIS）：双路径安装、按需 UAC 提权、控制面板集成
 - 右键菜单禁用、文本选定禁用（按需移除）
 - 构建时自动压缩 HTML，减小体积
@@ -24,7 +25,7 @@
 
 **② 同风格开发 — 复用组件与样式**
 
-认可示例页的「去线留白」风格，可以从 `components/` 目录起步：`tokens.css`（设计令牌）、`starter.html`（风格骨架模板，替换 `dist/index.html` 即得同风格空应用）、以及 Toast / Modal / Tab / Progress / Badge / Tooltip / 右键菜单七个自包含 demo（双击浏览器即可预览，复制三段注释标出的 CSS/HTML/JS 即可移植）。
+认可示例页的「去线留白」风格，可以从 `components/` 目录起步：`tokens.css`（设计令牌）、`starter.html`（风格骨架模板，替换 `dist/index.html` 即得同风格空应用）、以及 Toast / Modal / Tab / Progress / Badge / Button / Input / Switch / Select / Tooltip / 右键菜单十一个自包含 demo（双击浏览器即可预览，复制三段注释标出的 CSS/HTML/JS 即可移植）。
 
 两条路径的详细步骤（标题栏取舍、改名清单、设计令牌速查、组件复制指引等）见 [docs/使用说明.md](docs/使用说明.md)。
 
@@ -56,7 +57,7 @@
 ├── components/             ← 参考组件库（不进构建产物，dist/index.html 为权威源）
 │   ├── tokens.css          ← 「去线留白」设计令牌
 │   ├── starter.html        ← 风格骨架模板（替换 dist/index.html 即得同风格空应用）
-│   └── *.html              ← Toast / Modal / Tab / Progress / Badge / Tooltip / 右键菜单 demo
+│   └── *.html              ← Toast / Modal / Tab / Progress / Badge / Button / Input / Switch / Select / Tooltip / 右键菜单 demo
 ├── docs/
 │   ├── 使用说明.md         ← 两条使用路径详解（改名清单、组件复制指引）
 │   ├── 安装器说明.md       ← 安装器详细说明
@@ -93,8 +94,8 @@ npm install
 - **仪表盘** — 欢迎卡片、实时时钟、系统信息、快捷操作、活动日志
 - **工具页** — 计数器、剪贴板读写、秒表/倒计时、便签本、JSON 格式化、取色器、Base64 编解码、摩斯编码
 - **能力展示** — 快捷键面板、拖放区域
-- **组件页** — Toast / Modal / Tab / Progress / Badge / Tooltip 等组件的活体示例，样式与逻辑均可直接复制到自己的项目
-- **设置页** — 深色 / 浅色主题切换、关闭时最小化到托盘开关、设置导入/导出、本地存储持久化
+- **组件页** — Toast / Modal / Tab / Progress / Badge / Button / Input / Switch / Select / Tooltip 等组件的活体示例，样式与逻辑均可直接复制到自己的项目
+- **设置页** — 深色 / 浅色主题切换、语言切换（简体中文 / English / 日本語）、关闭时最小化到托盘开关、设置导入/导出、本地存储持久化
 - **关于页** — 应用图标、技术栈信息、许可证
 
 交互细节也已就位：侧边栏折叠（`Ctrl+B`）、键盘全局导航（`Ctrl+1~6`）、自定义右键菜单、页面状态保持等。

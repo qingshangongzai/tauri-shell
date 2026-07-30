@@ -1,0 +1,174 @@
+<!--
+Copyright (c) 2026 青山公仔
+轻壳 (Tauri Shell) is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details.
+-->
+<!--
+═══════════ Switch 开关 — 自包含 demo ═══════════
+来源：拷贝自 dist/index.html「开关组件」CSS 分节，纯 CSS 无 JS，
+      改动请双向同步（dist/index.html 为权威源）。
+依赖：设计令牌子集（已内联，完整版见 tokens.css）。
+特性：隐藏 checkbox + 纯 CSS 轨道/滑块——选中态轨道整体染强调色，
+      恒白滑块（--static-white，深色下不反转）平移 18px；.toggle-row 提供
+      「标签 + 说明 + 开关」的整行布局。
+用法：双击本文件即可在浏览器预览；移植时复制「组件 CSS」「组件 HTML」两段，
+      状态读写走原生 checkbox（checked 属性 / change 事件）。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Switch 开关 · 组件 demo</title>
+    <style>
+        /* ───── 设计令牌子集（拷贝自 tokens.css，勿单侧改动） ───── */
+        :root {
+            --bg: #fcfcfc;
+            --card: #feffff;
+            --hover: #e0e0e0;
+            --accent: #005fb8;
+            --static-white: #ffffff;
+            --text-primary: rgba(0, 0, 0, 0.87);
+            --text-auxiliary: rgba(0, 0, 0, 0.52);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --duration-normal: 200ms;
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --font: "Noto Serif SC", "edit Han Serif SC", "SimSun", "宋体", serif;
+        }
+        [data-theme="dark"] {
+            --bg: #202020;
+            --card: #232323;
+            --hover: #3d3d3d;
+            --accent: #60cdff;
+            --text-primary: rgba(255, 255, 255, 0.87);
+            --text-auxiliary: rgba(255, 255, 255, 0.4);
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ───── demo 页面骨架（非组件本体） ───── */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 32px;
+        }
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow-card);
+            max-width: 560px;
+            margin: 0 auto 16px;
+        }
+        .card-title-sm { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+        .card-subtitle { font-size: 0.7rem; color: var(--text-auxiliary); margin-bottom: 8px; }
+        .theme-btn {
+            display: block;
+            margin: 0 auto;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-family: var(--font);
+            cursor: pointer;
+            border: none;
+            background: var(--hover);
+            color: var(--text-primary);
+        }
+
+        /* ═════════════════════ 组件 CSS：Switch 开关（拷贝自 dist/index.html） ═════════════════════ */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+        }
+        .toggle-label {
+            font-size: 0.85rem;
+            font-weight: 450;
+            color: var(--text-primary);
+        }
+        .toggle-hint {
+            font-size: 0.7rem;
+            color: var(--text-auxiliary);
+            margin-top: 2px;
+        }
+        .toggle {
+            position: relative;
+            width: 44px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+        .toggle input { display: none; }
+        .toggle-track {
+            position: absolute;
+            inset: 0;
+            background: var(--hover);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background var(--duration-normal) var(--ease);
+        }
+        .toggle input:checked + .toggle-track { background: var(--accent); }
+        .toggle-thumb {
+            position: absolute;
+            top: 3px; left: 3px;
+            width: 20px;
+            height: 20px;
+            background: var(--static-white);
+            border-radius: 50%;
+            transition: transform var(--duration-normal) var(--ease);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+        .toggle input:checked ~ .toggle-thumb { transform: translateX(18px); }
+    </style>
+</head>
+<body>
+
+    <!-- ═════════ 组件 HTML：Switch 开关 ═════════ -->
+    <div class="card">
+        <h2 class="card-title-sm">Switch 开关</h2>
+        <p class="card-subtitle">纯 CSS + 隐藏 checkbox：选中态轨道整体染色，恒白滑块平移</p>
+        <div class="toggle-row">
+            <div>
+                <div class="toggle-label">默认开启</div>
+                <div class="toggle-hint">checked 初始态</div>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" checked aria-label="默认开启">
+                <span class="toggle-track"></span>
+                <span class="toggle-thumb"></span>
+            </label>
+        </div>
+        <div class="toggle-row" style="padding-bottom:0;">
+            <div>
+                <div class="toggle-label">默认关闭</div>
+                <div class="toggle-hint">未选中初始态</div>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" aria-label="默认关闭">
+                <span class="toggle-track"></span>
+                <span class="toggle-thumb"></span>
+            </label>
+        </div>
+    </div>
+
+    <button class="theme-btn" id="themeBtn">切换深色</button>
+
+    <script>
+    /* ───── demo 绑定（非组件本体，组件本身纯 CSS） ───── */
+    document.getElementById('themeBtn').addEventListener('click', () => {
+        const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute('data-theme', dark ? '' : 'dark');
+    });
+    </script>
+</body>
+</html>

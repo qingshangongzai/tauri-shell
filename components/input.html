@@ -1,0 +1,149 @@
+<!--
+Copyright (c) 2026 青山公仔
+轻壳 (Tauri Shell) is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details.
+-->
+<!--
+═══════════ Input 填充式输入框 — 自包含 demo ═══════════
+来源：拷贝自 dist/index.html「输入框（填充式，去线留白）」CSS 分节，纯 CSS 无 JS，
+      改动请双向同步（dist/index.html 为权威源）。
+      注：权威源中公共样式由 .form-input 与多个 textarea 类共用一条规则，
+      本 demo 只拆 .form-input 相关部分并就地合并，textarea 类不拆。
+依赖：设计令牌子集（已内联，完整版见 tokens.css）。
+特性：去线留白标志性样式——无边框浅色填充底，聚焦背景加深 + 强调色光标，
+      键盘聚焦时内缩 1px 强调色描边（:focus-visible）。
+用法：双击本文件即可在浏览器预览；移植时复制「组件 CSS」一段，
+      配合 .form-group / .form-label 组成表单行。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input 填充式输入框 · 组件 demo</title>
+    <style>
+        /* ───── 设计令牌子集（拷贝自 tokens.css，勿单侧改动） ───── */
+        :root {
+            --bg: #fcfcfc;
+            --card: #feffff;
+            --hover: #e0e0e0;
+            --accent: #005fb8;
+            --text-primary: rgba(0, 0, 0, 0.87);
+            --text-body: rgba(0, 0, 0, 0.78);
+            --text-auxiliary: rgba(0, 0, 0, 0.52);
+            --text-placeholder: rgba(0, 0, 0, 0.3);
+            --input-bg: rgba(0, 0, 0, 0.02);
+            --input-bg-focus: rgba(0, 0, 0, 0.04);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --duration-fast: 100ms;
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --font: "Noto Serif SC", "edit Han Serif SC", "SimSun", "宋体", serif;
+        }
+        [data-theme="dark"] {
+            --bg: #202020;
+            --card: #232323;
+            --hover: #3d3d3d;
+            --accent: #60cdff;
+            --text-primary: rgba(255, 255, 255, 0.87);
+            --text-body: rgba(255, 255, 255, 0.6);
+            --text-auxiliary: rgba(255, 255, 255, 0.4);
+            --text-placeholder: rgba(255, 255, 255, 0.25);
+            --input-bg: rgba(255, 255, 255, 0.04);
+            --input-bg-focus: rgba(255, 255, 255, 0.07);
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ───── demo 页面骨架（非组件本体） ───── */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 32px;
+        }
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow-card);
+            max-width: 560px;
+            margin: 0 auto 16px;
+        }
+        .card-title-sm { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+        .card-subtitle { font-size: 0.7rem; color: var(--text-auxiliary); margin-bottom: 8px; }
+        .theme-btn {
+            display: block;
+            margin: 0 auto;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-family: var(--font);
+            cursor: pointer;
+            border: none;
+            background: var(--hover);
+            color: var(--text-primary);
+        }
+
+        /* ═════════════════════ 组件 CSS：Input 填充式输入框（拷贝自 dist/index.html，公共样式已就地合并） ═════════════════════ */
+        .form-group { margin-bottom: 16px; }
+        .form-label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 550;
+            color: var(--text-body);
+            margin-bottom: 8px;
+        }
+        .form-input {
+            width: 100%;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            caret-color: var(--accent);
+            outline: none;
+            transition: background var(--duration-fast) var(--ease);
+            padding: 8px 12px;
+            font-size: 0.82rem;
+            font-family: var(--font);
+        }
+        .form-input::placeholder { color: var(--text-placeholder); }
+        .form-input:focus { background: var(--input-bg-focus); }
+        .form-input:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }
+    </style>
+</head>
+<body>
+
+    <!-- ═════════ 组件 HTML：Input 填充式输入框 ═════════ -->
+    <div class="card">
+        <h2 class="card-title-sm">Input 填充式输入框</h2>
+        <p class="card-subtitle">无边框浅色填充底，聚焦背景加深并出现强调色光标</p>
+        <div class="form-group">
+            <label class="form-label" for="demoName">名称</label>
+            <input class="form-input" id="demoName" placeholder="请输入名称…">
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label" for="demoNote">备注</label>
+            <input class="form-input" id="demoNote" value="预填内容示例">
+        </div>
+    </div>
+
+    <button class="theme-btn" id="themeBtn">切换深色</button>
+
+    <script>
+    /* ───── demo 绑定（非组件本体，组件本身纯 CSS） ───── */
+    document.getElementById('themeBtn').addEventListener('click', () => {
+        const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute('data-theme', dark ? '' : 'dark');
+    });
+    </script>
+</body>
+</html>

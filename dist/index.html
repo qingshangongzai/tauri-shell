@@ -666,6 +666,7 @@ See the Mulan PSL v2 for more details.
         }
 
         /* ───── 按钮 ───── */
+        /* 已拆出 components/button.html，改动请同步 */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -692,6 +693,7 @@ See the Mulan PSL v2 for more details.
         .btn-secondary:hover { opacity: 0.8; }
 
         /* ───── 开关组件 ───── */
+        /* 已拆出 components/switch.html，改动请同步 */
         .toggle-row {
             display: flex;
             align-items: center;
@@ -737,6 +739,7 @@ See the Mulan PSL v2 for more details.
         .toggle input:checked ~ .toggle-thumb { transform: translateX(18px); }
 
         /* ───── 输入框（填充式，去线留白） ───── */
+        /* 已拆出 components/input.html（仅 .form-group / .form-label / .form-input 与公共样式，textarea 类不拆），改动请同步 */
         .form-group { margin-bottom: 16px; }
         .form-label {
             display: block;
@@ -768,6 +771,7 @@ See the Mulan PSL v2 for more details.
             font-family: var(--font);
         }
         /* ───── 自定义下拉选择器（去线留白：填充式触发 + 弥散阴影浮层） ───── */
+        /* 已拆出 components/select.html，改动请同步 */
         .select-trigger {
             display: flex;
             align-items: center;
@@ -1274,6 +1278,11 @@ See the Mulan PSL v2 for more details.
         .kb-badge-ready {
             background: color-mix(in srgb, var(--copy-success) 12%, transparent);
             color: var(--copy-success);
+        }
+        /* 示例快捷键（未绑定功能）：中性底色，与绿色「已启用」区分 */
+        .kb-badge-demo {
+            background: var(--hover);
+            color: var(--text-auxiliary);
         }
         .kb-hint {
             font-size: 0.68rem;
@@ -1878,11 +1887,11 @@ See the Mulan PSL v2 for more details.
 
     <!-- ═══════════ 标题栏 ═══════════ -->
     <div class="titlebar" data-tauri-drag-region>
-        <span class="titlebar-title">轻壳 · 示例</span>
+        <span class="titlebar-title" data-i18n="app.title">轻壳 · 示例</span>
         <div class="window-controls">
-            <button class="win-btn win-btn-min" id="winMin" title="最小化" aria-label="最小化"></button>
-            <button class="win-btn win-btn-max" id="winMax" title="最大化" aria-label="最大化"></button>
-            <button class="win-btn win-btn-close" id="winClose" title="关闭" aria-label="关闭"></button>
+            <button class="win-btn win-btn-min" id="winMin" title="最小化" aria-label="最小化" data-i18n-attr="title:win.min;aria-label:win.min"></button>
+            <button class="win-btn win-btn-max" id="winMax" title="最大化" aria-label="最大化" data-i18n-attr="title:win.max;aria-label:win.max"></button>
+            <button class="win-btn win-btn-close" id="winClose" title="关闭" aria-label="关闭" data-i18n-attr="title:win.close;aria-label:win.close"></button>
         </div>
     </div>
 
@@ -1890,30 +1899,30 @@ See the Mulan PSL v2 for more details.
     <div class="app-layout">
 
         <!-- ───── 侧边栏 ───── -->
-        <aside class="sidebar" aria-label="导航侧栏">
+        <aside class="sidebar" aria-label="导航侧栏" data-i18n-attr="aria-label:nav.sidebarAria">
             <button class="sidebar-toggle" id="sidebarToggle" aria-label="折叠侧边栏" aria-expanded="true">
                 <svg class="icon" aria-hidden="true"><use href="#i-menu"></use></svg>
             </button>
             <nav class="sidebar-nav">
                 <button class="nav-item active" data-page="dashboard">
-                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-dashboard"></use></svg></span> <span class="nav-label">仪表盘</span>
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-dashboard"></use></svg></span> <span class="nav-label" data-i18n="nav.dashboard">仪表盘</span>
                 </button>
                 <button class="nav-item" data-page="tools">
-                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-wrench"></use></svg></span> <span class="nav-label">工具</span>
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-wrench"></use></svg></span> <span class="nav-label" data-i18n="nav.tools">工具</span>
                 </button>
                 <button class="nav-item" data-page="tauri">
-                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-window"></use></svg></span> <span class="nav-label">能力</span>
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-window"></use></svg></span> <span class="nav-label" data-i18n="nav.tauri">能力</span>
                 </button>
                 <button class="nav-item" data-page="components">
-                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-layers"></use></svg></span> <span class="nav-label">组件</span>
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-layers"></use></svg></span> <span class="nav-label" data-i18n="nav.components">组件</span>
                 </button>
             </nav>
-            <nav class="sidebar-nav sidebar-nav-bottom" aria-label="关于与设置入口">
+            <nav class="sidebar-nav sidebar-nav-bottom" aria-label="关于与设置入口" data-i18n-attr="aria-label:nav.bottomAria">
                 <button class="nav-item" data-page="about">
-                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg></span> <span class="nav-label">关于</span>
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg></span> <span class="nav-label" data-i18n="nav.about">关于</span>
                 </button>
                 <button class="nav-item" data-page="settings">
-                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-settings"></use></svg></span> <span class="nav-label">设置</span>
+                    <span class="nav-icon"><svg class="icon" aria-hidden="true"><use href="#i-settings"></use></svg></span> <span class="nav-label" data-i18n="nav.settings">设置</span>
                 </button>
             </nav>
         </aside>
@@ -1927,8 +1936,8 @@ See the Mulan PSL v2 for more details.
             <!-- 仪表盘页 -->
             <section class="page active" id="page-dashboard">
                 <div class="welcome-card">
-                    <h1>欢迎使用轻壳</h1>
-                    <p>这是一个基于 Tauri v2 的桌面应用模板，也是一套可直接拆用的参考组件库。你可以在 <code>dist/index.html</code> 中编写任何网页内容，一键打包为 Windows 桌面程序；也可以把页内的 Toast、Modal、Tab、Tooltip 等组件搬进自己的项目。</p>
+                    <h1 data-i18n="dash.welcomeTitle">欢迎使用轻壳</h1>
+                    <p data-i18n-html="dash.welcomeBody">这是一个基于 Tauri v2 的桌面应用模板，也是一套可直接拆用的参考组件库。你可以在 <code>dist/index.html</code> 中编写任何网页内容，一键打包为 Windows 桌面程序；也可以把页内的 Toast、Modal、Tab、Tooltip 等组件搬进自己的项目。</p>
                 </div>
 
                 <div class="stats-grid">
@@ -1936,53 +1945,53 @@ See the Mulan PSL v2 for more details.
                         <div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#i-zap"></use></svg></div>
                         <div>
                             <div class="stat-value">Tauri v2</div>
-                            <div class="stat-label">桌面框架</div>
+                            <div class="stat-label" data-i18n="stat.framework">桌面框架</div>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#i-feather"></use></svg></div>
                         <div>
                             <div class="stat-value">&lt; 10 MB</div>
-                            <div class="stat-label">单文件安装器体积</div>
+                            <div class="stat-label" data-i18n="stat.installer">单文件安装器体积</div>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#i-monitor"></use></svg></div>
                         <div>
                             <div class="stat-value">Windows</div>
-                            <div class="stat-label">目标平台</div>
+                            <div class="stat-label" data-i18n="stat.platform">目标平台</div>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#i-file-code"></use></svg></div>
                         <div>
-                            <div class="stat-value">纯 HTML</div>
-                            <div class="stat-label">零框架依赖</div>
+                            <div class="stat-value" data-i18n="stat.pureHtml">纯 HTML</div>
+                            <div class="stat-label" data-i18n="stat.zeroDeps">零框架依赖</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="dash-grid">
                     <div class="card">
-                        <h3 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-clock"></use></svg> 实时时钟</h3>
-                        <p class="card-subtitle">每秒刷新的本地日期时间</p>
+                        <h3 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-clock"></use></svg> <span data-i18n="dash.clockTitle">实时时钟</span></h3>
+                        <p class="card-subtitle" data-i18n="dash.clockSub">每秒刷新的本地日期时间</p>
                         <div class="dash-clock-time" id="dashClockTime">--:--:--</div>
                         <div class="dash-clock-date" id="dashClockDate"></div>
                     </div>
                     <div class="card">
-                        <h3 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-globe"></use></svg> 系统信息</h3>
-                        <p class="card-subtitle">来自 navigator API 的运行环境信息</p>
+                        <h3 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-globe"></use></svg> <span data-i18n="dash.sysTitle">系统信息</span></h3>
+                        <p class="card-subtitle" data-i18n="dash.sysSub">来自 navigator API 的运行环境信息</p>
                         <div class="sysinfo-list">
                             <div class="sysinfo-row">
-                                <span class="sysinfo-label">语言</span>
+                                <span class="sysinfo-label" data-i18n="sys.lang">语言</span>
                                 <span class="sysinfo-value" id="sysLang">—</span>
                             </div>
                             <div class="sysinfo-row">
-                                <span class="sysinfo-label">在线状态</span>
+                                <span class="sysinfo-label" data-i18n="sys.online">在线状态</span>
                                 <span class="sysinfo-value"><span class="sysinfo-dot" id="sysOnlineDot" aria-hidden="true"></span><span id="sysOnlineText">检测中…</span></span>
                             </div>
                             <div class="sysinfo-row">
-                                <span class="sysinfo-label">分辨率</span>
+                                <span class="sysinfo-label" data-i18n="sys.screen">分辨率</span>
                                 <span class="sysinfo-value" id="sysScreen">—</span>
                             </div>
                             <div class="sysinfo-row">
@@ -1994,110 +2003,110 @@ See the Mulan PSL v2 for more details.
                 </div>
 
                 <div class="card card-spaced">
-                    <h3 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-zap"></use></svg> 快捷操作</h3>
-                    <p class="card-subtitle">常用工具一键直达</p>
+                    <h3 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-zap"></use></svg> <span data-i18n="dash.quickTitle">快捷操作</span></h3>
+                    <p class="card-subtitle" data-i18n="dash.quickSub">常用工具一键直达</p>
                     <div class="quick-actions">
-                        <button class="quick-action" data-goto="tools" data-target="toolCardTimer" data-log="打开了秒表/倒计时">
-                            <svg class="icon" aria-hidden="true"><use href="#i-timer"></use></svg> 秒表/倒计时
+                        <button class="quick-action" data-goto="tools" data-target="toolCardTimer" data-log="log.openTimer">
+                            <svg class="icon" aria-hidden="true"><use href="#i-timer"></use></svg> <span data-i18n="tool.timer">秒表/倒计时</span>
                         </button>
-                        <button class="quick-action" data-goto="tools" data-target="toolCardNote" data-log="打开了便签本">
-                            <svg class="icon" aria-hidden="true"><use href="#i-pencil"></use></svg> 便签本
+                        <button class="quick-action" data-goto="tools" data-target="toolCardNote" data-log="log.openNote">
+                            <svg class="icon" aria-hidden="true"><use href="#i-pencil"></use></svg> <span data-i18n="tool.note">便签本</span>
                         </button>
-                        <button class="quick-action" data-goto="tools" data-target="toolCardJson" data-log="打开了 JSON 格式化">
-                            <svg class="icon" aria-hidden="true"><use href="#i-braces"></use></svg> JSON 格式化
+                        <button class="quick-action" data-goto="tools" data-target="toolCardJson" data-log="log.openJson">
+                            <svg class="icon" aria-hidden="true"><use href="#i-braces"></use></svg> <span data-i18n="tool.json">JSON 格式化</span>
                         </button>
-                        <button class="quick-action" data-goto="tools" data-target="toolCardColor" data-log="打开了取色器">
-                            <svg class="icon" aria-hidden="true"><use href="#i-palette"></use></svg> 取色器
+                        <button class="quick-action" data-goto="tools" data-target="toolCardColor" data-log="log.openColor">
+                            <svg class="icon" aria-hidden="true"><use href="#i-palette"></use></svg> <span data-i18n="tool.color">取色器</span>
                         </button>
-                        <button class="quick-action" data-goto="tools" data-target="toolCardClipboard" data-log="打开了剪贴板读写">
-                            <svg class="icon" aria-hidden="true"><use href="#i-clipboard"></use></svg> 剪贴板
+                        <button class="quick-action" data-goto="tools" data-target="toolCardClipboard" data-log="log.openClipboard">
+                            <svg class="icon" aria-hidden="true"><use href="#i-clipboard"></use></svg> <span data-i18n="tool.clipboardShort">剪贴板</span>
                         </button>
-                        <button class="quick-action" data-goto="components" data-target="compCardToast" data-log="打开了 Toast 演示">
-                            <svg class="icon" aria-hidden="true"><use href="#i-bell"></use></svg> Toast 演示
+                        <button class="quick-action" data-goto="components" data-target="compCardToast" data-log="log.openToast">
+                            <svg class="icon" aria-hidden="true"><use href="#i-bell"></use></svg> <span data-i18n="comp.toastDemo">Toast 演示</span>
                         </button>
                     </div>
                 </div>
 
                 <div class="card card-spaced">
-                    <h3 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-history"></use></svg> 最近活动</h3>
-                    <p class="card-subtitle">本次会话的操作记录，最多保留 20 条</p>
-                    <ul class="activity-list" id="activityList" role="list" aria-live="polite" aria-label="最近活动记录"></ul>
+                    <h3 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-history"></use></svg> <span data-i18n="dash.actTitle">最近活动</span></h3>
+                    <p class="card-subtitle" data-i18n="dash.actSub">本次会话的操作记录，最多保留 20 条</p>
+                    <ul class="activity-list" id="activityList" role="list" aria-live="polite" aria-label="最近活动记录" data-i18n-attr="aria-label:dash.actAria"></ul>
                 </div>
 
                 <div class="card dashboard-quickstart">
-                    <h3 class="card-title-sm-lg">快速开始</h3>
+                    <h3 class="card-title-sm-lg" data-i18n="dash.qsTitle">快速开始</h3>
                     <ol class="quickstart-list">
-                        <li>修改 <code>dist/index.html</code> 编写你的界面（同风格开发可从 <code>components/starter.html</code> 起步，组件按需从 <code>components/</code> 拆用）</li>
-                        <li>替换 <code>src-tauri/icons/logo.svg</code> 为你的应用图标（构建时自动同步安装器）</li>
-                        <li>修改 <code>tauri.conf.json</code> 中的应用名称和标识，完整改名清单见 <code>docs/使用说明.md</code></li>
-                        <li>同步安装向导产品信息，详见 <code>docs/安装器说明.md</code></li>
-                        <li>运行 <code>npm run build</code> 打包单文件安装器（或 <code>npm run build:nsis</code> 走 NSIS）</li>
+                        <li data-i18n-html="qs.1">修改 <code>dist/index.html</code> 编写你的界面（同风格开发可从 <code>components/starter.html</code> 起步，组件按需从 <code>components/</code> 拆用）</li>
+                        <li data-i18n-html="qs.2">替换 <code>src-tauri/icons/logo.svg</code> 为你的应用图标（构建时自动同步安装器）</li>
+                        <li data-i18n-html="qs.3">修改 <code>tauri.conf.json</code> 中的应用名称和标识，完整改名清单见 <code>docs/使用说明.md</code></li>
+                        <li data-i18n-html="qs.4">同步安装向导产品信息，详见 <code>docs/安装器说明.md</code></li>
+                        <li data-i18n-html="qs.5">运行 <code>npm run build</code> 打包单文件安装器（或 <code>npm run build:nsis</code> 走 NSIS）</li>
                     </ol>
                 </div>
             </section>
 
             <!-- 工具页 -->
             <section class="page" id="page-tools">
-                <h1 class="page-title">工具箱</h1>
-                <p class="page-desc">一些实用的交互组件示例，展示桌面应用中可以做什么。</p>
+                <h1 class="page-title" data-i18n="tools.title">工具箱</h1>
+                <p class="page-desc" data-i18n="tools.desc">一些实用的交互组件示例，展示桌面应用中可以做什么。</p>
 
                 <div class="card card-spaced">
-                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-hash"></use></svg> 计数器</h2>
-                    <p class="card-subtitle">一个简单的状态管理示例</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-hash"></use></svg> <span data-i18n="counter.title">计数器</span></h2>
+                    <p class="card-subtitle" data-i18n="counter.sub">一个简单的状态管理示例</p>
                     <div class="counter-display" id="counterValue" aria-live="polite" aria-atomic="true">0</div>
                     <div class="counter-actions">
                         <button class="counter-btn counter-btn-minus" id="counterDec">−</button>
-                        <button class="counter-btn counter-btn-reset" id="counterReset">重置</button>
+                        <button class="counter-btn counter-btn-reset" id="counterReset" data-i18n="common.reset">重置</button>
                         <button class="counter-btn counter-btn-plus" id="counterInc">+</button>
                     </div>
                 </div>
 
                 <div class="card card-spaced" id="toolCardClipboard">
-                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-clipboard"></use></svg> 剪贴板读写</h2>
-                    <p class="card-subtitle">使用 Web API 读写系统剪贴板</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-clipboard"></use></svg> <span data-i18n="clip.title">剪贴板读写</span></h2>
+                    <p class="card-subtitle" data-i18n="clip.sub">使用 Web API 读写系统剪贴板</p>
                     <div class="clipboard-row">
-                        <input class="form-input" id="clipboardInput" placeholder="输入一些文字…" value="Hello 轻壳！">
-                        <button class="btn btn-primary" id="clipboardCopy">复制</button>
+                        <input class="form-input" id="clipboardInput" placeholder="输入一些文字…" value="Hello 轻壳！" data-i18n-attr="placeholder:clip.inputPh;value:clip.inputVal">
+                        <button class="btn btn-primary" id="clipboardCopy" data-i18n="common.copy">复制</button>
                     </div>
                     <div class="clipboard-row">
-                        <input class="form-input" id="clipboardOutput" placeholder="点击粘贴按钮读取剪贴板…" readonly>
-                        <button class="btn btn-secondary" id="clipboardPaste">粘贴</button>
+                        <input class="form-input" id="clipboardOutput" placeholder="点击粘贴按钮读取剪贴板…" readonly data-i18n-attr="placeholder:clip.outputPh">
+                        <button class="btn btn-secondary" id="clipboardPaste" data-i18n="clip.paste">粘贴</button>
                     </div>
                 </div>
 
                 <div class="card card-spaced" id="toolCardTimer">
-                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-timer"></use></svg> 秒表/倒计时</h2>
-                    <p class="card-subtitle">setInterval 定时器状态管理示例</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-timer"></use></svg> <span data-i18n="tool.timer">秒表/倒计时</span></h2>
+                    <p class="card-subtitle" data-i18n="timer.sub">setInterval 定时器状态管理示例</p>
 
-                    <div class="tabs" role="tablist" aria-label="定时器模式">
-                        <button class="tab timer-tab active" role="tab" aria-selected="true" data-timer="stopwatch">秒表</button>
-                        <button class="tab timer-tab" role="tab" aria-selected="false" data-timer="countdown">倒计时</button>
+                    <div class="tabs" role="tablist" aria-label="定时器模式" data-i18n-attr="aria-label:timer.tabAria">
+                        <button class="tab timer-tab active" role="tab" aria-selected="true" data-timer="stopwatch" data-i18n="timer.stopwatch">秒表</button>
+                        <button class="tab timer-tab" role="tab" aria-selected="false" data-timer="countdown" data-i18n="timer.countdown">倒计时</button>
                     </div>
 
                     <div class="tab-panel timer-panel active" id="panel-stopwatch" role="tabpanel">
                         <div class="timer-display" id="swDisplay" aria-live="polite">00:00.00</div>
                         <div class="timer-actions">
-                            <button class="timer-btn timer-btn-start" id="swStart" aria-label="开始秒表">开始</button>
-                            <button class="timer-btn timer-btn-lap" id="swLap" disabled aria-label="计次">计次</button>
-                            <button class="timer-btn timer-btn-reset" id="swReset" aria-label="重置秒表">重置</button>
+                            <button class="timer-btn timer-btn-start" id="swStart" aria-label="开始秒表" data-i18n="timer.start" data-i18n-attr="aria-label:timer.swStartAria">开始</button>
+                            <button class="timer-btn timer-btn-lap" id="swLap" disabled aria-label="计次" data-i18n="timer.lap" data-i18n-attr="aria-label:timer.lap">计次</button>
+                            <button class="timer-btn timer-btn-reset" id="swReset" aria-label="重置秒表" data-i18n="common.reset" data-i18n-attr="aria-label:timer.swResetAria">重置</button>
                         </div>
-                        <ul class="timer-laps" id="swLaps" role="list" aria-label="计次记录"></ul>
+                        <ul class="timer-laps" id="swLaps" role="list" aria-label="计次记录" data-i18n-attr="aria-label:timer.lapsAria"></ul>
                     </div>
 
                     <div class="tab-panel timer-panel" id="panel-countdown" role="tabpanel">
                         <div class="timer-preset-row">
-                            <button class="timer-preset" data-seconds="30">30秒</button>
-                            <button class="timer-preset active" data-seconds="60">1分钟</button>
-                            <button class="timer-preset" data-seconds="180">3分钟</button>
-                            <button class="timer-preset" data-seconds="300">5分钟</button>
-                            <button class="timer-preset" data-seconds="600">10分钟</button>
-                            <button class="timer-preset" data-seconds="-1">自定义</button>
+                            <button class="timer-preset" data-seconds="30" data-i18n="timer.p30s">30秒</button>
+                            <button class="timer-preset active" data-seconds="60" data-i18n="timer.p1m">1分钟</button>
+                            <button class="timer-preset" data-seconds="180" data-i18n="timer.p3m">3分钟</button>
+                            <button class="timer-preset" data-seconds="300" data-i18n="timer.p5m">5分钟</button>
+                            <button class="timer-preset" data-seconds="600" data-i18n="timer.p10m">10分钟</button>
+                            <button class="timer-preset" data-seconds="-1" data-i18n="timer.custom">自定义</button>
                         </div>
                         <div class="timer-display" id="cdDisplay" aria-live="polite">01:00</div>
                         <div class="timer-actions">
-                            <button class="timer-btn timer-btn-start" id="cdStart" aria-label="开始倒计时">开始</button>
-                            <button class="timer-btn timer-btn-pause" id="cdPause" disabled aria-label="暂停倒计时">暂停</button>
-                            <button class="timer-btn timer-btn-reset" id="cdReset" aria-label="重置倒计时">重置</button>
+                            <button class="timer-btn timer-btn-start" id="cdStart" aria-label="开始倒计时" data-i18n="timer.start" data-i18n-attr="aria-label:timer.cdStartAria">开始</button>
+                            <button class="timer-btn timer-btn-pause" id="cdPause" disabled aria-label="暂停倒计时" data-i18n="timer.pause" data-i18n-attr="aria-label:timer.cdPauseAria">暂停</button>
+                            <button class="timer-btn timer-btn-reset" id="cdReset" aria-label="重置倒计时" data-i18n="common.reset" data-i18n-attr="aria-label:timer.cdResetAria">重置</button>
                         </div>
                         <div class="timer-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
                             <div class="timer-progress-bar" id="cdProgress"></div>
@@ -2106,86 +2115,86 @@ See the Mulan PSL v2 for more details.
                 </div>
 
                 <div class="card card-spaced" id="toolCardNote">
-                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-pencil"></use></svg> 便签本</h2>
-                    <p class="card-subtitle">多行文本编辑器，localStorage 自动保存</p>
-                    <textarea class="note-area" id="noteArea" placeholder="在这里写点什么…" aria-label="便签内容"></textarea>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-pencil"></use></svg> <span data-i18n="tool.note">便签本</span></h2>
+                    <p class="card-subtitle" data-i18n="note.sub">多行文本编辑器，localStorage 自动保存</p>
+                    <textarea class="note-area" id="noteArea" placeholder="在这里写点什么…" aria-label="便签内容" data-i18n-attr="placeholder:note.ph;aria-label:note.areaAria"></textarea>
                     <div class="note-status" id="noteStatus" role="status"></div>
                 </div>
 
                 <div class="card card-spaced" id="toolCardJson">
-                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-braces"></use></svg> JSON 格式化</h2>
-                    <p class="card-subtitle">输入原始 JSON → 格式化或压缩输出</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-braces"></use></svg> <span data-i18n="tool.json">JSON 格式化</span></h2>
+                    <p class="card-subtitle" data-i18n="json.sub">输入原始 JSON → 格式化或压缩输出</p>
                     <div class="tool-row">
                         <div class="tool-col">
-                            <span class="tool-col-label">输入</span>
-                            <textarea class="json-textarea" id="jsonInput" placeholder='{"key": "value"}' aria-label="JSON 输入"></textarea>
+                            <span class="tool-col-label" data-i18n="json.input">输入</span>
+                            <textarea class="json-textarea" id="jsonInput" placeholder='{"key": "value"}' aria-label="JSON 输入" data-i18n-attr="aria-label:json.inputAria"></textarea>
                             <div class="json-error" id="jsonError" role="alert"></div>
                         </div>
                         <div class="tool-col">
-                            <span class="tool-col-label">输出</span>
-                            <div class="json-output" id="jsonOutput" role="status" aria-label="JSON 输出"></div>
+                            <span class="tool-col-label" data-i18n="json.output">输出</span>
+                            <div class="json-output" id="jsonOutput" role="status" aria-label="JSON 输出" data-i18n-attr="aria-label:json.outputAria"></div>
                         </div>
                     </div>
                     <div class="tool-actions">
-                        <button class="btn btn-primary" id="jsonFormat">格式化</button>
-                        <button class="btn btn-secondary" id="jsonCompress">压缩</button>
-                        <button class="btn btn-secondary" id="jsonCopy">复制结果</button>
+                        <button class="btn btn-primary" id="jsonFormat" data-i18n="json.format">格式化</button>
+                        <button class="btn btn-secondary" id="jsonCompress" data-i18n="json.compress">压缩</button>
+                        <button class="btn btn-secondary" id="jsonCopy" data-i18n="common.copyResult">复制结果</button>
                     </div>
                 </div>
 
                 <div class="card card-spaced" id="toolCardColor">
-                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-palette"></use></svg> 取色器</h2>
-                    <p class="card-subtitle">选色并查看 HEX 值，保留取色历史</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-palette"></use></svg> <span data-i18n="tool.color">取色器</span></h2>
+                    <p class="card-subtitle" data-i18n="color.sub">选色并查看 HEX 值，保留取色历史</p>
                     <div class="color-picker-row">
                         <div class="color-picker-wrapper">
-                            <input type="color" class="color-picker-input" id="colorPicker" value="#005FB8" aria-label="颜色选择器">
+                            <input type="color" class="color-picker-input" id="colorPicker" value="#005FB8" aria-label="颜色选择器" data-i18n-attr="aria-label:color.pickerAria">
                             <div class="color-preview" id="colorPreview" aria-hidden="true"></div>
                         </div>
                         <span class="color-value" id="colorHex">#005FB8</span>
-                        <button class="btn btn-secondary color-copy-btn" id="colorCopyHex">复制</button>
+                        <button class="btn btn-secondary color-copy-btn" id="colorCopyHex" data-i18n="common.copy">复制</button>
                     </div>
-                    <p class="card-subtitle color-history-label">取色历史（点击色块重新选取）</p>
-                    <div class="color-history" id="colorHistory" role="list" aria-label="取色历史"></div>
+                    <p class="card-subtitle color-history-label" data-i18n="color.historyLabel">取色历史（点击色块重新选取）</p>
+                    <div class="color-history" id="colorHistory" role="list" aria-label="取色历史" data-i18n-attr="aria-label:color.historyAria"></div>
                 </div>
 
                 <div class="card card-spaced">
-                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-lock"></use></svg> Base64 编解码</h2>
-                    <p class="card-subtitle">文本与 Base64 互相转换，btoa / atob API</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-lock"></use></svg> <span data-i18n="b64.title">Base64 编解码</span></h2>
+                    <p class="card-subtitle" data-i18n="b64.sub">文本与 Base64 互相转换，btoa / atob API</p>
                     <div class="base64-row">
                         <div class="tool-col">
-                            <span class="tool-col-label">原文</span>
-                            <textarea class="base64-textarea" id="base64Text" placeholder="输入要编码的文本…" aria-label="原文输入"></textarea>
+                            <span class="tool-col-label" data-i18n="b64.plain">原文</span>
+                            <textarea class="base64-textarea" id="base64Text" placeholder="输入要编码的文本…" aria-label="原文输入" data-i18n-attr="placeholder:b64.plainPh;aria-label:b64.plainAria"></textarea>
                         </div>
                         <div class="tool-col">
                             <span class="tool-col-label">Base64</span>
-                            <textarea class="base64-textarea" id="base64Encoded" placeholder="或输入 Base64 字符串解码…" aria-label="Base64 输入"></textarea>
+                            <textarea class="base64-textarea" id="base64Encoded" placeholder="或输入 Base64 字符串解码…" aria-label="Base64 输入" data-i18n-attr="placeholder:b64.encodedPh;aria-label:b64.encodedAria"></textarea>
                         </div>
                     </div>
                     <div class="tool-actions">
-                        <button class="btn btn-primary" id="base64Encode">编码 ↓</button>
-                        <button class="btn btn-secondary" id="base64Decode">解码 ↑</button>
-                        <button class="btn btn-secondary" id="base64CopyResult">复制结果</button>
+                        <button class="btn btn-primary" id="base64Encode" data-i18n="common.encode">编码 ↓</button>
+                        <button class="btn btn-secondary" id="base64Decode" data-i18n="common.decode">解码 ↑</button>
+                        <button class="btn btn-secondary" id="base64CopyResult" data-i18n="common.copyResult">复制结果</button>
                         <span class="base64-error" id="base64Error" role="alert"></span>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-radio"></use></svg> 摩斯编码</h2>
-                    <p class="card-subtitle">文本与摩斯电码互相转换</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-radio"></use></svg> <span data-i18n="morse.title">摩斯编码</span></h2>
+                    <p class="card-subtitle" data-i18n="morse.sub">文本与摩斯电码互相转换</p>
                     <div class="morse-row">
                         <div class="tool-col">
-                            <span class="tool-col-label">文本</span>
-                            <textarea class="morse-textarea" id="morseText" placeholder="输入要编码的文本…" aria-label="文本输入"></textarea>
+                            <span class="tool-col-label" data-i18n="morse.text">文本</span>
+                            <textarea class="morse-textarea" id="morseText" placeholder="输入要编码的文本…" aria-label="文本输入" data-i18n-attr="placeholder:b64.plainPh;aria-label:morse.textAria"></textarea>
                         </div>
                         <div class="tool-col">
-                            <span class="tool-col-label">摩斯电码</span>
-                            <div class="morse-output" id="morseOutput" role="status" aria-label="摩斯电码输出"></div>
+                            <span class="tool-col-label" data-i18n="morse.code">摩斯电码</span>
+                            <div class="morse-output" id="morseOutput" role="status" aria-label="摩斯电码输出" data-i18n-attr="aria-label:morse.outputAria"></div>
                         </div>
                     </div>
                     <div class="tool-actions">
-                        <button class="btn btn-primary" id="morseEncode">编码 ↓</button>
-                        <button class="btn btn-secondary" id="morseDecode">解码 ↑</button>
-                        <button class="btn btn-secondary" id="morseCopy">复制结果</button>
+                        <button class="btn btn-primary" id="morseEncode" data-i18n="common.encode">编码 ↓</button>
+                        <button class="btn btn-secondary" id="morseDecode" data-i18n="common.decode">解码 ↑</button>
+                        <button class="btn btn-secondary" id="morseCopy" data-i18n="common.copyResult">复制结果</button>
                         <span class="morse-error" id="morseError" role="alert"></span>
                     </div>
                 </div>
@@ -2193,45 +2202,45 @@ See the Mulan PSL v2 for more details.
 
             <!-- Tauri 能力展示页 -->
             <section class="page" id="page-tauri">
-                <h1 class="page-title">能力展示</h1>
-                <p class="page-desc">展示 Web 平台能力在桌面应用中的用法：键盘事件与拖放。</p>
+                <h1 class="page-title" data-i18n="tauri.title">能力展示</h1>
+                <p class="page-desc" data-i18n="tauri.desc">展示 Web 平台能力在桌面应用中的用法：键盘事件与拖放。</p>
 
                 <!-- 快捷键面板 -->
                 <div class="card card-spaced">
-                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-keyboard"></use></svg> 快捷键面板</h2>
-                    <p class="card-subtitle">键盘事件处理示例，展示组合键注册与实时按键检测</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-keyboard"></use></svg> <span data-i18n="kb.title">快捷键面板</span></h2>
+                    <p class="card-subtitle" data-i18n="kb.sub">键盘事件处理示例，展示组合键注册与实时按键检测</p>
 
                     <div class="kb-display" id="kbDisplay" aria-live="polite">
-                        <span class="kb-placeholder">按下任意键…</span>
+                        <span class="kb-placeholder" data-i18n="kb.placeholder">按下任意键…</span>
                     </div>
 
                     <div class="kb-details" id="kbDetails">
                         <div class="kb-row">
-                            <span class="kb-label">按键</span>
+                            <span class="kb-label" data-i18n="kb.key">按键</span>
                             <span class="kb-value" id="kbKey">—</span>
                         </div>
                         <div class="kb-row">
-                            <span class="kb-label">键码</span>
+                            <span class="kb-label" data-i18n="kb.code">键码</span>
                             <span class="kb-value" id="kbCode">—</span>
                         </div>
                         <div class="kb-row">
-                            <span class="kb-label">组合键</span>
+                            <span class="kb-label" data-i18n="kb.combo">组合键</span>
                             <span class="kb-value" id="kbCombo">—</span>
                         </div>
                     </div>
 
-                    <p class="card-subtitle" style="margin-top:16px;">已注册的快捷键</p>
-                    <table class="kb-table" aria-label="已注册快捷键列表">
+                    <p class="card-subtitle" style="margin-top:16px;" data-i18n="kb.registered">已注册的快捷键</p>
+                    <table class="kb-table" aria-label="已注册快捷键列表" data-i18n-attr="aria-label:kb.tableAria">
                         <thead>
-                            <tr><th>快捷键</th><th>功能</th><th>状态</th></tr>
+                            <tr><th data-i18n="kb.thKey">快捷键</th><th data-i18n="kb.thAction">功能</th><th data-i18n="kb.thStatus">状态</th></tr>
                         </thead>
                         <tbody>
-                            <tr><td><kbd>Ctrl</kbd> + <kbd>S</kbd></td><td>保存</td><td><span class="kb-badge kb-badge-ready">就绪</span></td></tr>
-                            <tr><td><kbd>Ctrl</kbd> + <kbd>Z</kbd></td><td>撤销</td><td><span class="kb-badge kb-badge-ready">就绪</span></td></tr>
-                            <tr><td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd></td><td>新建窗口</td><td><span class="kb-badge kb-badge-ready">就绪</span></td></tr>
-                            <tr><td><kbd>Ctrl</kbd> + <kbd>K</kbd></td><td>搜索</td><td><span class="kb-badge kb-badge-ready">就绪</span></td></tr>
-                            <tr><td><kbd>Ctrl</kbd> + <kbd>1</kbd> ~ <kbd>6</kbd></td><td>切换页面</td><td><span class="kb-badge kb-badge-ready">已启用</span></td></tr>
-                            <tr><td><kbd>Ctrl</kbd> + <kbd>B</kbd></td><td>折叠侧边栏</td><td><span class="kb-badge kb-badge-ready">已启用</span></td></tr>
+                            <tr><td><kbd>Ctrl</kbd> + <kbd>S</kbd></td><td data-i18n="kb.save">保存</td><td><span class="kb-badge kb-badge-demo" data-i18n="kb.demoBadge">示例（未绑定）</span></td></tr>
+                            <tr><td><kbd>Ctrl</kbd> + <kbd>Z</kbd></td><td data-i18n="kb.undo">撤销</td><td><span class="kb-badge kb-badge-demo" data-i18n="kb.demoBadge">示例（未绑定）</span></td></tr>
+                            <tr><td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd></td><td data-i18n="kb.newWindow">新建窗口</td><td><span class="kb-badge kb-badge-demo" data-i18n="kb.demoBadge">示例（未绑定）</span></td></tr>
+                            <tr><td><kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-i18n="kb.search">搜索</td><td><span class="kb-badge kb-badge-demo" data-i18n="kb.demoBadge">示例（未绑定）</span></td></tr>
+                            <tr><td><kbd>Ctrl</kbd> + <kbd>1</kbd> ~ <kbd>6</kbd></td><td data-i18n="kb.switchPage">切换页面</td><td><span class="kb-badge kb-badge-ready" data-i18n="kb.enabledBadge">已启用</span></td></tr>
+                            <tr><td><kbd>Ctrl</kbd> + <kbd>B</kbd></td><td data-i18n="kb.collapseSidebar">折叠侧边栏</td><td><span class="kb-badge kb-badge-ready" data-i18n="kb.enabledBadge">已启用</span></td></tr>
                         </tbody>
                     </table>
                     <p class="kb-hint" id="kbHint"></p>
@@ -2239,77 +2248,77 @@ See the Mulan PSL v2 for more details.
 
                 <!-- 拖放区域 -->
                 <div class="card">
-                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-folder"></use></svg> 拖放区域</h2>
-                    <p class="card-subtitle">Drag &amp; Drop API，拖入文件显示名称、大小与类型</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-folder"></use></svg> <span data-i18n="drop.title">拖放区域</span></h2>
+                    <p class="card-subtitle" data-i18n="drop.sub">Drag &amp; Drop API，拖入文件显示名称、大小与类型</p>
 
                     <div class="drop-zone" id="dropZone" role="region" aria-label="文件拖放区域" tabindex="0"
-                         aria-describedby="dropZoneDesc">
+                         aria-describedby="dropZoneDesc" data-i18n-attr="aria-label:drop.zoneAria">
                         <div class="drop-zone-icon" aria-hidden="true"><svg class="icon"><use href="#i-folder-open"></use></svg></div>
-                        <p class="drop-zone-text" id="dropZoneDesc">拖放文件到此处</p>
-                        <p class="drop-zone-hint">或点击此处选择文件</p>
-                        <input type="file" class="drop-zone-input" id="dropFileInput" aria-label="选择文件" multiple>
+                        <p class="drop-zone-text" id="dropZoneDesc" data-i18n="drop.zoneText">拖放文件到此处</p>
+                        <p class="drop-zone-hint" data-i18n="drop.zoneHint">或点击此处选择文件</p>
+                        <input type="file" class="drop-zone-input" id="dropFileInput" aria-label="选择文件" multiple data-i18n-attr="aria-label:drop.inputAria">
                     </div>
 
-                    <div class="drop-file-list" id="dropFileList" role="list" aria-label="已拖放的文件列表"></div>
-                    <div class="drop-empty" id="dropEmpty" role="status">尚未拖放任何文件</div>
+                    <div class="drop-file-list" id="dropFileList" role="list" aria-label="已拖放的文件列表" data-i18n-attr="aria-label:drop.listAria"></div>
+                    <div class="drop-empty" id="dropEmpty" role="status" data-i18n="drop.empty">尚未拖放任何文件</div>
                 </div>
             </section>
 
             <!-- UI 组件库页 -->
             <section class="page" id="page-components">
-                <h1 class="page-title">组件库</h1>
-                <p class="page-desc">去线留白风格的常用 UI 组件：以空间、色块与弥散阴影表达层级，不依赖边框线条。</p>
+                <h1 class="page-title" data-i18n="comp.title">组件库</h1>
+                <p class="page-desc" data-i18n="comp.desc">去线留白风格的常用 UI 组件：以空间、色块与弥散阴影表达层级，不依赖边框线条。</p>
 
                 <!-- Toast 通知 -->
                 <div class="card card-spaced" id="compCardToast">
-                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-bell"></use></svg> Toast 通知</h2>
-                    <p class="card-subtitle">顶部居中弹出，自动消失，支持 success / warning / error 三种类型</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-bell"></use></svg> <span data-i18n="comp.toastTitle">Toast 通知</span></h2>
+                    <p class="card-subtitle" data-i18n="comp.toastSub">顶部居中弹出，自动消失，支持 success / warning / error 三种类型</p>
                     <div class="toast-demo-actions">
-                        <button class="btn btn-primary" id="compToastSuccess" aria-label="触发成功通知">
-                            <svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg> 成功通知
+                        <button class="btn btn-primary" id="compToastSuccess" aria-label="触发成功通知" data-i18n-attr="aria-label:comp.toastSuccessAria">
+                            <svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg> <span data-i18n="comp.toastSuccess">成功通知</span>
                         </button>
-                        <button class="btn btn-secondary" id="compToastWarning" aria-label="触发警告通知">
-                            <svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg> 警告通知
+                        <button class="btn btn-secondary" id="compToastWarning" aria-label="触发警告通知" data-i18n-attr="aria-label:comp.toastWarningAria">
+                            <svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg> <span data-i18n="comp.toastWarning">警告通知</span>
                         </button>
-                        <button class="btn btn-secondary" id="compToastError" aria-label="触发错误通知">
-                            <svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg> 错误通知
+                        <button class="btn btn-secondary" id="compToastError" aria-label="触发错误通知" data-i18n-attr="aria-label:comp.toastErrorAria">
+                            <svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg> <span data-i18n="comp.toastError">错误通知</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Modal 弹窗 -->
                 <div class="card card-spaced">
-                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-window"></use></svg> Modal 弹窗</h2>
-                    <p class="card-subtitle">居中遮罩层，支持 ESC 键与点击遮罩关闭</p>
-                    <button class="btn btn-primary" id="modalOpen">打开弹窗</button>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-window"></use></svg> <span data-i18n="comp.modalTitle">Modal 弹窗</span></h2>
+                    <p class="card-subtitle" data-i18n="comp.modalSub">居中遮罩层，支持 ESC 键与点击遮罩关闭</p>
+                    <button class="btn btn-primary" id="modalOpen" data-i18n="comp.modalOpen">打开弹窗</button>
                 </div>
 
                 <!-- Tab 标签页 -->
                 <div class="card card-spaced">
-                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-panels"></use></svg> Tab 标签页</h2>
-                    <p class="card-subtitle">页内子标签切换，选中态用色块与字重表达，不用下划线</p>
-                    <div class="tabs" role="tablist" aria-label="示例标签页">
-                        <button class="tab active" role="tab" aria-selected="true" data-tab="tab-intro">简介</button>
-                        <button class="tab" role="tab" aria-selected="false" data-tab="tab-config">配置</button>
-                        <button class="tab" role="tab" aria-selected="false" data-tab="tab-log">日志</button>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-panels"></use></svg> <span data-i18n="comp.tabTitle">Tab 标签页</span></h2>
+                    <p class="card-subtitle" data-i18n="comp.tabSub">页内子标签切换，选中态用色块与字重表达，不用下划线</p>
+                    <div class="tabs" role="tablist" aria-label="示例标签页" data-i18n-attr="aria-label:comp.tabAria">
+                        <button class="tab active" role="tab" aria-selected="true" data-tab="tab-intro" data-i18n="comp.tabIntro">简介</button>
+                        <button class="tab" role="tab" aria-selected="false" data-tab="tab-config" data-i18n="comp.tabConfig">配置</button>
+                        <button class="tab" role="tab" aria-selected="false" data-tab="tab-log" data-i18n="comp.tabLog">日志</button>
                     </div>
                     <div class="tab-panel active" id="tab-intro" role="tabpanel">
-                        <p class="tab-panel-text">这里是简介面板。分段式标签以胶囊色块为底，选中项通过卡片色背景、加粗字重与弥散阴影浮起，无需任何分割线。</p>
+                        <p class="tab-panel-text" data-i18n="comp.tabIntroText">这里是简介面板。分段式标签以胶囊色块为底，选中项通过卡片色背景、加粗字重与弥散阴影浮起，无需任何分割线。</p>
                     </div>
                     <div class="tab-panel" id="tab-config" role="tabpanel">
-                        <p class="tab-panel-text">这里是配置面板。切换时面板直接显隐，标签与内容之间依靠 16px 间距建立关联。</p>
+                        <p class="tab-panel-text" data-i18n="comp.tabConfigText">这里是配置面板。切换时面板直接显隐，标签与内容之间依靠 16px 间距建立关联。</p>
                     </div>
                     <div class="tab-panel" id="tab-log" role="tabpanel">
-                        <p class="tab-panel-text">这里是日志面板。三个标签均带 role="tab" 与 aria-selected，对屏幕阅读器友好。</p>
+                        <p class="tab-panel-text" data-i18n="comp.tabLogText">这里是日志面板。三个标签均带 role="tab" 与 aria-selected，对屏幕阅读器友好。</p>
                     </div>
                 </div>
 
                 <!-- Progress 进度条 -->
                 <div class="card card-spaced">
-                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-gauge"></use></svg> Progress 进度条</h2>
-                    <p class="card-subtitle">确定与不确定两种进度状态</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-gauge"></use></svg> <span data-i18n="comp.progressTitle">Progress 进度条</span></h2>
+                    <p class="card-subtitle" data-i18n="comp.progressSub">确定与不确定两种进度状态</p>
                     <div class="progress-row">
-                        <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" aria-label="确定进度">
+                        <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" aria-label="确定进度" data-i18n-attr="aria-label:comp.progressBarAria">
                             <div class="progress-bar" id="progressBar" style="width:40%"></div>
                         </div>
                         <span class="progress-value" id="progressValue">40%</span>
@@ -2317,44 +2326,112 @@ See the Mulan PSL v2 for more details.
                     <div class="tool-actions">
                         <button class="btn btn-secondary" id="progressDec">−10%</button>
                         <button class="btn btn-secondary" id="progressInc">+10%</button>
-                        <button class="btn btn-secondary" id="progressReset">重置</button>
+                        <button class="btn btn-secondary" id="progressReset" data-i18n="common.reset">重置</button>
                     </div>
-                    <p class="card-subtitle" style="margin-top:16px;">不确定进度（加载中）</p>
-                    <div class="progress progress-indeterminate" role="progressbar" aria-label="加载中">
+                    <p class="card-subtitle" style="margin-top:16px;" data-i18n="comp.progressIndet">不确定进度（加载中）</p>
+                    <div class="progress progress-indeterminate" role="progressbar" aria-label="加载中" data-i18n-attr="aria-label:comp.progressIndetAria">
                         <div class="progress-bar"></div>
                     </div>
                 </div>
 
                 <!-- Badge / Tag -->
                 <div class="card card-spaced">
-                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-tag"></use></svg> Badge / Tag</h2>
-                    <p class="card-subtitle">透明色底 + 同色文字的无边框徽章，展示状态或分类</p>
-                    <p class="card-subtitle">状态徽章</p>
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-tag"></use></svg> <span data-i18n="comp.badgeTitle">Badge / Tag</span></h2>
+                    <p class="card-subtitle" data-i18n="comp.badgeSub">透明色底 + 同色文字的无边框徽章，展示状态或分类</p>
+                    <p class="card-subtitle" data-i18n="comp.badgeStatus">状态徽章</p>
                     <div class="badge-row">
-                        <span class="badge badge-dot badge-success">运行中</span>
-                        <span class="badge badge-dot badge-warning">待处理</span>
-                        <span class="badge badge-dot badge-danger">已中断</span>
-                        <span class="badge badge-dot">已离线</span>
+                        <span class="badge badge-dot badge-success" data-i18n="badge.running">运行中</span>
+                        <span class="badge badge-dot badge-warning" data-i18n="badge.pending">待处理</span>
+                        <span class="badge badge-dot badge-danger" data-i18n="badge.interrupted">已中断</span>
+                        <span class="badge badge-dot" data-i18n="badge.offline">已离线</span>
                     </div>
-                    <p class="card-subtitle" style="margin-top:16px;">分类标签与数字角标</p>
+                    <p class="card-subtitle" style="margin-top:16px;" data-i18n="comp.badgeCategory">分类标签与数字角标</p>
                     <div class="badge-row">
                         <span class="badge badge-accent">Tauri v2</span>
-                        <span class="badge badge-accent">前端</span>
-                        <span class="badge">模板</span>
-                        <span class="badge">文档</span>
+                        <span class="badge badge-accent" data-i18n="badge.frontend">前端</span>
+                        <span class="badge" data-i18n="badge.template">模板</span>
+                        <span class="badge" data-i18n="badge.docs">文档</span>
                         <span class="badge badge-count">3</span>
                         <span class="badge badge-count">99+</span>
+                    </div>
+                </div>
+
+                <!-- Button 按钮 -->
+                <!-- 已拆出 components/button.html，改动请同步 -->
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-zap"></use></svg> <span data-i18n="comp.buttonTitle">Button 按钮</span></h2>
+                    <p class="card-subtitle" data-i18n="comp.buttonSub">主/次两种变体：主按钮强调色填充，次按钮中性填充，均无边框</p>
+                    <div class="toast-demo-actions">
+                        <button class="btn btn-primary" data-i18n="comp.btnPrimary">主按钮</button>
+                        <button class="btn btn-secondary" data-i18n="comp.btnSecondary">次按钮</button>
+                        <button class="btn btn-primary"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg> <span data-i18n="comp.btnPrimaryIcon">带图标主按钮</span></button>
+                        <button class="btn btn-secondary"><svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg> <span data-i18n="comp.btnSecondaryIcon">带图标次按钮</span></button>
+                    </div>
+                </div>
+
+                <!-- Input 填充式输入框 -->
+                <!-- 已拆出 components/input.html，改动请同步 -->
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-pencil"></use></svg> <span data-i18n="comp.inputTitle">Input 填充式输入框</span></h2>
+                    <p class="card-subtitle" data-i18n="comp.inputSub">去线留白标志性样式：无边框浅色填充底，聚焦背景加深并出现强调色光标</p>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="comp.inputName">名称</label>
+                        <input class="form-input" placeholder="请输入名称…" aria-label="名称" data-i18n-attr="placeholder:comp.inputNamePh;aria-label:comp.inputName">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" data-i18n="comp.inputNote">备注</label>
+                        <input class="form-input" value="预填内容示例" aria-label="备注" data-i18n-attr="aria-label:comp.inputNote;value:comp.inputNoteVal">
+                    </div>
+                </div>
+
+                <!-- Switch 开关 -->
+                <!-- 已拆出 components/switch.html，改动请同步 -->
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-settings"></use></svg> <span data-i18n="comp.switchTitle">Switch 开关</span></h2>
+                    <p class="card-subtitle" data-i18n="comp.switchSub">纯 CSS + 隐藏 checkbox：选中态轨道整体染色，恒白滑块平移</p>
+                    <div class="toggle-row">
+                        <div>
+                            <div class="toggle-label" data-i18n="comp.switchOn">默认开启</div>
+                            <div class="toggle-hint" data-i18n="comp.switchOnHint">checked 初始态</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" checked aria-label="默认开启" data-i18n-attr="aria-label:comp.switchOn">
+                            <span class="toggle-track"></span>
+                            <span class="toggle-thumb"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-row" style="padding-bottom:0;">
+                        <div>
+                            <div class="toggle-label" data-i18n="comp.switchOff">默认关闭</div>
+                            <div class="toggle-hint" data-i18n="comp.switchOffHint">未选中初始态</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" aria-label="默认关闭" data-i18n-attr="aria-label:comp.switchOff">
+                            <span class="toggle-track"></span>
+                            <span class="toggle-thumb"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Select 下拉选择器 -->
+                <!-- 已拆出 components/select.html，改动请同步 -->
+                <div class="card card-spaced">
+                    <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-panels"></use></svg> <span data-i18n="comp.selectTitle">Select 下拉选择器</span></h2>
+                    <p class="card-subtitle" data-i18n="comp.selectSub">填充式触发按钮 + 弥散阴影浮层，chevron 随展开态旋转，支持键盘操作</p>
+                    <div class="form-group" style="margin-bottom:0;max-width:240px;">
+                        <label class="form-label" data-i18n="comp.selectLabel">主题色</label>
+                        <div id="compSelectDemo"></div>
                     </div>
                 </div>
 
                 <!-- Tooltip -->
                 <div class="card">
                     <h2 class="card-title-sm"><svg class="icon-title" aria-hidden="true"><use href="#i-message"></use></svg> Tooltip</h2>
-                    <p class="card-subtitle">悬停或键盘聚焦时显示提示气泡，纯 CSS 实现</p>
+                    <p class="card-subtitle" data-i18n="comp.tooltipSub">悬停或键盘聚焦时显示提示气泡，纯 CSS 实现</p>
                     <div class="tooltip-demo-row">
-                        <button class="btn btn-primary tooltip" data-tip="保存当前更改（Ctrl+S）">保存</button>
-                        <button class="btn btn-secondary tooltip" data-tip="撤销上一步操作（Ctrl+Z）">撤销</button>
-                        <button class="tooltip-icon-btn tooltip" data-tip="查看帮助信息" aria-label="帮助">
+                        <button class="btn btn-primary tooltip" data-tip="保存当前更改（Ctrl+S）" data-i18n="comp.tooltipSave" data-i18n-attr="data-tip:comp.tooltipSaveTip">保存</button>
+                        <button class="btn btn-secondary tooltip" data-tip="撤销上一步操作（Ctrl+Z）" data-i18n="comp.tooltipUndo" data-i18n-attr="data-tip:comp.tooltipUndoTip">撤销</button>
+                        <button class="tooltip-icon-btn tooltip" data-tip="查看帮助信息" aria-label="帮助" data-i18n-attr="data-tip:comp.tooltipHelpTip;aria-label:comp.tooltipHelp">
                             <svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg>
                         </button>
                     </div>
@@ -2363,18 +2440,18 @@ See the Mulan PSL v2 for more details.
 
             <!-- 设置页 -->
             <section class="page" id="page-settings">
-                <h1 class="page-title">设置</h1>
-                <p class="page-desc">个性化你的应用体验。</p>
+                <h1 class="page-title" data-i18n="set.title">设置</h1>
+                <p class="page-desc" data-i18n="set.desc">个性化你的应用体验。</p>
 
                 <div class="card card-spaced">
-                    <h2 class="card-title-xs">外观</h2>
+                    <h2 class="card-title-xs" data-i18n="set.appearance">外观</h2>
                     <div class="toggle-row">
                         <div>
-                            <div class="toggle-label">深色模式</div>
-                            <div class="toggle-hint">切换浅色 / 深色主题</div>
+                            <div class="toggle-label" data-i18n="set.darkMode">深色模式</div>
+                            <div class="toggle-hint" data-i18n="set.darkModeHint">切换浅色 / 深色主题</div>
                         </div>
                         <label class="toggle">
-                            <input type="checkbox" id="themeToggle" aria-label="深色模式">
+                            <input type="checkbox" id="themeToggle" aria-label="深色模式" data-i18n-attr="aria-label:set.darkMode">
                             <span class="toggle-track"></span>
                             <span class="toggle-thumb"></span>
                         </label>
@@ -2382,14 +2459,14 @@ See the Mulan PSL v2 for more details.
                 </div>
 
                 <div class="card card-spaced">
-                    <h2 class="card-title-xs">窗口</h2>
+                    <h2 class="card-title-xs" data-i18n="set.window">窗口</h2>
                     <div class="toggle-row">
                         <div>
-                            <div class="toggle-label">关闭时最小化到托盘</div>
-                            <div class="toggle-hint">关闭窗口时隐藏到系统托盘，可从托盘菜单退出</div>
+                            <div class="toggle-label" data-i18n="set.trayMin">关闭时最小化到托盘</div>
+                            <div class="toggle-hint" data-i18n="set.trayMinHint">关闭窗口时隐藏到系统托盘，可从托盘菜单退出</div>
                         </div>
                         <label class="toggle">
-                            <input type="checkbox" id="trayMinToggle" checked aria-label="关闭时最小化到托盘">
+                            <input type="checkbox" id="trayMinToggle" checked aria-label="关闭时最小化到托盘" data-i18n-attr="aria-label:set.trayMin">
                             <span class="toggle-track"></span>
                             <span class="toggle-thumb"></span>
                         </label>
@@ -2397,65 +2474,65 @@ See the Mulan PSL v2 for more details.
                 </div>
 
                 <div class="card card-spaced">
-                    <h2 class="card-title">偏好设置</h2>
+                    <h2 class="card-title" data-i18n="set.prefs">偏好设置</h2>
                     <div class="form-group">
-                        <label class="form-label">用户名</label>
-                        <input class="form-input" id="settingsName" placeholder="请输入用户名" value="青山公仔">
+                        <label class="form-label" data-i18n="set.username">用户名</label>
+                        <input class="form-input" id="settingsName" placeholder="请输入用户名" value="青山公仔" data-i18n-attr="placeholder:set.usernamePh">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">语言</label>
+                        <label class="form-label" data-i18n="set.language">语言</label>
                         <div id="settingsLang"></div>
                     </div>
                     <div class="toggle-row">
                         <div>
-                            <div class="toggle-label">自动保存</div>
-                            <div class="toggle-hint">退出时自动保存设置</div>
+                            <div class="toggle-label" data-i18n="set.autoSave">自动保存</div>
+                            <div class="toggle-hint" data-i18n="set.autoSaveHint">退出时自动保存设置</div>
                         </div>
                         <label class="toggle">
-                            <input type="checkbox" id="autoSave" checked aria-label="自动保存">
+                            <input type="checkbox" id="autoSave" checked aria-label="自动保存" data-i18n-attr="aria-label:set.autoSave">
                             <span class="toggle-track"></span>
                             <span class="toggle-thumb"></span>
                         </label>
                     </div>
-                    <button class="btn btn-primary btn-row" id="saveSettings">保存设置</button>
-                    <span class="settings-msg" id="settingsMsg">✓ 已保存</span>
+                    <button class="btn btn-primary btn-row" id="saveSettings" data-i18n="set.save">保存设置</button>
+                    <span class="settings-msg" id="settingsMsg" data-i18n="set.saved">✓ 已保存</span>
                 </div>
 
                 <div class="card">
-                    <h2 class="card-title-xs">备份与恢复</h2>
-                    <p class="card-subtitle">将本地设置导出为 JSON 文件，或从文件恢复</p>
+                    <h2 class="card-title-xs" data-i18n="set.backup">备份与恢复</h2>
+                    <p class="card-subtitle" data-i18n="set.backupSub">将本地设置导出为 JSON 文件，或从文件恢复</p>
                     <div class="tool-actions">
-                        <button class="btn btn-primary" id="settingsExport">导出设置</button>
-                        <button class="btn btn-secondary" id="settingsImportBtn">导入设置</button>
-                        <input type="file" id="settingsImportFile" accept=".json,application/json" hidden aria-label="选择设置文件">
+                        <button class="btn btn-primary" id="settingsExport" data-i18n="set.export">导出设置</button>
+                        <button class="btn btn-secondary" id="settingsImportBtn" data-i18n="set.import">导入设置</button>
+                        <input type="file" id="settingsImportFile" accept=".json,application/json" hidden aria-label="选择设置文件" data-i18n-attr="aria-label:set.importFileAria">
                     </div>
                 </div>
             </section>
 
             <!-- 关于页 -->
             <section class="page" id="page-about">
-                <h1 class="page-title">关于</h1>
-                <p class="page-desc">了解这个应用和它的构建技术。</p>
+                <h1 class="page-title" data-i18n="about.title">关于</h1>
+                <p class="page-desc" data-i18n="about.desc">了解这个应用和它的构建技术。</p>
 
                 <div class="card card-centered">
-                    <img class="about-icon" src="logo.svg" alt="轻壳应用图标">
-                    <h2 class="about-app-name">轻壳</h2>
-                    <p class="about-app-desc">Tauri 桌面应用模板 · 参考组件库</p>
-                    <p class="about-app-sub">
+                    <img class="about-icon" src="logo.svg" alt="轻壳应用图标" data-i18n-attr="alt:about.iconAlt">
+                    <h2 class="about-app-name" data-i18n="about.appName">轻壳</h2>
+                    <p class="about-app-desc" data-i18n="about.appDesc">Tauri 桌面应用模板 · 参考组件库</p>
+                    <p class="about-app-sub" data-i18n-html="about.appSub">
                         极简的 Tauri v2 启动模板，Rust 层几乎零逻辑<br>
                         内置遵循「去线留白」设计语言的轻量组件，可直接拆用
                     </p>
                 </div>
 
                 <div class="card">
-                    <h2 class="card-title">技术信息</h2>
+                    <h2 class="card-title" data-i18n="about.tech">技术信息</h2>
                     <table class="about-table">
-                        <tr><td>版本</td><td>0.1.0</td></tr>
-                        <tr><td>框架</td><td>Tauri v2（Rust + WebView）</td></tr>
-                        <tr><td>前端</td><td>纯 HTML / CSS / JavaScript</td></tr>
-                        <tr><td>平台</td><td>Windows</td></tr>
-                        <tr><td>协议</td><td><a href="http://license.coscl.org.cn/MulanPSL2" style="color:var(--accent);text-decoration:none;">木兰宽松许可证 v2</a></td></tr>
-                        <tr><td>作者</td><td>青山公仔</td></tr>
+                        <tr><td data-i18n="about.version">版本</td><td>0.1.0</td></tr>
+                        <tr><td data-i18n="about.framework">框架</td><td data-i18n="about.frameworkVal">Tauri v2（Rust + WebView）</td></tr>
+                        <tr><td data-i18n="about.frontend">前端</td><td data-i18n="about.frontendVal">纯 HTML / CSS / JavaScript</td></tr>
+                        <tr><td data-i18n="about.platform">平台</td><td>Windows</td></tr>
+                        <tr><td data-i18n="about.license">协议</td><td><a href="http://license.coscl.org.cn/MulanPSL2" style="color:var(--accent);text-decoration:none;" data-i18n="about.licenseVal">木兰宽松许可证 v2</a></td></tr>
+                        <tr><td data-i18n="about.author">作者</td><td data-i18n="about.authorVal">青山公仔</td></tr>
                     </table>
                 </div>
             </section>
@@ -2466,39 +2543,384 @@ See the Mulan PSL v2 for more details.
     <!-- Modal 弹窗（组件页演示，遮罩层全局挂载） -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
-            <h3 class="modal-title" id="modalTitle">确认操作</h3>
-            <div class="modal-body">这是一个居中弹窗示例：按 ESC 键或点击遮罩均可关闭。弹窗通过弥散阴影与遮罩建立空间层级，不使用边框线条。</div>
+            <h3 class="modal-title" id="modalTitle" data-i18n="modal.title">确认操作</h3>
+            <div class="modal-body" data-i18n="modal.body">这是一个居中弹窗示例：按 ESC 键或点击遮罩均可关闭。弹窗通过弥散阴影与遮罩建立空间层级，不使用边框线条。</div>
             <div class="modal-actions">
-                <button class="btn btn-secondary" id="modalCancel">取消</button>
-                <button class="btn btn-primary" id="modalConfirm">确定</button>
+                <button class="btn btn-secondary" id="modalCancel" data-i18n="common.cancel">取消</button>
+                <button class="btn btn-primary" id="modalConfirm" data-i18n="common.ok">确定</button>
             </div>
         </div>
     </div>
 
     <!-- 自定义右键菜单（全局挂载，替代浏览器默认菜单；菜单项 tabindex=-1 走 roving 焦点，方向键导航） -->
-    <div class="context-menu" id="contextMenu" role="menu" aria-label="应用右键菜单">
+    <div class="context-menu" id="contextMenu" role="menu" aria-label="应用右键菜单" data-i18n-attr="aria-label:ctx.menuAria">
         <button class="context-menu-item" id="ctxCopy" role="menuitem" tabindex="-1">
-            <svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg> 复制
+            <svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg> <span data-i18n="common.copy">复制</span>
         </button>
         <button class="context-menu-item" id="ctxPaste" role="menuitem" tabindex="-1">
-            <svg class="icon" aria-hidden="true"><use href="#i-clipboard"></use></svg> 粘贴
+            <svg class="icon" aria-hidden="true"><use href="#i-clipboard"></use></svg> <span data-i18n="clip.paste">粘贴</span>
         </button>
         <div class="context-menu-gap" aria-hidden="true"></div>
         <button class="context-menu-item" id="ctxTop" role="menuitem" tabindex="-1">
-            <svg class="icon" aria-hidden="true"><use href="#i-arrow-up"></use></svg> 返回顶部
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-up"></use></svg> <span data-i18n="ctx.backTop">返回顶部</span>
         </button>
         <button class="context-menu-item" id="ctxTheme" role="menuitem" tabindex="-1">
             <svg class="icon" aria-hidden="true"><use href="#i-moon"></use></svg> <span id="ctxThemeLabel">切换深色模式</span>
         </button>
         <div class="context-menu-gap" aria-hidden="true"></div>
         <button class="context-menu-item" id="ctxAbout" role="menuitem" tabindex="-1">
-            <svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg> 关于轻壳
+            <svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg> <span data-i18n="ctx.about">关于轻壳</span>
         </button>
     </div>
 
     <!-- ═══════════ 脚本 ═══════════ -->
     <script type="module">
     {
+        /* ═══════════════════════ 多语言（i18n） ═══════════════════════ */
+        // 零依赖字典方案：HTML 中文为基准，静态文案用 data-i18n / data-i18n-html / data-i18n-attr 声明，
+        // JS 动态字符串统一走 t(key, params)；key 缺失时回退 zh-CN，再缺失则保留现状不报错。
+        // 新增语言：在 I18N 补一份同名键字典 + 设置页语言下拉加一项即可。
+        const I18N = {
+            'zh-CN': {
+                'app.title': '轻壳 · 示例',
+                'win.min': '最小化', 'win.max': '最大化', 'win.restore': '还原', 'win.close': '关闭',
+                'nav.sidebarAria': '导航侧栏', 'nav.bottomAria': '关于与设置入口',
+                'nav.dashboard': '仪表盘', 'nav.tools': '工具', 'nav.tauri': '能力', 'nav.components': '组件', 'nav.about': '关于', 'nav.settings': '设置',
+                'nav.expandSidebar': '展开侧边栏',
+                'dash.welcomeTitle': '欢迎使用轻壳',
+                'dash.welcomeBody': '这是一个基于 Tauri v2 的桌面应用模板，也是一套可直接拆用的参考组件库。你可以在 <code>dist/index.html</code> 中编写任何网页内容，一键打包为 Windows 桌面程序；也可以把页内的 Toast、Modal、Tab、Tooltip 等组件搬进自己的项目。',
+                'stat.framework': '桌面框架', 'stat.installer': '单文件安装器体积', 'stat.platform': '目标平台', 'stat.pureHtml': '纯 HTML', 'stat.zeroDeps': '零框架依赖',
+                'dash.clockTitle': '实时时钟', 'dash.clockSub': '每秒刷新的本地日期时间',
+                'dash.sysTitle': '系统信息', 'dash.sysSub': '来自 navigator API 的运行环境信息',
+                'sys.lang': '语言', 'sys.online': '在线状态', 'sys.screen': '分辨率', 'sys.onlineYes': '在线', 'sys.onlineNo': '离线',
+                'dash.quickTitle': '快捷操作', 'dash.quickSub': '常用工具一键直达',
+                'dash.actTitle': '最近活动', 'dash.actSub': '本次会话的操作记录，最多保留 20 条', 'dash.actAria': '最近活动记录',
+                'dash.qsTitle': '快速开始',
+                'qs.1': '修改 <code>dist/index.html</code> 编写你的界面（同风格开发可从 <code>components/starter.html</code> 起步，组件按需从 <code>components/</code> 拆用）',
+                'qs.2': '替换 <code>src-tauri/icons/logo.svg</code> 为你的应用图标（构建时自动同步安装器）',
+                'qs.3': '修改 <code>tauri.conf.json</code> 中的应用名称和标识，完整改名清单见 <code>docs/使用说明.md</code>',
+                'qs.4': '同步安装向导产品信息，详见 <code>docs/安装器说明.md</code>',
+                'qs.5': '运行 <code>npm run build</code> 打包单文件安装器（或 <code>npm run build:nsis</code> 走 NSIS）',
+                'tool.timer': '秒表/倒计时', 'tool.note': '便签本', 'tool.json': 'JSON 格式化', 'tool.color': '取色器', 'tool.clipboardShort': '剪贴板',
+                'comp.toastDemo': 'Toast 演示',
+                'log.openTimer': '打开了秒表/倒计时', 'log.openNote': '打开了便签本', 'log.openJson': '打开了 JSON 格式化', 'log.openColor': '打开了取色器', 'log.openClipboard': '打开了剪贴板读写', 'log.openToast': '打开了 Toast 演示',
+                'log.welcome': '欢迎使用轻壳', 'log.loadSettings': '加载本地设置', 'log.started': '应用启动完成',
+                'log.darkOn': '切换到深色模式', 'log.darkOff': '切换到浅色模式', 'log.savedSettings': '保存了应用设置', 'log.exported': '导出了应用设置', 'log.openAboutCtx': '通过右键菜单打开关于页',
+                'tools.title': '工具箱', 'tools.desc': '一些实用的交互组件示例，展示桌面应用中可以做什么。',
+                'counter.title': '计数器', 'counter.sub': '一个简单的状态管理示例',
+                'common.reset': '重置', 'common.copy': '复制', 'common.copied': '已复制', 'common.failed': '失败', 'common.copyResult': '复制结果',
+                'common.encode': '编码 ↓', 'common.decode': '解码 ↑', 'common.cancel': '取消', 'common.ok': '确定',
+                'clip.title': '剪贴板读写', 'clip.sub': '使用 Web API 读写系统剪贴板', 'clip.inputPh': '输入一些文字…', 'clip.inputVal': 'Hello 轻壳！', 'clip.outputPh': '点击粘贴按钮读取剪贴板…', 'clip.paste': '粘贴',
+                'timer.sub': 'setInterval 定时器状态管理示例', 'timer.tabAria': '定时器模式', 'timer.stopwatch': '秒表', 'timer.countdown': '倒计时',
+                'timer.start': '开始', 'timer.pause': '暂停', 'timer.resume': '继续', 'timer.lap': '计次', 'timer.lapN': '计次 {n}',
+                'timer.swStartAria': '开始秒表', 'timer.swResetAria': '重置秒表', 'timer.lapsAria': '计次记录',
+                'timer.p30s': '30秒', 'timer.p1m': '1分钟', 'timer.p3m': '3分钟', 'timer.p5m': '5分钟', 'timer.p10m': '10分钟', 'timer.custom': '自定义',
+                'timer.cdStartAria': '开始倒计时', 'timer.cdPauseAria': '暂停倒计时', 'timer.cdResetAria': '重置倒计时', 'timer.customPrompt': '输入倒计时秒数：',
+                'note.sub': '多行文本编辑器，localStorage 自动保存', 'note.ph': '在这里写点什么…', 'note.areaAria': '便签内容',
+                'note.loaded': '已加载保存的内容', 'note.typing': '输入中…', 'note.saved': '已自动保存',
+                'json.sub': '输入原始 JSON → 格式化或压缩输出', 'json.input': '输入', 'json.output': '输出', 'json.inputAria': 'JSON 输入', 'json.outputAria': 'JSON 输出',
+                'json.format': '格式化', 'json.compress': '压缩',
+                'err.jsonParse': 'JSON 解析失败：{msg}', 'err.nothingToCopy': '没有可复制的内容', 'err.copyFailed': '复制失败',
+                'color.sub': '选色并查看 HEX 值，保留取色历史', 'color.pickerAria': '颜色选择器', 'color.historyLabel': '取色历史（点击色块重新选取）', 'color.historyAria': '取色历史', 'color.swatchAria': '选取颜色 {c}',
+                'b64.title': 'Base64 编解码', 'b64.sub': '文本与 Base64 互相转换，btoa / atob API', 'b64.plain': '原文', 'b64.plainPh': '输入要编码的文本…', 'b64.plainAria': '原文输入', 'b64.encodedPh': '或输入 Base64 字符串解码…', 'b64.encodedAria': 'Base64 输入',
+                'err.needText': '请输入文本', 'err.encodeFailed': '编码失败：{msg}', 'err.needBase64': '请输入 Base64 字符串', 'err.b64DecodeFailed': '解码失败：请检查输入是否为有效 Base64',
+                'morse.title': '摩斯编码', 'morse.sub': '文本与摩斯电码互相转换', 'morse.text': '文本', 'morse.textAria': '文本输入', 'morse.code': '摩斯电码', 'morse.outputAria': '摩斯电码输出',
+                'err.morseNoChinese': '暂不支持中文，仅支持 A-Z / 0-9 及常用标点', 'err.morseNeedCode': '请先生成或输入摩斯电码',
+                'tauri.title': '能力展示', 'tauri.desc': '展示 Web 平台能力在桌面应用中的用法：键盘事件与拖放。',
+                'kb.title': '快捷键面板', 'kb.sub': '键盘事件处理示例，展示组合键注册与实时按键检测', 'kb.placeholder': '按下任意键…',
+                'kb.key': '按键', 'kb.code': '键码', 'kb.combo': '组合键', 'kb.registered': '已注册的快捷键', 'kb.tableAria': '已注册快捷键列表',
+                'kb.thKey': '快捷键', 'kb.thAction': '功能', 'kb.thStatus': '状态',
+                'kb.save': '保存', 'kb.undo': '撤销', 'kb.newWindow': '新建窗口', 'kb.search': '搜索', 'kb.switchPage': '切换页面', 'kb.collapseSidebar': '折叠侧边栏',
+                'kb.demoBadge': '示例（未绑定）', 'kb.enabledBadge': '已启用',
+                'kb.hintTriggered': '✓ 触发已注册快捷键：{action}', 'kb.toastTriggered': '快捷键触发：{action}',
+                'drop.title': '拖放区域', 'drop.sub': 'Drag & Drop API，拖入文件显示名称、大小与类型', 'drop.zoneAria': '文件拖放区域',
+                'drop.zoneText': '拖放文件到此处', 'drop.zoneHint': '或点击此处选择文件', 'drop.inputAria': '选择文件', 'drop.listAria': '已拖放的文件列表',
+                'drop.empty': '尚未拖放任何文件', 'drop.unknownSize': '未知大小', 'drop.removeAria': '移除 {name}',
+                'comp.title': '组件库', 'comp.desc': '去线留白风格的常用 UI 组件：以空间、色块与弥散阴影表达层级，不依赖边框线条。',
+                'comp.toastTitle': 'Toast 通知', 'comp.toastSub': '顶部居中弹出，自动消失，支持 success / warning / error 三种类型',
+                'comp.toastSuccess': '成功通知', 'comp.toastSuccessAria': '触发成功通知', 'comp.toastWarning': '警告通知', 'comp.toastWarningAria': '触发警告通知', 'comp.toastError': '错误通知', 'comp.toastErrorAria': '触发错误通知',
+                'comp.modalTitle': 'Modal 弹窗', 'comp.modalSub': '居中遮罩层，支持 ESC 键与点击遮罩关闭', 'comp.modalOpen': '打开弹窗',
+                'comp.tabTitle': 'Tab 标签页', 'comp.tabSub': '页内子标签切换，选中态用色块与字重表达，不用下划线', 'comp.tabAria': '示例标签页',
+                'comp.tabIntro': '简介', 'comp.tabConfig': '配置', 'comp.tabLog': '日志',
+                'comp.tabIntroText': '这里是简介面板。分段式标签以胶囊色块为底，选中项通过卡片色背景、加粗字重与弥散阴影浮起，无需任何分割线。',
+                'comp.tabConfigText': '这里是配置面板。切换时面板直接显隐，标签与内容之间依靠 16px 间距建立关联。',
+                'comp.tabLogText': '这里是日志面板。三个标签均带 role="tab" 与 aria-selected，对屏幕阅读器友好。',
+                'comp.progressTitle': 'Progress 进度条', 'comp.progressSub': '确定与不确定两种进度状态', 'comp.progressBarAria': '确定进度',
+                'comp.progressIndet': '不确定进度（加载中）', 'comp.progressIndetAria': '加载中',
+                'comp.badgeTitle': 'Badge / Tag', 'comp.badgeSub': '透明色底 + 同色文字的无边框徽章，展示状态或分类', 'comp.badgeStatus': '状态徽章', 'comp.badgeCategory': '分类标签与数字角标',
+                'badge.running': '运行中', 'badge.pending': '待处理', 'badge.interrupted': '已中断', 'badge.offline': '已离线', 'badge.frontend': '前端', 'badge.template': '模板', 'badge.docs': '文档',
+                'comp.buttonTitle': 'Button 按钮', 'comp.buttonSub': '主/次两种变体：主按钮强调色填充，次按钮中性填充，均无边框',
+                'comp.btnPrimary': '主按钮', 'comp.btnSecondary': '次按钮', 'comp.btnPrimaryIcon': '带图标主按钮', 'comp.btnSecondaryIcon': '带图标次按钮',
+                'comp.inputTitle': 'Input 填充式输入框', 'comp.inputSub': '去线留白标志性样式：无边框浅色填充底，聚焦背景加深并出现强调色光标',
+                'comp.inputName': '名称', 'comp.inputNamePh': '请输入名称…', 'comp.inputNote': '备注', 'comp.inputNoteVal': '预填内容示例',
+                'comp.switchTitle': 'Switch 开关', 'comp.switchSub': '纯 CSS + 隐藏 checkbox：选中态轨道整体染色，恒白滑块平移',
+                'comp.switchOn': '默认开启', 'comp.switchOnHint': 'checked 初始态', 'comp.switchOff': '默认关闭', 'comp.switchOffHint': '未选中初始态',
+                'comp.selectTitle': 'Select 下拉选择器', 'comp.selectSub': '填充式触发按钮 + 弥散阴影浮层，chevron 随展开态旋转，支持键盘操作', 'comp.selectLabel': '主题色',
+                'select.blue': '蓝色（默认）', 'select.green': '绿色', 'select.amber': '琥珀色', 'select.rose': '玫红色',
+                'comp.tooltipSub': '悬停或键盘聚焦时显示提示气泡，纯 CSS 实现',
+                'comp.tooltipSave': '保存', 'comp.tooltipSaveTip': '保存当前更改（Ctrl+S）', 'comp.tooltipUndo': '撤销', 'comp.tooltipUndoTip': '撤销上一步操作（Ctrl+Z）', 'comp.tooltipHelp': '帮助', 'comp.tooltipHelpTip': '查看帮助信息',
+                'modal.title': '确认操作', 'modal.body': '这是一个居中弹窗示例：按 ESC 键或点击遮罩均可关闭。弹窗通过弥散阴影与遮罩建立空间层级，不使用边框线条。',
+                'toast.closeAria': '关闭通知', 'toast.demoSuccess': '操作已成功完成！', 'toast.demoWarning': '请注意，存储空间不足。', 'toast.demoError': '发生了错误，请稍后重试。',
+                'toast.confirmed': '操作已确认', 'toast.copied': '已复制到剪贴板',
+                'err.clipboardRead': '无法读取剪贴板（需权限）',
+                'set.title': '设置', 'set.desc': '个性化你的应用体验。', 'set.appearance': '外观', 'set.darkMode': '深色模式', 'set.darkModeHint': '切换浅色 / 深色主题',
+                'set.window': '窗口', 'set.trayMin': '关闭时最小化到托盘', 'set.trayMinHint': '关闭窗口时隐藏到系统托盘，可从托盘菜单退出',
+                'set.prefs': '偏好设置', 'set.username': '用户名', 'set.usernamePh': '请输入用户名', 'set.language': '语言',
+                'set.autoSave': '自动保存', 'set.autoSaveHint': '退出时自动保存设置', 'set.save': '保存设置', 'set.saved': '✓ 已保存',
+                'set.backup': '备份与恢复', 'set.backupSub': '将本地设置导出为 JSON 文件，或从文件恢复',
+                'set.export': '导出设置', 'set.import': '导入设置', 'set.importFileAria': '选择设置文件',
+                'set.exported': '设置已导出为 qingke-settings.json', 'set.imported': '导入成功，正在应用…', 'set.importFailed': '导入失败：{msg}',
+                'err.badFormat': '文件格式不正确', 'err.noImportable': '未找到可导入的设置项', 'err.fileRead': '文件读取失败',
+                'about.title': '关于', 'about.desc': '了解这个应用和它的构建技术。', 'about.iconAlt': '轻壳应用图标',
+                'about.appName': '轻壳',
+                'about.appDesc': 'Tauri 桌面应用模板 · 参考组件库',
+                'about.appSub': '极简的 Tauri v2 启动模板，Rust 层几乎零逻辑<br>内置遵循「去线留白」设计语言的轻量组件，可直接拆用',
+                'about.tech': '技术信息', 'about.version': '版本', 'about.framework': '框架', 'about.frameworkVal': 'Tauri v2（Rust + WebView）',
+                'about.frontend': '前端', 'about.frontendVal': '纯 HTML / CSS / JavaScript', 'about.platform': '平台',
+                'about.license': '协议', 'about.licenseVal': '木兰宽松许可证 v2', 'about.author': '作者', 'about.authorVal': '青山公仔',
+                'ctx.menuAria': '应用右键菜单', 'ctx.backTop': '返回顶部', 'ctx.about': '关于轻壳', 'ctx.toLight': '切换浅色模式', 'ctx.toDark': '切换深色模式',
+            },
+            'en': {
+                'app.title': 'Tauri Shell · Demo',
+                'win.min': 'Minimize', 'win.max': 'Maximize', 'win.restore': 'Restore', 'win.close': 'Close',
+                'nav.sidebarAria': 'Navigation sidebar', 'nav.bottomAria': 'About and settings',
+                'nav.dashboard': 'Dashboard', 'nav.tools': 'Tools', 'nav.tauri': 'Features', 'nav.components': 'Components', 'nav.about': 'About', 'nav.settings': 'Settings',
+                'nav.expandSidebar': 'Expand sidebar',
+                'dash.welcomeTitle': 'Welcome to Tauri Shell',
+                'dash.welcomeBody': 'A desktop app template built on Tauri v2, and a reference component library you can copy from. Write any web content in <code>dist/index.html</code> and package it into a Windows desktop app with one command; or lift the built-in Toast, Modal, Tab and Tooltip components into your own project.',
+                'stat.framework': 'Desktop framework', 'stat.installer': 'Single-file installer size', 'stat.platform': 'Target platform', 'stat.pureHtml': 'Pure HTML', 'stat.zeroDeps': 'Zero framework deps',
+                'dash.clockTitle': 'Live Clock', 'dash.clockSub': 'Local date and time, refreshed every second',
+                'dash.sysTitle': 'System Info', 'dash.sysSub': 'Runtime environment info from the navigator API',
+                'sys.lang': 'Language', 'sys.online': 'Network', 'sys.screen': 'Resolution', 'sys.onlineYes': 'Online', 'sys.onlineNo': 'Offline',
+                'dash.quickTitle': 'Quick Actions', 'dash.quickSub': 'One-click access to common tools',
+                'dash.actTitle': 'Recent Activity', 'dash.actSub': 'Actions in this session, up to 20 entries', 'dash.actAria': 'Recent activity log',
+                'dash.qsTitle': 'Quick Start',
+                'qs.1': 'Edit <code>dist/index.html</code> to build your UI (start from <code>components/starter.html</code> for the same style; copy components from <code>components/</code> as needed)',
+                'qs.2': 'Replace <code>src-tauri/icons/logo.svg</code> with your app icon (synced to the installer at build time)',
+                'qs.3': 'Change the app name and identifier in <code>tauri.conf.json</code>; see <code>docs/使用说明.md</code> for the full renaming checklist',
+                'qs.4': 'Sync the installer product info, see <code>docs/安装器说明.md</code>',
+                'qs.5': 'Run <code>npm run build</code> to package the single-file installer (or <code>npm run build:nsis</code> for NSIS)',
+                'tool.timer': 'Stopwatch/Timer', 'tool.note': 'Notepad', 'tool.json': 'JSON Formatter', 'tool.color': 'Color Picker', 'tool.clipboardShort': 'Clipboard',
+                'comp.toastDemo': 'Toast Demo',
+                'log.openTimer': 'Opened stopwatch/timer', 'log.openNote': 'Opened notepad', 'log.openJson': 'Opened JSON formatter', 'log.openColor': 'Opened color picker', 'log.openClipboard': 'Opened clipboard tool', 'log.openToast': 'Opened toast demo',
+                'log.welcome': 'Welcome to Tauri Shell', 'log.loadSettings': 'Loaded local settings', 'log.started': 'App started',
+                'log.darkOn': 'Switched to dark mode', 'log.darkOff': 'Switched to light mode', 'log.savedSettings': 'Saved app settings', 'log.exported': 'Exported app settings', 'log.openAboutCtx': 'Opened About via context menu',
+                'tools.title': 'Toolbox', 'tools.desc': 'Practical interactive examples of what a desktop app can do.',
+                'counter.title': 'Counter', 'counter.sub': 'A simple state management example',
+                'common.reset': 'Reset', 'common.copy': 'Copy', 'common.copied': 'Copied', 'common.failed': 'Failed', 'common.copyResult': 'Copy Result',
+                'common.encode': 'Encode ↓', 'common.decode': 'Decode ↑', 'common.cancel': 'Cancel', 'common.ok': 'OK',
+                'clip.title': 'Clipboard', 'clip.sub': 'Read and write the system clipboard via Web API', 'clip.inputPh': 'Type something…', 'clip.inputVal': 'Hello Tauri Shell!', 'clip.outputPh': 'Click Paste to read the clipboard…', 'clip.paste': 'Paste',
+                'timer.sub': 'A setInterval state management example', 'timer.tabAria': 'Timer mode', 'timer.stopwatch': 'Stopwatch', 'timer.countdown': 'Countdown',
+                'timer.start': 'Start', 'timer.pause': 'Pause', 'timer.resume': 'Resume', 'timer.lap': 'Lap', 'timer.lapN': 'Lap {n}',
+                'timer.swStartAria': 'Start stopwatch', 'timer.swResetAria': 'Reset stopwatch', 'timer.lapsAria': 'Lap records',
+                'timer.p30s': '30s', 'timer.p1m': '1 min', 'timer.p3m': '3 min', 'timer.p5m': '5 min', 'timer.p10m': '10 min', 'timer.custom': 'Custom',
+                'timer.cdStartAria': 'Start countdown', 'timer.cdPauseAria': 'Pause countdown', 'timer.cdResetAria': 'Reset countdown', 'timer.customPrompt': 'Enter countdown seconds:',
+                'note.sub': 'Multi-line editor with localStorage auto-save', 'note.ph': 'Write something here…', 'note.areaAria': 'Note content',
+                'note.loaded': 'Loaded saved content', 'note.typing': 'Typing…', 'note.saved': 'Auto-saved',
+                'json.sub': 'Paste raw JSON → pretty-print or minify', 'json.input': 'Input', 'json.output': 'Output', 'json.inputAria': 'JSON input', 'json.outputAria': 'JSON output',
+                'json.format': 'Format', 'json.compress': 'Minify',
+                'err.jsonParse': 'JSON parse error: {msg}', 'err.nothingToCopy': 'Nothing to copy', 'err.copyFailed': 'Copy failed',
+                'color.sub': 'Pick a color, view its HEX value, with history', 'color.pickerAria': 'Color picker', 'color.historyLabel': 'History (click a swatch to reselect)', 'color.historyAria': 'Color history', 'color.swatchAria': 'Pick color {c}',
+                'b64.title': 'Base64 Codec', 'b64.sub': 'Convert between text and Base64 via btoa / atob', 'b64.plain': 'Text', 'b64.plainPh': 'Enter text to encode…', 'b64.plainAria': 'Text input', 'b64.encodedPh': 'Or enter a Base64 string to decode…', 'b64.encodedAria': 'Base64 input',
+                'err.needText': 'Please enter some text', 'err.encodeFailed': 'Encoding failed: {msg}', 'err.needBase64': 'Please enter a Base64 string', 'err.b64DecodeFailed': 'Decoding failed: please check the input is valid Base64',
+                'morse.title': 'Morse Code', 'morse.sub': 'Convert between text and Morse code', 'morse.text': 'Text', 'morse.textAria': 'Text input', 'morse.code': 'Morse code', 'morse.outputAria': 'Morse code output',
+                'err.morseNoChinese': 'Chinese is not supported; only A-Z / 0-9 and common punctuation', 'err.morseNeedCode': 'Generate or enter Morse code first',
+                'tauri.title': 'Features', 'tauri.desc': 'Web platform capabilities in a desktop app: keyboard events and drag & drop.',
+                'kb.title': 'Keyboard Panel', 'kb.sub': 'Keyboard event handling: shortcut registration and live key detection', 'kb.placeholder': 'Press any key…',
+                'kb.key': 'Key', 'kb.code': 'Code', 'kb.combo': 'Combination', 'kb.registered': 'Registered shortcuts', 'kb.tableAria': 'Registered shortcut list',
+                'kb.thKey': 'Shortcut', 'kb.thAction': 'Action', 'kb.thStatus': 'Status',
+                'kb.save': 'Save', 'kb.undo': 'Undo', 'kb.newWindow': 'New window', 'kb.search': 'Search', 'kb.switchPage': 'Switch page', 'kb.collapseSidebar': 'Collapse sidebar',
+                'kb.demoBadge': 'Demo (unbound)', 'kb.enabledBadge': 'Enabled',
+                'kb.hintTriggered': '✓ Registered shortcut triggered: {action}', 'kb.toastTriggered': 'Shortcut triggered: {action}',
+                'drop.title': 'Drop Zone', 'drop.sub': 'Drag & Drop API: dropped files show name, size and type', 'drop.zoneAria': 'File drop zone',
+                'drop.zoneText': 'Drop files here', 'drop.zoneHint': 'or click to choose files', 'drop.inputAria': 'Choose files', 'drop.listAria': 'Dropped file list',
+                'drop.empty': 'No files dropped yet', 'drop.unknownSize': 'Unknown size', 'drop.removeAria': 'Remove {name}',
+                'comp.title': 'Components', 'comp.desc': 'Common UI components in the borderless style: hierarchy via space, color blocks and diffuse shadows — no border lines.',
+                'comp.toastTitle': 'Toast', 'comp.toastSub': 'Slides in top-center, auto-dismisses; success / warning / error types',
+                'comp.toastSuccess': 'Success', 'comp.toastSuccessAria': 'Show success toast', 'comp.toastWarning': 'Warning', 'comp.toastWarningAria': 'Show warning toast', 'comp.toastError': 'Error', 'comp.toastErrorAria': 'Show error toast',
+                'comp.modalTitle': 'Modal', 'comp.modalSub': 'Centered overlay; closes on ESC or overlay click', 'comp.modalOpen': 'Open Modal',
+                'comp.tabTitle': 'Tabs', 'comp.tabSub': 'In-page tab switching; selection shown by color block and font weight, no underline', 'comp.tabAria': 'Example tabs',
+                'comp.tabIntro': 'Intro', 'comp.tabConfig': 'Config', 'comp.tabLog': 'Logs',
+                'comp.tabIntroText': 'This is the intro panel. Segmented tabs sit on a capsule background; the selected tab floats up via card background, bolder weight and a diffuse shadow — no divider lines.',
+                'comp.tabConfigText': 'This is the config panel. Panels toggle instantly; a 16px gap associates tabs with content.',
+                'comp.tabLogText': 'This is the logs panel. All three tabs carry role="tab" and aria-selected for screen readers.',
+                'comp.progressTitle': 'Progress', 'comp.progressSub': 'Determinate and indeterminate states', 'comp.progressBarAria': 'Determinate progress',
+                'comp.progressIndet': 'Indeterminate (loading)', 'comp.progressIndetAria': 'Loading',
+                'comp.badgeTitle': 'Badge / Tag', 'comp.badgeSub': 'Borderless badges with translucent background and same-hue text', 'comp.badgeStatus': 'Status badges', 'comp.badgeCategory': 'Category tags and count badges',
+                'badge.running': 'Running', 'badge.pending': 'Pending', 'badge.interrupted': 'Interrupted', 'badge.offline': 'Offline', 'badge.frontend': 'Frontend', 'badge.template': 'Template', 'badge.docs': 'Docs',
+                'comp.buttonTitle': 'Button', 'comp.buttonSub': 'Primary and secondary variants: accent fill vs neutral fill, both borderless',
+                'comp.btnPrimary': 'Primary', 'comp.btnSecondary': 'Secondary', 'comp.btnPrimaryIcon': 'Primary with icon', 'comp.btnSecondaryIcon': 'Secondary with icon',
+                'comp.inputTitle': 'Input (filled)', 'comp.inputSub': 'Signature borderless style: light filled background, darker on focus with accent caret',
+                'comp.inputName': 'Name', 'comp.inputNamePh': 'Enter a name…', 'comp.inputNote': 'Note', 'comp.inputNoteVal': 'Prefilled example',
+                'comp.switchTitle': 'Switch', 'comp.switchSub': 'Pure CSS + hidden checkbox: track tinted when on, constant-white thumb slides',
+                'comp.switchOn': 'On by default', 'comp.switchOnHint': 'Initially checked', 'comp.switchOff': 'Off by default', 'comp.switchOffHint': 'Initially unchecked',
+                'comp.selectTitle': 'Select', 'comp.selectSub': 'Filled trigger + diffuse-shadow flyout; chevron rotates with expanded state; keyboard accessible', 'comp.selectLabel': 'Theme color',
+                'select.blue': 'Blue (default)', 'select.green': 'Green', 'select.amber': 'Amber', 'select.rose': 'Rose',
+                'comp.tooltipSub': 'Bubble on hover or keyboard focus, pure CSS',
+                'comp.tooltipSave': 'Save', 'comp.tooltipSaveTip': 'Save changes (Ctrl+S)', 'comp.tooltipUndo': 'Undo', 'comp.tooltipUndoTip': 'Undo last action (Ctrl+Z)', 'comp.tooltipHelp': 'Help', 'comp.tooltipHelpTip': 'View help',
+                'modal.title': 'Confirm Action', 'modal.body': 'A centered modal example: press ESC or click the overlay to close. Depth is built with a diffuse shadow and overlay — no border lines.',
+                'toast.closeAria': 'Dismiss notification', 'toast.demoSuccess': 'Operation completed successfully!', 'toast.demoWarning': 'Heads up: storage space is low.', 'toast.demoError': 'An error occurred. Please try again later.',
+                'toast.confirmed': 'Action confirmed', 'toast.copied': 'Copied to clipboard',
+                'err.clipboardRead': 'Cannot read clipboard (permission required)',
+                'set.title': 'Settings', 'set.desc': 'Personalize your app experience.', 'set.appearance': 'Appearance', 'set.darkMode': 'Dark mode', 'set.darkModeHint': 'Toggle light / dark theme',
+                'set.window': 'Window', 'set.trayMin': 'Minimize to tray on close', 'set.trayMinHint': 'Hide to the system tray when closing; quit from the tray menu',
+                'set.prefs': 'Preferences', 'set.username': 'Username', 'set.usernamePh': 'Enter a username', 'set.language': 'Language',
+                'set.autoSave': 'Auto save', 'set.autoSaveHint': 'Save settings automatically on exit', 'set.save': 'Save Settings', 'set.saved': '✓ Saved',
+                'set.backup': 'Backup & Restore', 'set.backupSub': 'Export local settings to a JSON file, or restore from one',
+                'set.export': 'Export', 'set.import': 'Import', 'set.importFileAria': 'Choose settings file',
+                'set.exported': 'Settings exported as qingke-settings.json', 'set.imported': 'Import succeeded, applying…', 'set.importFailed': 'Import failed: {msg}',
+                'err.badFormat': 'Invalid file format', 'err.noImportable': 'No importable settings found', 'err.fileRead': 'Failed to read file',
+                'about.title': 'About', 'about.desc': 'About this app and how it is built.', 'about.iconAlt': 'Tauri Shell app icon',
+                'about.appName': 'Tauri Shell',
+                'about.appDesc': 'Tauri desktop app template · reference component library',
+                'about.appSub': 'A minimal Tauri v2 starter with a near-zero-logic Rust layer<br>Built-in lightweight components in the borderless design language, ready to copy',
+                'about.tech': 'Technical Info', 'about.version': 'Version', 'about.framework': 'Framework', 'about.frameworkVal': 'Tauri v2 (Rust + WebView)',
+                'about.frontend': 'Frontend', 'about.frontendVal': 'Pure HTML / CSS / JavaScript', 'about.platform': 'Platform',
+                'about.license': 'License', 'about.licenseVal': 'Mulan PSL v2', 'about.author': 'Author', 'about.authorVal': '青山公仔',
+                'ctx.menuAria': 'App context menu', 'ctx.backTop': 'Back to top', 'ctx.about': 'About Tauri Shell', 'ctx.toLight': 'Switch to light mode', 'ctx.toDark': 'Switch to dark mode',
+            },
+            'ja': {
+                'app.title': '軽シェル · デモ',
+                'win.min': '最小化', 'win.max': '最大化', 'win.restore': '元に戻す', 'win.close': '閉じる',
+                'nav.sidebarAria': 'ナビゲーションサイドバー', 'nav.bottomAria': '情報と設定',
+                'nav.dashboard': 'ダッシュボード', 'nav.tools': 'ツール', 'nav.tauri': '機能', 'nav.components': 'コンポーネント', 'nav.about': '情報', 'nav.settings': '設定',
+                'nav.expandSidebar': 'サイドバーを展開',
+                'dash.welcomeTitle': '軽シェルへようこそ',
+                'dash.welcomeBody': 'Tauri v2 ベースのデスクトップアプリテンプレートであり、そのまま流用できる参考コンポーネント集でもあります。<code>dist/index.html</code> に任意の Web コンテンツを書いてワンコマンドで Windows アプリにパッケージでき、ページ内の Toast、Modal、Tab、Tooltip などのコンポーネントを自分のプロジェクトに移植することもできます。',
+                'stat.framework': 'デスクトップフレームワーク', 'stat.installer': '単一ファイルインストーラーのサイズ', 'stat.platform': '対象プラットフォーム', 'stat.pureHtml': '純粋な HTML', 'stat.zeroDeps': 'フレームワーク依存なし',
+                'dash.clockTitle': 'リアルタイム時計', 'dash.clockSub': '毎秒更新される現地の日時',
+                'dash.sysTitle': 'システム情報', 'dash.sysSub': 'navigator API から取得した実行環境情報',
+                'sys.lang': '言語', 'sys.online': 'ネットワーク', 'sys.screen': '解像度', 'sys.onlineYes': 'オンライン', 'sys.onlineNo': 'オフライン',
+                'dash.quickTitle': 'クイック操作', 'dash.quickSub': 'よく使うツールにワンクリックでアクセス',
+                'dash.actTitle': '最近のアクティビティ', 'dash.actSub': '今回のセッションの操作履歴（最大 20 件）', 'dash.actAria': '最近のアクティビティ履歴',
+                'dash.qsTitle': 'クイックスタート',
+                'qs.1': '<code>dist/index.html</code> を編集して UI を作成（同じスタイルなら <code>components/starter.html</code> から、コンポーネントは <code>components/</code> から必要に応じてコピー）',
+                'qs.2': '<code>src-tauri/icons/logo.svg</code> を自分のアプリアイコンに差し替え（ビルド時にインストーラーへ自動同期）',
+                'qs.3': '<code>tauri.conf.json</code> のアプリ名と識別子を変更。完全なリネームリストは <code>docs/使用说明.md</code> を参照',
+                'qs.4': 'インストーラーの製品情報を同期。詳細は <code>docs/安装器说明.md</code> を参照',
+                'qs.5': '<code>npm run build</code> で単一ファイルインストーラーをビルド（NSIS は <code>npm run build:nsis</code>）',
+                'tool.timer': 'ストップウォッチ/タイマー', 'tool.note': 'メモ帳', 'tool.json': 'JSON 整形', 'tool.color': 'カラーピッカー', 'tool.clipboardShort': 'クリップボード',
+                'comp.toastDemo': 'Toast デモ',
+                'log.openTimer': 'ストップウォッチ/タイマーを開きました', 'log.openNote': 'メモ帳を開きました', 'log.openJson': 'JSON 整形を開きました', 'log.openColor': 'カラーピッカーを開きました', 'log.openClipboard': 'クリップボードツールを開きました', 'log.openToast': 'Toast デモを開きました',
+                'log.welcome': '軽シェルへようこそ', 'log.loadSettings': 'ローカル設定を読み込みました', 'log.started': 'アプリの起動が完了しました',
+                'log.darkOn': 'ダークモードに切り替えました', 'log.darkOff': 'ライトモードに切り替えました', 'log.savedSettings': 'アプリ設定を保存しました', 'log.exported': 'アプリ設定をエクスポートしました', 'log.openAboutCtx': 'コンテキストメニューから情報ページを開きました',
+                'tools.title': 'ツールボックス', 'tools.desc': 'デスクトップアプリでできることを示す実用的なインタラクティブな例。',
+                'counter.title': 'カウンター', 'counter.sub': 'シンプルな状態管理の例',
+                'common.reset': 'リセット', 'common.copy': 'コピー', 'common.copied': 'コピー済み', 'common.failed': '失敗', 'common.copyResult': '結果をコピー',
+                'common.encode': 'エンコード ↓', 'common.decode': 'デコード ↑', 'common.cancel': 'キャンセル', 'common.ok': 'OK',
+                'clip.title': 'クリップボード', 'clip.sub': 'Web API でシステムのクリップボードを読み書き', 'clip.inputPh': '何か入力してください…', 'clip.inputVal': 'Hello 軽シェル！', 'clip.outputPh': '貼り付けボタンでクリップボードを読み取り…', 'clip.paste': '貼り付け',
+                'timer.sub': 'setInterval による状態管理の例', 'timer.tabAria': 'タイマーモード', 'timer.stopwatch': 'ストップウォッチ', 'timer.countdown': 'カウントダウン',
+                'timer.start': '開始', 'timer.pause': '一時停止', 'timer.resume': '再開', 'timer.lap': 'ラップ', 'timer.lapN': 'ラップ {n}',
+                'timer.swStartAria': 'ストップウォッチを開始', 'timer.swResetAria': 'ストップウォッチをリセット', 'timer.lapsAria': 'ラップ記録',
+                'timer.p30s': '30秒', 'timer.p1m': '1分', 'timer.p3m': '3分', 'timer.p5m': '5分', 'timer.p10m': '10分', 'timer.custom': 'カスタム',
+                'timer.cdStartAria': 'カウントダウンを開始', 'timer.cdPauseAria': 'カウントダウンを一時停止', 'timer.cdResetAria': 'カウントダウンをリセット', 'timer.customPrompt': 'カウントダウンの秒数を入力：',
+                'note.sub': '複数行エディター、localStorage に自動保存', 'note.ph': 'ここに何か書いてください…', 'note.areaAria': 'メモの内容',
+                'note.loaded': '保存済みの内容を読み込みました', 'note.typing': '入力中…', 'note.saved': '自動保存しました',
+                'json.sub': '生の JSON を入力 → 整形または圧縮して出力', 'json.input': '入力', 'json.output': '出力', 'json.inputAria': 'JSON 入力', 'json.outputAria': 'JSON 出力',
+                'json.format': '整形', 'json.compress': '圧縮',
+                'err.jsonParse': 'JSON の解析に失敗：{msg}', 'err.nothingToCopy': 'コピーできる内容がありません', 'err.copyFailed': 'コピーに失敗しました',
+                'color.sub': '色を選んで HEX 値を確認、履歴を保持', 'color.pickerAria': 'カラーピッカー', 'color.historyLabel': '履歴（スウォッチをクリックで再選択）', 'color.historyAria': 'カラー履歴', 'color.swatchAria': '色 {c} を選択',
+                'b64.title': 'Base64 変換', 'b64.sub': 'テキストと Base64 の相互変換（btoa / atob API）', 'b64.plain': 'テキスト', 'b64.plainPh': 'エンコードするテキストを入力…', 'b64.plainAria': 'テキスト入力', 'b64.encodedPh': 'または Base64 文字列を入力してデコード…', 'b64.encodedAria': 'Base64 入力',
+                'err.needText': 'テキストを入力してください', 'err.encodeFailed': 'エンコードに失敗：{msg}', 'err.needBase64': 'Base64 文字列を入力してください', 'err.b64DecodeFailed': 'デコードに失敗：有効な Base64 か確認してください',
+                'morse.title': 'モールス符号', 'morse.sub': 'テキストとモールス符号の相互変換', 'morse.text': 'テキスト', 'morse.textAria': 'テキスト入力', 'morse.code': 'モールス符号', 'morse.outputAria': 'モールス符号出力',
+                'err.morseNoChinese': '中国語は未対応です。A-Z / 0-9 と一般的な記号のみ対応', 'err.morseNeedCode': '先にモールス符号を生成または入力してください',
+                'tauri.title': '機能紹介', 'tauri.desc': 'デスクトップアプリにおける Web プラットフォーム機能の活用：キーボードイベントとドラッグ＆ドロップ。',
+                'kb.title': 'キーボードパネル', 'kb.sub': 'キーボードイベント処理の例：ショートカット登録とリアルタイムキー検知', 'kb.placeholder': '任意のキーを押してください…',
+                'kb.key': 'キー', 'kb.code': 'キーコード', 'kb.combo': '組み合わせ', 'kb.registered': '登録済みショートカット', 'kb.tableAria': '登録済みショートカット一覧',
+                'kb.thKey': 'ショートカット', 'kb.thAction': '機能', 'kb.thStatus': '状態',
+                'kb.save': '保存', 'kb.undo': '元に戻す', 'kb.newWindow': '新しいウィンドウ', 'kb.search': '検索', 'kb.switchPage': 'ページ切替', 'kb.collapseSidebar': 'サイドバーを折りたたむ',
+                'kb.demoBadge': 'デモ（未割当）', 'kb.enabledBadge': '有効',
+                'kb.hintTriggered': '✓ 登録済みショートカットを検知：{action}', 'kb.toastTriggered': 'ショートカット検知：{action}',
+                'drop.title': 'ドロップゾーン', 'drop.sub': 'Drag & Drop API、ファイルをドロップすると名前・サイズ・種類を表示', 'drop.zoneAria': 'ファイルドロップゾーン',
+                'drop.zoneText': 'ここにファイルをドロップ', 'drop.zoneHint': 'またはクリックしてファイルを選択', 'drop.inputAria': 'ファイルを選択', 'drop.listAria': 'ドロップされたファイル一覧',
+                'drop.empty': 'まだファイルがドロップされていません', 'drop.unknownSize': 'サイズ不明', 'drop.removeAria': '{name} を削除',
+                'comp.title': 'コンポーネント', 'comp.desc': '罫線を使わないスタイルの定番 UI コンポーネント：余白・色面・拡散シャドウで階層を表現。',
+                'comp.toastTitle': 'Toast 通知', 'comp.toastSub': '上部中央に表示され自動で消える。success / warning / error の 3 種類',
+                'comp.toastSuccess': '成功通知', 'comp.toastSuccessAria': '成功通知を表示', 'comp.toastWarning': '警告通知', 'comp.toastWarningAria': '警告通知を表示', 'comp.toastError': 'エラー通知', 'comp.toastErrorAria': 'エラー通知を表示',
+                'comp.modalTitle': 'Modal ダイアログ', 'comp.modalSub': '中央オーバーレイ。ESC キーまたはオーバーレイクリックで閉じる', 'comp.modalOpen': 'ダイアログを開く',
+                'comp.tabTitle': 'Tab タブ', 'comp.tabSub': 'ページ内タブ切替。選択状態は色面とフォントウェイトで表現し、下線は使わない', 'comp.tabAria': 'サンプルタブ',
+                'comp.tabIntro': '概要', 'comp.tabConfig': '設定', 'comp.tabLog': 'ログ',
+                'comp.tabIntroText': '概要パネルです。セグメント式タブはカプセル型の色面を下地に、選択項目はカード色の背景・太字・拡散シャドウで浮き上がり、分割線は不要です。',
+                'comp.tabConfigText': '設定パネルです。切替時はパネルが即座に表示切替され、タブと内容は 16px の余白で関連付けられます。',
+                'comp.tabLogText': 'ログパネルです。3 つのタブはすべて role="tab" と aria-selected を持ち、スクリーンリーダーに優しい設計です。',
+                'comp.progressTitle': 'Progress プログレスバー', 'comp.progressSub': '確定・不確定の 2 状態', 'comp.progressBarAria': '確定プログレス',
+                'comp.progressIndet': '不確定プログレス（読み込み中）', 'comp.progressIndetAria': '読み込み中',
+                'comp.badgeTitle': 'Badge / Tag', 'comp.badgeSub': '半透明の下地 + 同色テキストの縁なしバッジ。状態や分類を表示', 'comp.badgeStatus': '状態バッジ', 'comp.badgeCategory': '分類タグと数値バッジ',
+                'badge.running': '実行中', 'badge.pending': '保留中', 'badge.interrupted': '中断', 'badge.offline': 'オフライン', 'badge.frontend': 'フロントエンド', 'badge.template': 'テンプレート', 'badge.docs': 'ドキュメント',
+                'comp.buttonTitle': 'Button ボタン', 'comp.buttonSub': 'プライマリ・セカンダリの 2 種：アクセント塗りとニュートラル塗り、いずれも縁なし',
+                'comp.btnPrimary': 'プライマリ', 'comp.btnSecondary': 'セカンダリ', 'comp.btnPrimaryIcon': 'アイコン付きプライマリ', 'comp.btnSecondaryIcon': 'アイコン付きセカンダリ',
+                'comp.inputTitle': 'Input 塗りつぶし入力欄', 'comp.inputSub': '罫線なしスタイルの代表例：縁なしの淡色塗り下地、フォーカスで背景が濃くなりアクセント色カーソルが現れる',
+                'comp.inputName': '名前', 'comp.inputNamePh': '名前を入力…', 'comp.inputNote': '備考', 'comp.inputNoteVal': '事前入力の例',
+                'comp.switchTitle': 'Switch スイッチ', 'comp.switchSub': '純粋な CSS + 非表示 checkbox：オン時はトラック全体が着色され、白のノブがスライド',
+                'comp.switchOn': 'デフォルトオン', 'comp.switchOnHint': 'checked 初期状態', 'comp.switchOff': 'デフォルトオフ', 'comp.switchOffHint': '未選択の初期状態',
+                'comp.selectTitle': 'Select ドロップダウン', 'comp.selectSub': '塗りつぶしトリガー + 拡散シャドウのフライアウト。chevron が展開状態で回転し、キーボード操作に対応', 'comp.selectLabel': 'テーマカラー',
+                'select.blue': 'ブルー（デフォルト）', 'select.green': 'グリーン', 'select.amber': 'アンバー', 'select.rose': 'ローズ',
+                'comp.tooltipSub': 'ホバーまたはキーボードフォーカスでバブルを表示、純粋な CSS 実装',
+                'comp.tooltipSave': '保存', 'comp.tooltipSaveTip': '変更を保存（Ctrl+S）', 'comp.tooltipUndo': '元に戻す', 'comp.tooltipUndoTip': '直前の操作を取り消す（Ctrl+Z）', 'comp.tooltipHelp': 'ヘルプ', 'comp.tooltipHelpTip': 'ヘルプを表示',
+                'modal.title': '操作の確認', 'modal.body': '中央表示のダイアログ例：ESC キーまたはオーバーレイのクリックで閉じられます。拡散シャドウとオーバーレイで空間の階層を作り、罫線は使いません。',
+                'toast.closeAria': '通知を閉じる', 'toast.demoSuccess': '操作が正常に完了しました！', 'toast.demoWarning': 'ご注意：ストレージ容量が不足しています。', 'toast.demoError': 'エラーが発生しました。後ほど再試行してください。',
+                'toast.confirmed': '操作を確認しました', 'toast.copied': 'クリップボードにコピーしました',
+                'err.clipboardRead': 'クリップボードを読み取れません（権限が必要）',
+                'set.title': '設定', 'set.desc': 'アプリの体験をカスタマイズ。', 'set.appearance': '外観', 'set.darkMode': 'ダークモード', 'set.darkModeHint': 'ライト / ダークテーマを切替',
+                'set.window': 'ウィンドウ', 'set.trayMin': '閉じるときにトレイへ最小化', 'set.trayMinHint': 'ウィンドウを閉じるとシステムトレイに隠れ、トレイメニューから終了できます',
+                'set.prefs': '環境設定', 'set.username': 'ユーザー名', 'set.usernamePh': 'ユーザー名を入力', 'set.language': '言語',
+                'set.autoSave': '自動保存', 'set.autoSaveHint': '終了時に設定を自動保存', 'set.save': '設定を保存', 'set.saved': '✓ 保存しました',
+                'set.backup': 'バックアップと復元', 'set.backupSub': 'ローカル設定を JSON ファイルにエクスポート、またはファイルから復元',
+                'set.export': 'エクスポート', 'set.import': 'インポート', 'set.importFileAria': '設定ファイルを選択',
+                'set.exported': '設定を qingke-settings.json にエクスポートしました', 'set.imported': 'インポート成功、適用中…', 'set.importFailed': 'インポート失敗：{msg}',
+                'err.badFormat': 'ファイル形式が正しくありません', 'err.noImportable': 'インポートできる設定項目が見つかりません', 'err.fileRead': 'ファイルの読み取りに失敗しました',
+                'about.title': '情報', 'about.desc': 'このアプリとその構築技術について。', 'about.iconAlt': '軽シェルのアプリアイコン',
+                'about.appName': '軽シェル',
+                'about.appDesc': 'Tauri デスクトップアプリテンプレート · 参考コンポーネント集',
+                'about.appSub': 'Rust 層はほぼロジックなしのミニマルな Tauri v2 スターター<br>「罫線を使わない」デザイン言語に従う軽量コンポーネントを内蔵、そのまま流用可能',
+                'about.tech': '技術情報', 'about.version': 'バージョン', 'about.framework': 'フレームワーク', 'about.frameworkVal': 'Tauri v2（Rust + WebView）',
+                'about.frontend': 'フロントエンド', 'about.frontendVal': '純粋な HTML / CSS / JavaScript', 'about.platform': 'プラットフォーム',
+                'about.license': 'ライセンス', 'about.licenseVal': 'Mulan PSL v2', 'about.author': '作者', 'about.authorVal': '青山公仔',
+                'ctx.menuAria': 'アプリのコンテキストメニュー', 'ctx.backTop': 'トップへ戻る', 'ctx.about': '軽シェルについて', 'ctx.toLight': 'ライトモードに切替', 'ctx.toDark': 'ダークモードに切替',
+            },
+        };
+
+        // 当前语言（沿用既有 localStorage 键，非法值回退 zh-CN）
+        let LOCALE = localStorage.getItem('tauri-shell-lang');
+        if (!I18N[LOCALE]) LOCALE = 'zh-CN';
+
+        const lookup = key => I18N[LOCALE]?.[key] ?? I18N['zh-CN'][key];
+
+        // 取词：支持 {n} 占位符；key 缺失时原样返回，便于排查漏译
+        function t(key, params) {
+            let str = lookup(key) ?? key;
+            if (params) for (const [k, v] of Object.entries(params)) str = str.replaceAll('{' + k + '}', v);
+            return str;
+        }
+
+        // 应用语言：替换所有声明式文案，同步 <html lang> 与标题，持久化，广播事件供动态模块刷新
+        function applyLocale(locale) {
+            if (!I18N[locale]) locale = 'zh-CN';
+            LOCALE = locale;
+            localStorage.setItem('tauri-shell-lang', locale);
+            document.documentElement.lang = locale;
+            document.title = t('app.title');
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const v = lookup(el.dataset.i18n);
+                if (v !== undefined) el.textContent = v;
+            });
+            document.querySelectorAll('[data-i18n-html]').forEach(el => {
+                const v = lookup(el.dataset.i18nHtml);
+                if (v !== undefined) el.innerHTML = v;
+            });
+            document.querySelectorAll('[data-i18n-attr]').forEach(el => {
+                el.dataset.i18nAttr.split(';').forEach(pair => {
+                    const [attr, key] = pair.split(':');
+                    const v = lookup(key);
+                    if (attr && v !== undefined) el.setAttribute(attr.trim(), v);
+                });
+            });
+            window.dispatchEvent(new CustomEvent('app-localechange'));
+        }
+
+        // 启动即应用已保存的语言（zh-CN 下也同步 <html lang> 与标题，行为一致）
+        applyLocale(LOCALE);
+
         /* ═══════════════════════ 窗口控制 ═══════════════════════ */
         const titlebar = document.querySelector('.titlebar');
         const internals = window.__TAURI_INTERNALS__;
@@ -2524,7 +2946,7 @@ See the Mulan PSL v2 for more details.
                 try {
                     const maximized = await invoke('plugin:window|is_maximized');
                     maxBtn.classList.toggle('maximized', maximized);
-                    maxBtn.title = maximized ? '还原' : '最大化';
+                    maxBtn.title = maximized ? t('win.restore') : t('win.max');
                 } catch { /* ignore */ }
             };
             window.addEventListener('resize', updateMaxBtn);
@@ -2591,11 +3013,14 @@ See the Mulan PSL v2 for more details.
 
         function applySidebarCollapsed(collapsed) {
             sidebar.classList.toggle('collapsed', collapsed);
-            const label = collapsed ? '展开侧边栏' : '折叠侧边栏';
+            const label = collapsed ? t('nav.expandSidebar') : t('kb.collapseSidebar');
             sidebarToggle.setAttribute('aria-label', label);
             sidebarToggle.setAttribute('aria-expanded', String(!collapsed));
             // 折叠后标签仅视觉隐藏（opacity 0），可访问名称仍在，无需 title 补充
         }
+        // 语言切换后刷新折叠按钮的 aria-label
+        window.addEventListener('app-localechange', () =>
+            applySidebarCollapsed(sidebar.classList.contains('collapsed')));
 
         function toggleSidebar() {
             const collapsed = !sidebar.classList.contains('collapsed');
@@ -2604,7 +3029,9 @@ See the Mulan PSL v2 for more details.
         }
 
         sidebarToggle.addEventListener('click', toggleSidebar);
-        if (localStorage.getItem('tauri-shell-sidebar-collapsed') === '1') applySidebarCollapsed(true);
+        // 启动时无条件调一次：除恢复折叠态外，还把 aria-label 刷成当前语言
+        // （启动时的 applyLocale 早于上方监听器注册，HTML 静态 aria-label 不会被它替换）
+        applySidebarCollapsed(localStorage.getItem('tauri-shell-sidebar-collapsed') === '1');
 
         /* 统一悬浮提示：汉堡按钮与折叠态导航项用 Tooltip 同款气泡，替代原生 title */
         const sideTip = document.createElement('div');
@@ -2639,7 +3066,8 @@ See the Mulan PSL v2 for more details.
         }
 
         bindSideTip(sidebarToggle, () =>
-            (sidebar.classList.contains('collapsed') ? '展开侧边栏' : '折叠侧边栏') + '（Ctrl+B）');
+            t(sidebar.classList.contains('collapsed') ? 'nav.expandSidebar' : 'kb.collapseSidebar')
+            + (LOCALE === 'zh-CN' ? '（Ctrl+B）' : ' (Ctrl+B)'));
         // 展开态标签可见，不出提示；折叠态用气泡补充文字信息（多维编码，不仅靠图标）
         navItems.forEach(n => bindSideTip(n, () =>
             sidebar.classList.contains('collapsed') ? n.querySelector('.nav-label').textContent : ''));
@@ -2706,7 +3134,7 @@ See the Mulan PSL v2 for more details.
             const text = document.getElementById('clipboardInput').value;
             try {
                 await navigator.clipboard.writeText(text);
-                btn.textContent = '已复制';
+                btn.textContent = t('common.copied');
             } catch {
                 const ta = document.createElement('textarea');
                 ta.value = text;
@@ -2715,22 +3143,23 @@ See the Mulan PSL v2 for more details.
                 ta.select();
                 const ok = document.execCommand('copy');
                 document.body.removeChild(ta);
-                btn.textContent = ok ? '已复制' : '失败';
+                btn.textContent = ok ? t('common.copied') : t('common.failed');
             }
-            setTimeout(() => { btn.textContent = '复制'; }, 1500);
+            setTimeout(() => { btn.textContent = t('common.copy'); }, 1500);
         });
         document.getElementById('clipboardPaste').addEventListener('click', async () => {
             try {
                 const text = await navigator.clipboard.readText();
                 document.getElementById('clipboardOutput').value = text;
             } catch {
-                document.getElementById('clipboardOutput').value = '无法读取剪贴板（需权限）';
+                document.getElementById('clipboardOutput').value = t('err.clipboardRead');
             }
         });
 
         /* ═══════════════════════ 通用下拉选择器 ═══════════════════════ */
+        /* 已拆出 components/select.html，改动请同步 */
         // 去线留白：填充式触发按钮 + 弥散阴影浮层（挂到 body，随滚动/缩放刷新位置）
-        function createSelect(host, options, { value, ariaLabel } = {}) {
+        function createSelect(host, options, { value, ariaLabel, onChange } = {}) {
             let current = value !== undefined ? value : options[0]?.value;
             let dropdown = null;
 
@@ -2790,6 +3219,8 @@ See the Mulan PSL v2 for more details.
                         current = opt.value;
                         render();
                         close();
+                        // 仅用户交互触发，setValue 程序赋值不回调（与原生 select 一致）
+                        onChange?.(current);
                     });
                     dropdown.appendChild(item);
                 });
@@ -2832,7 +3263,26 @@ See the Mulan PSL v2 for more details.
             { label: '简体中文', value: 'zh-CN' },
             { label: 'English', value: 'en' },
             { label: '日本語', value: 'ja' },
-        ], { value: 'zh-CN', ariaLabel: '语言' });
+        ], { value: LOCALE, ariaLabel: t('set.language'), onChange: applyLocale });
+        // 选项 label 用各语言自称（native name），不随界面语言翻译
+
+        /* ═══════════════════════ 组件库页：Select 演示 ═══════════════════════ */
+        {
+            const host = document.getElementById('compSelectDemo');
+            let demoValue = 'blue';
+            // 选项 label 随语言变化，切换后重建并保留当前选中值
+            const buildDemoSelect = () => {
+                host.innerHTML = '';
+                createSelect(host, [
+                    { label: t('select.blue'), value: 'blue' },
+                    { label: t('select.green'), value: 'green' },
+                    { label: t('select.amber'), value: 'amber' },
+                    { label: t('select.rose'), value: 'rose' },
+                ], { value: demoValue, ariaLabel: t('comp.selectLabel'), onChange: v => { demoValue = v; } });
+            };
+            buildDemoSelect();
+            window.addEventListener('app-localechange', buildDemoSelect);
+        }
 
         /* ═══════════════════════ 设置保存 ═══════════════════════ */
         const settingsMsg = document.getElementById('settingsMsg');
@@ -2849,11 +3299,9 @@ See the Mulan PSL v2 for more details.
             setTimeout(() => { settingsMsg.style.opacity = '0'; }, 2000);
         });
 
-        // 加载已保存的设置
+        // 加载已保存的设置（语言已在 i18n 初始化时读取，langSelect 创建时即为当前值）
         const savedName = localStorage.getItem('tauri-shell-name');
         if (savedName) document.getElementById('settingsName').value = savedName;
-        const savedLang = localStorage.getItem('tauri-shell-lang');
-        if (savedLang) langSelect.setValue(savedLang);
         const savedAuto = localStorage.getItem('tauri-shell-autosave');
         if (savedAuto === '0') document.getElementById('autoSave').checked = false;
 
@@ -2876,8 +3324,8 @@ See the Mulan PSL v2 for more details.
                 a.click();
                 // 延迟释放 blob URL，避免个别 WebView 实现在下载排队前释放导致失败
                 setTimeout(() => URL.revokeObjectURL(url), 1000);
-                window._showToast && window._showToast('success', '设置已导出为 qingke-settings.json');
-                window._logActivity && window._logActivity('导出了应用设置');
+                window._showToast && window._showToast('success', t('set.exported'));
+                window._logActivity && window._logActivity(t('log.exported'));
             });
 
             document.getElementById('settingsImportBtn').addEventListener('click', () => importFile.click());
@@ -2891,21 +3339,21 @@ See the Mulan PSL v2 for more details.
                     try {
                         const data = JSON.parse(reader.result);
                         if (typeof data !== 'object' || data === null || Array.isArray(data)) {
-                            throw new Error('文件格式不正确');
+                            throw new Error(t('err.badFormat'));
                         }
                         // 仅接受本应用前缀的字符串键，其余忽略
                         const keys = Object.keys(data).filter(k => k.startsWith(SETTINGS_PREFIX) && typeof data[k] === 'string');
-                        if (keys.length === 0) throw new Error('未找到可导入的设置项');
+                        if (keys.length === 0) throw new Error(t('err.noImportable'));
                         keys.forEach(k => localStorage.setItem(k, data[k]));
-                        window._showToast && window._showToast('success', '导入成功，正在应用…');
+                        window._showToast && window._showToast('success', t('set.imported'));
                         // 整页刷新，使各模块从 localStorage 重新初始化
                         setTimeout(() => location.reload(), 800);
                     } catch (e) {
-                        window._showToast && window._showToast('error', '导入失败：' + e.message);
+                        window._showToast && window._showToast('error', t('set.importFailed', { msg: e.message }));
                     }
                 };
                 reader.onerror = () => {
-                    window._showToast && window._showToast('error', '文件读取失败');
+                    window._showToast && window._showToast('error', t('err.fileRead'));
                 };
                 reader.readAsText(file);
             });
@@ -2923,7 +3371,12 @@ See the Mulan PSL v2 for more details.
             function renderClock() {
                 const now = new Date();
                 clockTime.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
-                clockDate.textContent = now.getFullYear() + ' 年 ' + (now.getMonth() + 1) + ' 月 ' + now.getDate() + ' 日 · ' + WEEKDAYS[now.getDay()];
+                // zh-CN 保持既有手工格式，其余语言交给 Intl 本地化
+                if (LOCALE === 'zh-CN') {
+                    clockDate.textContent = now.getFullYear() + ' 年 ' + (now.getMonth() + 1) + ' 月 ' + now.getDate() + ' 日 · ' + WEEKDAYS[now.getDay()];
+                } else {
+                    clockDate.textContent = now.toLocaleDateString(LOCALE, { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+                }
             }
             renderClock();
             setInterval(renderClock, 1000);
@@ -2952,11 +3405,12 @@ See the Mulan PSL v2 for more details.
             function renderOnline() {
                 const online = navigator.onLine;
                 onlineDot.classList.toggle('offline', !online);
-                onlineText.textContent = online ? '在线' : '离线';
+                onlineText.textContent = online ? t('sys.onlineYes') : t('sys.onlineNo');
             }
             renderOnline();
             window.addEventListener('online', renderOnline);
             window.addEventListener('offline', renderOnline);
+            window.addEventListener('app-localechange', renderOnline);
 
             /* ───── 最近活动日志（内存态，仅本次会话） ───── */
             const activityList = document.getElementById('activityList');
@@ -2981,10 +3435,10 @@ See the Mulan PSL v2 for more details.
                 }
             }
 
-            // 预置模拟记录（新记录在前）
-            logActivity('欢迎使用轻壳');
-            logActivity('加载本地设置');
-            logActivity('应用启动完成');
+            // 预置模拟记录（新记录在前；日志是历史快照，不随语言切换重译）
+            logActivity(t('log.welcome'));
+            logActivity(t('log.loadSettings'));
+            logActivity(t('log.started'));
 
             // 暴露到页面作用域，供右键菜单 / 设置导入导出等模块记录操作
             window._logActivity = logActivity;
@@ -2997,7 +3451,7 @@ See the Mulan PSL v2 for more details.
             document.querySelectorAll('.quick-action').forEach(btn => {
                 btn.addEventListener('click', () => {
                     switchPage(btn.dataset.goto);
-                    logActivity(btn.dataset.log);
+                    logActivity(t(btn.dataset.log));
                     const target = document.getElementById(btn.dataset.target);
                     requestAnimationFrame(() => {
                         const top = target.getBoundingClientRect().top
@@ -3012,10 +3466,10 @@ See the Mulan PSL v2 for more details.
 
             /* ───── 记录真实操作：主题切换 / 设置保存 ───── */
             themeToggle.addEventListener('change', () => {
-                logActivity(themeToggle.checked ? '切换到深色模式' : '切换到浅色模式');
+                logActivity(t(themeToggle.checked ? 'log.darkOn' : 'log.darkOff'));
             });
             document.getElementById('saveSettings').addEventListener('click', () => {
-                logActivity('保存了应用设置');
+                logActivity(t('log.savedSettings'));
             });
         }
 
@@ -3066,13 +3520,13 @@ See the Mulan PSL v2 for more details.
                 if (swLaps.length === 0) return;
                 const best = Math.min(...swLaps);
                 const worst = Math.max(...swLaps);
-                [...swLaps].reverse().forEach(t => {
+                [...swLaps].reverse().forEach(lapMs => {
                     const li = document.createElement('li');
                     li.className = 'timer-lap-item';
-                    li.innerHTML = '<span>计次 ' + (swLaps.indexOf(t) + 1) + '</span><span>' + formatStopwatch(t) + '</span>';
+                    li.innerHTML = '<span>' + t('timer.lapN', { n: swLaps.indexOf(lapMs) + 1 }) + '</span><span>' + formatStopwatch(lapMs) + '</span>';
                     if (swLaps.length > 1) {
-                        if (t === best) li.classList.add('timer-lap-best');
-                        if (t === worst) li.classList.add('timer-lap-worst');
+                        if (lapMs === best) li.classList.add('timer-lap-best');
+                        if (lapMs === worst) li.classList.add('timer-lap-worst');
                     }
                     swLapsEl.appendChild(li);
                 });
@@ -3083,12 +3537,14 @@ See the Mulan PSL v2 for more details.
                     clearInterval(swInterval);
                     swElapsed += Date.now() - swStartTime;
                     swRunning = false;
-                    swStartBtn.textContent = '继续';
+                    swStartBtn.textContent = t('timer.resume');
+                    swStartBtn.dataset.i18n = 'timer.resume';
                     swStartBtn.className = 'timer-btn timer-btn-start';
                 } else {
                     swStartTime = Date.now();
                     swRunning = true;
-                    swStartBtn.textContent = '暂停';
+                    swStartBtn.textContent = t('timer.pause');
+                    swStartBtn.dataset.i18n = 'timer.pause';
                     swStartBtn.className = 'timer-btn timer-btn-pause';
                     swInterval = setInterval(() => {
                         const now = Date.now();
@@ -3111,7 +3567,8 @@ See the Mulan PSL v2 for more details.
                 swRunning = false;
                 swElapsed = 0;
                 swLaps = [];
-                swStartBtn.textContent = '开始';
+                swStartBtn.textContent = t('timer.start');
+                swStartBtn.dataset.i18n = 'timer.start';
                 swStartBtn.className = 'timer-btn timer-btn-start';
                 swDisplay.textContent = '00:00.00';
                 swLapBtn.disabled = true;
@@ -3152,13 +3609,15 @@ See the Mulan PSL v2 for more details.
                 if (cdRunning) {
                     clearInterval(cdInterval);
                     cdRunning = false;
-                    cdStartBtn.textContent = '继续';
+                    cdStartBtn.textContent = t('timer.resume');
+                    cdStartBtn.dataset.i18n = 'timer.resume';
                     cdStartBtn.className = 'timer-btn timer-btn-start';
                     cdPauseBtn.disabled = true;
                 } else {
                     if (cdRemaining <= 0) cdRemaining = cdTotal;
                     cdRunning = true;
-                    cdStartBtn.textContent = '暂停';
+                    cdStartBtn.textContent = t('timer.pause');
+                    cdStartBtn.dataset.i18n = 'timer.pause';
                     cdStartBtn.className = 'timer-btn timer-btn-pause';
                     cdPauseBtn.disabled = false;
                     cdInterval = setInterval(() => {
@@ -3167,7 +3626,8 @@ See the Mulan PSL v2 for more details.
                         if (cdRemaining <= 0) {
                             clearInterval(cdInterval);
                             cdRunning = false;
-                            cdStartBtn.textContent = '开始';
+                            cdStartBtn.textContent = t('timer.start');
+                            cdStartBtn.dataset.i18n = 'timer.start';
                             cdStartBtn.className = 'timer-btn timer-btn-start';
                             cdPauseBtn.disabled = true;
                         }
@@ -3180,7 +3640,8 @@ See the Mulan PSL v2 for more details.
             cdPauseBtn.addEventListener('click', () => {
                 clearInterval(cdInterval);
                 cdRunning = false;
-                cdStartBtn.textContent = '继续';
+                cdStartBtn.textContent = t('timer.resume');
+                cdStartBtn.dataset.i18n = 'timer.resume';
                 cdStartBtn.className = 'timer-btn timer-btn-start';
                 cdPauseBtn.disabled = true;
             });
@@ -3189,7 +3650,8 @@ See the Mulan PSL v2 for more details.
                 clearInterval(cdInterval);
                 cdRunning = false;
                 cdRemaining = cdTotal;
-                cdStartBtn.textContent = '开始';
+                cdStartBtn.textContent = t('timer.start');
+                cdStartBtn.dataset.i18n = 'timer.start';
                 cdStartBtn.className = 'timer-btn timer-btn-start';
                 cdPauseBtn.disabled = true;
                 renderCdDisplay();
@@ -3201,14 +3663,15 @@ See the Mulan PSL v2 for more details.
                     cdRunning = false;
                     let sec = parseInt(btn.dataset.seconds, 10);
                     if (sec === -1) {
-                        const input = prompt('输入倒计时秒数：', '90');
+                        const input = prompt(t('timer.customPrompt'), '90');
                         if (input === null) return;
                         sec = parseInt(input, 10);
                         if (isNaN(sec) || sec <= 0) return;
                     }
                     cdTotal = sec;
                     cdRemaining = sec;
-                    cdStartBtn.textContent = '开始';
+                    cdStartBtn.textContent = t('timer.start');
+                    cdStartBtn.dataset.i18n = 'timer.start';
                     cdStartBtn.className = 'timer-btn timer-btn-start';
                     cdPauseBtn.disabled = true;
                     cdPresets.forEach(p => p.classList.remove('active'));
@@ -3229,7 +3692,7 @@ See the Mulan PSL v2 for more details.
             const saved = localStorage.getItem('tauri-shell-note');
             if (saved) {
                 noteArea.value = saved;
-                noteStatus.textContent = '已加载保存的内容';
+                noteStatus.textContent = t('note.loaded');
                 noteStatus.classList.add('saved');
             }
 
@@ -3239,11 +3702,11 @@ See the Mulan PSL v2 for more details.
             }
 
             noteArea.addEventListener('input', () => {
-                setNoteStatus('输入中…', false);
+                setNoteStatus(t('note.typing'), false);
                 clearTimeout(noteTimer);
                 noteTimer = setTimeout(() => {
                     localStorage.setItem('tauri-shell-note', noteArea.value);
-                    setNoteStatus('已自动保存', true);
+                    setNoteStatus(t('note.saved'), true);
                     setTimeout(() => { noteStatus.textContent = ''; }, 2000);
                 }, 800);
             });
@@ -3268,7 +3731,7 @@ See the Mulan PSL v2 for more details.
                     jsonError.textContent = '';
                 } catch (e) {
                     jsonOutput.textContent = '';
-                    jsonError.textContent = 'JSON 解析失败：' + e.message;
+                    jsonError.textContent = t('err.jsonParse', { msg: e.message });
                 }
             }
 
@@ -3276,10 +3739,10 @@ See the Mulan PSL v2 for more details.
             document.getElementById('jsonCompress').addEventListener('click', () => processJSON(0));
             document.getElementById('jsonCopy').addEventListener('click', async () => {
                 const text = jsonOutput.textContent;
-                if (!text) { jsonError.textContent = '没有可复制的内容'; return; }
+                if (!text) { jsonError.textContent = t('err.nothingToCopy'); return; }
                 try {
                     await navigator.clipboard.writeText(text);
-                    jsonError.textContent = '已复制';
+                    jsonError.textContent = t('common.copied');
                     setTimeout(() => { jsonError.textContent = ''; }, 1500);
                 } catch {
                     const ta = document.createElement('textarea');
@@ -3289,7 +3752,7 @@ See the Mulan PSL v2 for more details.
                     ta.select();
                     const ok = document.execCommand('copy');
                     document.body.removeChild(ta);
-                    jsonError.textContent = ok ? '已复制' : '复制失败';
+                    jsonError.textContent = ok ? t('common.copied') : t('err.copyFailed');
                     setTimeout(() => { jsonError.textContent = ''; }, 1500);
                 }
             });
@@ -3324,7 +3787,7 @@ See the Mulan PSL v2 for more details.
                     swatch.className = 'color-swatch';
                     swatch.style.background = c;
                     swatch.title = c;
-                    swatch.setAttribute('aria-label', '选取颜色 ' + c);
+                    swatch.setAttribute('aria-label', t('color.swatchAria', { c }));
                     swatch.addEventListener('click', () => {
                         colorPicker.value = c;
                         updateColor(c);
@@ -3361,7 +3824,7 @@ See the Mulan PSL v2 for more details.
                 const hex = colorHex.textContent;
                 try {
                     await navigator.clipboard.writeText(hex);
-                    btn.textContent = '已复制';
+                    btn.textContent = t('common.copied');
                 } catch {
                     const ta = document.createElement('textarea');
                     ta.value = hex;
@@ -3370,9 +3833,9 @@ See the Mulan PSL v2 for more details.
                     ta.select();
                     const ok = document.execCommand('copy');
                     document.body.removeChild(ta);
-                    btn.textContent = ok ? '已复制' : '失败';
+                    btn.textContent = ok ? t('common.copied') : t('common.failed');
                 }
-                setTimeout(() => { btn.textContent = '复制'; }, 1500);
+                setTimeout(() => { btn.textContent = t('common.copy'); }, 1500);
             });
 
             loadHistory();
@@ -3398,32 +3861,32 @@ See the Mulan PSL v2 for more details.
 
             document.getElementById('base64Encode').addEventListener('click', () => {
                 const input = b64Text.value;
-                if (!input) { b64Error.textContent = '请输入文本'; return; }
+                if (!input) { b64Error.textContent = t('err.needText'); return; }
                 try {
                     b64Encoded.value = b64Encode(input);
                     b64Error.textContent = '';
                 } catch (e) {
-                    b64Error.textContent = '编码失败：' + e.message;
+                    b64Error.textContent = t('err.encodeFailed', { msg: e.message });
                 }
             });
 
             document.getElementById('base64Decode').addEventListener('click', () => {
                 const input = b64Encoded.value.trim();
-                if (!input) { b64Error.textContent = '请输入 Base64 字符串'; return; }
+                if (!input) { b64Error.textContent = t('err.needBase64'); return; }
                 try {
                     b64Text.value = b64Decode(input);
                     b64Error.textContent = '';
                 } catch (e) {
-                    b64Error.textContent = '解码失败：请检查输入是否为有效 Base64';
+                    b64Error.textContent = t('err.b64DecodeFailed');
                 }
             });
 
             document.getElementById('base64CopyResult').addEventListener('click', async () => {
                 const text = b64Encoded.value || b64Text.value;
-                if (!text) { b64Error.textContent = '没有可复制的内容'; return; }
+                if (!text) { b64Error.textContent = t('err.nothingToCopy'); return; }
                 try {
                     await navigator.clipboard.writeText(text);
-                    b64Error.textContent = '已复制';
+                    b64Error.textContent = t('common.copied');
                     setTimeout(() => { b64Error.textContent = ''; }, 1500);
                 } catch {
                     const ta = document.createElement('textarea');
@@ -3433,7 +3896,7 @@ See the Mulan PSL v2 for more details.
                     ta.select();
                     const ok = document.execCommand('copy');
                     document.body.removeChild(ta);
-                    b64Error.textContent = ok ? '已复制' : '复制失败';
+                    b64Error.textContent = ok ? t('common.copied') : t('err.copyFailed');
                     setTimeout(() => { b64Error.textContent = ''; }, 1500);
                 }
             });
@@ -3476,9 +3939,9 @@ See the Mulan PSL v2 for more details.
 
             document.getElementById('morseEncode').addEventListener('click', () => {
                 const input = morseText.value.trim();
-                if (!input) { morseError.textContent = '请输入文本'; return; }
+                if (!input) { morseError.textContent = t('err.needText'); return; }
                 if (/[\u4e00-\u9fff\u3400-\u4dbf]/.test(input)) {
-                    morseError.textContent = '暂不支持中文，仅支持 A-Z / 0-9 及常用标点';
+                    morseError.textContent = t('err.morseNoChinese');
                     morseOutput.textContent = '';
                     return;
                 }
@@ -3488,17 +3951,17 @@ See the Mulan PSL v2 for more details.
 
             document.getElementById('morseDecode').addEventListener('click', () => {
                 const input = morseOutput.textContent.trim();
-                if (!input) { morseError.textContent = '请先生成或输入摩斯电码'; return; }
+                if (!input) { morseError.textContent = t('err.morseNeedCode'); return; }
                 morseText.value = decodeMorse(input);
                 morseError.textContent = '';
             });
 
             document.getElementById('morseCopy').addEventListener('click', async () => {
                 const text = morseOutput.textContent;
-                if (!text) { morseError.textContent = '没有可复制的内容'; return; }
+                if (!text) { morseError.textContent = t('err.nothingToCopy'); return; }
                 try {
                     await navigator.clipboard.writeText(text);
-                    morseError.textContent = '已复制';
+                    morseError.textContent = t('common.copied');
                     setTimeout(() => { morseError.textContent = ''; }, 1500);
                 } catch {
                     const ta = document.createElement('textarea');
@@ -3508,7 +3971,7 @@ See the Mulan PSL v2 for more details.
                     ta.select();
                     const ok = document.execCommand('copy');
                     document.body.removeChild(ta);
-                    morseError.textContent = ok ? '已复制' : '复制失败';
+                    morseError.textContent = ok ? t('common.copied') : t('err.copyFailed');
                     setTimeout(() => { morseError.textContent = ''; }, 1500);
                 }
             });
@@ -3545,7 +4008,7 @@ See the Mulan PSL v2 for more details.
                 const closeBtn = document.createElement('button');
                 closeBtn.className = 'toast-close';
                 closeBtn.innerHTML = '<svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg>';
-                closeBtn.setAttribute('aria-label', '关闭通知');
+                closeBtn.setAttribute('aria-label', t('toast.closeAria'));
                 closeBtn.addEventListener('click', () => dismissToast(toast));
 
                 toast.appendChild(icon);
@@ -3584,12 +4047,12 @@ See the Mulan PSL v2 for more details.
             const pressedKeys = new Set();
             const MODIFIER_KEYS = ['Control', 'Alt', 'Shift', 'Meta'];
 
-            // 已注册快捷键列表
+            // 已注册快捷键列表（action 为词条 key，展示时取词）
             const registeredShortcuts = [
-                { combo: ['Control', 'KeyS'], action: '保存' },
-                { combo: ['Control', 'KeyZ'], action: '撤销' },
-                { combo: ['Control', 'Shift', 'KeyN'], action: '新建窗口' },
-                { combo: ['Control', 'KeyK'], action: '搜索' }
+                { combo: ['Control', 'KeyS'], action: 'kb.save' },
+                { combo: ['Control', 'KeyZ'], action: 'kb.undo' },
+                { combo: ['Control', 'Shift', 'KeyN'], action: 'kb.newWindow' },
+                { combo: ['Control', 'KeyK'], action: 'kb.search' }
             ];
 
             function formatCombo(modifiers, key) {
@@ -3613,7 +4076,8 @@ See the Mulan PSL v2 for more details.
                 } else {
                     const placeholder = document.createElement('span');
                     placeholder.className = 'kb-placeholder';
-                    placeholder.textContent = '按下任意键…';
+                    placeholder.textContent = t('kb.placeholder');
+                    placeholder.dataset.i18n = 'kb.placeholder'; // 语言切换时由 applyLocale 自动刷新
                     kbDisplay.appendChild(placeholder);
                 }
 
@@ -3667,8 +4131,8 @@ See the Mulan PSL v2 for more details.
                 if (!isModifier) {
                     const matched = checkShortcut(modifiers, e.code);
                     if (matched) {
-                        kbHint.textContent = '✓ 触发已注册快捷键：' + matched.action;
-                        window._showToast && window._showToast('success', '快捷键触发：' + matched.action);
+                        kbHint.textContent = t('kb.hintTriggered', { action: t(matched.action) });
+                        window._showToast && window._showToast('success', t('kb.toastTriggered', { action: t(matched.action) }));
                     }
                 }
             }
@@ -3764,7 +4228,7 @@ See the Mulan PSL v2 for more details.
 
                     const meta = document.createElement('div');
                     meta.className = 'drop-file-meta';
-                    meta.textContent = (file.size > 0 ? formatFileSize(file.size) : '未知大小') + (file.type ? ' · ' + file.type : '');
+                    meta.textContent = (file.size > 0 ? formatFileSize(file.size) : t('drop.unknownSize')) + (file.type ? ' · ' + file.type : '');
 
                     info.appendChild(name);
                     info.appendChild(meta);
@@ -3772,7 +4236,7 @@ See the Mulan PSL v2 for more details.
                     const removeBtn = document.createElement('button');
                     removeBtn.className = 'drop-file-remove';
                     removeBtn.innerHTML = '<svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg>';
-                    removeBtn.setAttribute('aria-label', '移除 ' + file.name);
+                    removeBtn.setAttribute('aria-label', t('drop.removeAria', { name: file.name }));
                     removeBtn.addEventListener('click', () => removeFile(index));
 
                     item.appendChild(icon);
@@ -3921,15 +4385,15 @@ See the Mulan PSL v2 for more details.
 
         /* ═══════════════════════ Toast 演示按钮（组件页） ═══════════════════════ */
         {
-            const bindToastDemo = (id, type, message) => {
+            const bindToastDemo = (id, type, messageKey) => {
                 const btn = document.getElementById(id);
                 if (btn) btn.addEventListener('click', () => {
-                    window._showToast && window._showToast(type, message);
+                    window._showToast && window._showToast(type, t(messageKey));
                 });
             };
-            bindToastDemo('compToastSuccess', 'success', '操作已成功完成！');
-            bindToastDemo('compToastWarning', 'warning', '请注意，存储空间不足。');
-            bindToastDemo('compToastError', 'error', '发生了错误，请稍后重试。');
+            bindToastDemo('compToastSuccess', 'success', 'toast.demoSuccess');
+            bindToastDemo('compToastWarning', 'warning', 'toast.demoWarning');
+            bindToastDemo('compToastError', 'error', 'toast.demoError');
         }
 
         /* ═══════════════════════ UI 组件：Modal 弹窗 ═══════════════════════ */
@@ -3964,7 +4428,7 @@ See the Mulan PSL v2 for more details.
             document.getElementById('modalCancel').addEventListener('click', closeModal);
             document.getElementById('modalConfirm').addEventListener('click', () => {
                 closeModal();
-                window._showToast && window._showToast('success', '操作已确认');
+                window._showToast && window._showToast('success', t('toast.confirmed'));
             });
 
             // 点击遮罩自身关闭（点击弹窗内部不触发）
@@ -4064,7 +4528,7 @@ See the Mulan PSL v2 for more details.
                 lastFocusEl = document.activeElement;
                 ctxCopy.disabled = !hasCopyableSelection(target);
                 ctxPaste.disabled = !isEditable(target);
-                ctxThemeLabel.textContent = themeToggle.checked ? '切换浅色模式' : '切换深色模式';
+                ctxThemeLabel.textContent = t(themeToggle.checked ? 'ctx.toLight' : 'ctx.toDark');
                 // 先显示再测量，坐标钳制在视口内
                 menu.classList.add('open');
                 const rect = menu.getBoundingClientRect();
@@ -4126,31 +4590,31 @@ See the Mulan PSL v2 for more details.
 
             ctxCopy.addEventListener('click', async () => {
                 closeMenu();
-                const t = ctxTarget;
-                const text = isTextField(t)
-                    ? t.value.slice(t.selectionStart, t.selectionEnd)
+                const target = ctxTarget;
+                const text = isTextField(target)
+                    ? target.value.slice(target.selectionStart, target.selectionEnd)
                     : String(window.getSelection());
                 if (!text) return;
                 try {
                     await navigator.clipboard.writeText(text);
-                    window._showToast && window._showToast('success', '已复制到剪贴板');
+                    window._showToast && window._showToast('success', t('toast.copied'));
                 } catch {
-                    window._showToast && window._showToast('error', '复制失败');
+                    window._showToast && window._showToast('error', t('err.copyFailed'));
                 }
             });
 
             ctxPaste.addEventListener('click', async () => {
                 closeMenu();
-                const t = ctxTarget;
-                if (!isEditable(t)) return;
+                const target = ctxTarget;
+                if (!isEditable(target)) return;
                 try {
                     const text = await navigator.clipboard.readText();
-                    t.setRangeText(text, t.selectionStart, t.selectionEnd, 'end');
-                    t.focus();
+                    target.setRangeText(text, target.selectionStart, target.selectionEnd, 'end');
+                    target.focus();
                     // 便签本等模块依赖 input 事件自动保存
-                    t.dispatchEvent(new Event('input', { bubbles: true }));
+                    target.dispatchEvent(new Event('input', { bubbles: true }));
                 } catch {
-                    window._showToast && window._showToast('error', '无法读取剪贴板（需权限）');
+                    window._showToast && window._showToast('error', t('err.clipboardRead'));
                 }
             });
 
@@ -4170,7 +4634,7 @@ See the Mulan PSL v2 for more details.
             document.getElementById('ctxAbout').addEventListener('click', () => {
                 closeMenu();
                 switchPage('about');
-                window._logActivity && window._logActivity('通过右键菜单打开关于页');
+                window._logActivity && window._logActivity(t('log.openAboutCtx'));
             });
         }
 

@@ -1,0 +1,308 @@
+<!--
+Copyright (c) 2026 青山公仔
+轻壳 (Tauri Shell) is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details.
+-->
+<!--
+═══════════ Select 下拉选择器 — 自包含 demo ═══════════
+来源：拷贝自 dist/index.html「自定义下拉选择器」CSS 分节 + 「通用下拉选择器」JS 分节，
+      改动请双向同步（dist/index.html 为权威源）。
+依赖：设计令牌子集（已内联，完整版见 tokens.css）、flyoutPopIn 关键帧（已内联）。
+特性：去线留白——填充式触发按钮 + 弥散阴影浮层（挂到 body，fixed 定位随滚动/缩放刷新，
+      下方空间不足自动向上翻转）；chevron 随展开态旋转；选中态强调色 + 字重双重编码；
+      键盘支持（Enter/Space/ArrowDown 打开，Escape 关闭）+ ARIA listbox 语义。
+用法：双击本文件即可在浏览器预览；移植时复制「组件 CSS」「组件 JS」两段，
+      调用 createSelect(host, options, { value, ariaLabel, onChange })，返回 { getValue, setValue }；
+      onChange 仅由用户交互触发，setValue 程序赋值不回调（与原生 select 一致）。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select 下拉选择器 · 组件 demo</title>
+    <style>
+        /* ───── 设计令牌子集（拷贝自 tokens.css，勿单侧改动） ───── */
+        :root {
+            --bg: #fcfcfc;
+            --card: #feffff;
+            --hover: #e0e0e0;
+            --accent: #005fb8;
+            --text-primary: rgba(0, 0, 0, 0.87);
+            --text-body: rgba(0, 0, 0, 0.78);
+            --text-auxiliary: rgba(0, 0, 0, 0.52);
+            --input-bg: rgba(0, 0, 0, 0.02);
+            --input-bg-focus: rgba(0, 0, 0, 0.04);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --duration-fast: 100ms;
+            --duration-normal: 200ms;
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.14);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --font: "Noto Serif SC", "edit Han Serif SC", "SimSun", "宋体", serif;
+        }
+        [data-theme="dark"] {
+            --bg: #202020;
+            --card: #232323;
+            --hover: #3d3d3d;
+            --accent: #60cdff;
+            --text-primary: rgba(255, 255, 255, 0.87);
+            --text-body: rgba(255, 255, 255, 0.6);
+            --text-auxiliary: rgba(255, 255, 255, 0.4);
+            --input-bg: rgba(255, 255, 255, 0.04);
+            --input-bg-focus: rgba(255, 255, 255, 0.07);
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-flyout: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ───── demo 页面骨架（非组件本体） ───── */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 32px;
+        }
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow-card);
+            max-width: 560px;
+            margin: 0 auto 16px;
+        }
+        .card-title-sm { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+        .card-subtitle { font-size: 0.7rem; color: var(--text-auxiliary); margin-bottom: 8px; }
+        .form-label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 550;
+            color: var(--text-body);
+            margin-bottom: 8px;
+        }
+        .select-host { max-width: 240px; }
+        .theme-btn {
+            display: block;
+            margin: 0 auto;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-family: var(--font);
+            cursor: pointer;
+            border: none;
+            background: var(--hover);
+            color: var(--text-primary);
+        }
+
+        /* ═════════════════════ 组件 CSS：Select 下拉选择器（拷贝自 dist/index.html） ═════════════════════ */
+        /* 浮层通用入场动效（权威源中为右键菜单、下拉面板共用） */
+        @keyframes flyoutPopIn {
+            from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+            to   { opacity: 1; transform: none; }
+        }
+        .select-trigger {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.82rem;
+            font-family: var(--font);
+            cursor: pointer;
+            text-align: left;
+            transition: background var(--duration-fast) var(--ease);
+        }
+        .select-trigger:hover, .select-trigger[aria-expanded="true"] { background: var(--input-bg-focus); }
+        .select-trigger:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }
+        .select-trigger-label {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .select-trigger .chevron {
+            flex-shrink: 0;
+            transition: transform var(--duration-fast) var(--ease);
+        }
+        .select-trigger[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+        .select-dropdown {
+            position: fixed;
+            z-index: 2500;
+            padding: 4px 0;
+            background: var(--card);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-flyout);
+            animation: flyoutPopIn var(--duration-normal) var(--ease);
+        }
+        .select-option {
+            display: block;
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            background: none;
+            color: var(--text-primary);
+            font-size: 0.82rem;
+            font-family: var(--font);
+            cursor: pointer;
+            text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: background var(--duration-fast) var(--ease);
+        }
+        .select-option:hover { background: var(--hover); }
+        /* 选中态多维编码：强调色 + 字重，不依赖边框 */
+        .select-option[aria-selected="true"] { color: var(--accent); font-weight: 550; }
+
+        /* ───── 动效降级 ───── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═════════ 组件 HTML：仅需一个空挂载点，触发按钮与浮层由 JS 生成 ═════════ -->
+    <div class="card">
+        <h2 class="card-title-sm">Select 下拉选择器</h2>
+        <p class="card-subtitle">填充式触发按钮 + 弥散阴影浮层，chevron 随展开态旋转，支持键盘操作</p>
+        <label class="form-label" id="demoSelectLabel">主题色</label>
+        <div class="select-host" id="demoSelect"></div>
+    </div>
+
+    <button class="theme-btn" id="themeBtn">切换深色</button>
+
+    <script>
+    /* ═════════════════════ 组件 JS：createSelect（拷贝自 dist/index.html） ═════════════════════ */
+    // 去线留白：填充式触发按钮 + 弥散阴影浮层（挂到 body，随滚动/缩放刷新位置）
+    function createSelect(host, options, { value, ariaLabel, onChange } = {}) {
+        let current = value !== undefined ? value : options[0]?.value;
+        let dropdown = null;
+
+        const trigger = document.createElement('button');
+        trigger.type = 'button';
+        trigger.className = 'select-trigger';
+        trigger.setAttribute('aria-haspopup', 'listbox');
+        trigger.setAttribute('aria-expanded', 'false');
+        if (ariaLabel) trigger.setAttribute('aria-label', ariaLabel);
+        trigger.innerHTML = '<span class="select-trigger-label"></span>'
+            + '<svg class="chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">'
+            + '<path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        const label = trigger.querySelector('.select-trigger-label');
+        host.appendChild(trigger);
+
+        const render = () => {
+            label.textContent = options.find(o => o.value === current)?.label ?? String(current);
+        };
+        render();
+
+        // 面板紧贴按钮下方 4px，宽度不小于按钮；下方空间不足时向上翻转，避免被窗口截断
+        const updatePosition = () => {
+            if (!dropdown) return;
+            const rect = trigger.getBoundingClientRect();
+            dropdown.style.left = rect.left + 'px';
+            dropdown.style.minWidth = rect.width + 'px';
+            const panelH = dropdown.offsetHeight;
+            const below = rect.bottom + 4;
+            if (below + panelH > window.innerHeight && rect.top - 4 - panelH >= 0) {
+                dropdown.style.top = (rect.top - 4 - panelH) + 'px';
+            } else {
+                dropdown.style.top = below + 'px';
+            }
+        };
+
+        const close = () => {
+            if (!dropdown) return;
+            dropdown.remove();
+            dropdown = null;
+            trigger.setAttribute('aria-expanded', 'false');
+            window.removeEventListener('scroll', updatePosition, true);
+            window.removeEventListener('resize', updatePosition);
+        };
+
+        const open = () => {
+            dropdown = document.createElement('div');
+            dropdown.className = 'select-dropdown';
+            dropdown.setAttribute('role', 'listbox');
+            options.forEach(opt => {
+                const item = document.createElement('button');
+                item.type = 'button';
+                item.className = 'select-option';
+                item.setAttribute('role', 'option');
+                item.setAttribute('aria-selected', String(opt.value === current));
+                item.textContent = opt.label;
+                item.addEventListener('click', () => {
+                    current = opt.value;
+                    render();
+                    close();
+                    // 仅用户交互触发，setValue 程序赋值不回调（与原生 select 一致）
+                    onChange?.(current);
+                });
+                dropdown.appendChild(item);
+            });
+            dropdown.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+            document.body.appendChild(dropdown);
+            trigger.setAttribute('aria-expanded', 'true');
+            updatePosition();
+            window.addEventListener('scroll', updatePosition, true);
+            window.addEventListener('resize', updatePosition);
+        };
+
+        trigger.addEventListener('click', () => dropdown ? close() : open());
+
+        // 点击外部关闭（capture 阶段确保不被内部元素拦截）
+        document.addEventListener('pointerdown', e => {
+            if (dropdown && !host.contains(e.target) && !dropdown.contains(e.target)) close();
+        }, true);
+
+        // 键盘支持：闭合时 Enter/Space/ArrowDown 打开，展开时 Escape 关闭
+        host.addEventListener('keydown', e => {
+            if (!dropdown) {
+                if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') { e.preventDefault(); open(); }
+            } else if (e.key === 'Escape') {
+                close();
+            }
+        });
+
+        return {
+            getValue: () => current,
+            // 非法值静默忽略，与原生 select 赋值行为一致（防 localStorage 脏值）
+            setValue(v) {
+                if (!options.some(o => o.value === v)) return;
+                current = v;
+                render();
+            },
+        };
+    }
+
+    /* ───── demo 绑定（非组件本体） ───── */
+    createSelect(document.getElementById('demoSelect'), [
+        { label: '蓝色（默认）', value: 'blue' },
+        { label: '绿色', value: 'green' },
+        { label: '琥珀色', value: 'amber' },
+        { label: '玫红色', value: 'rose' },
+    ], { ariaLabel: '主题色' });
+
+    document.getElementById('themeBtn').addEventListener('click', () => {
+        const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute('data-theme', dark ? '' : 'dark');
+    });
+    </script>
+</body>
+</html>
