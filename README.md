@@ -35,7 +35,7 @@
 轻壳/
 ├── dist/
 │   ├── index.html          ← 你的网页放这里
-│   ├── tray-menu.html      ← 托盘右键菜单页（不需托盘可删，见 docs/托盘说明.md）
+│   ├── tray-menu.html      ← 托盘右键菜单页（不需托盘可删，见 docs/使用说明.md「系统托盘」）
 │   └── serve.json          ← dev 静态服务器配置（勿删，否则 dev 下托盘菜单页会被重写成主页）
 ├── src-tauri/
 │   ├── src/
@@ -59,9 +59,7 @@
 │   ├── starter.html        ← 风格骨架模板（替换 dist/index.html 即得同风格空应用）
 │   └── *.html              ← Toast / Modal / Tab / Progress / Badge / Button / Input / Switch / Select / Tooltip / 右键菜单 demo
 ├── docs/
-│   ├── 使用说明.md         ← 两条使用路径详解（改名清单、组件复制指引）
-│   ├── 安装器说明.md       ← 安装器详细说明
-│   └── 托盘说明.md         ← 托盘原理、定制与移除步骤
+│   └── 使用说明.md         ← 两条使用路径详解（改名清单、组件复制指引、安装器与托盘专题）
 ├── scripts/
 │   ├── gen-icons.mjs       ← 图标生成（构建时自动调用，只产出 Windows 所需）
 │   └── build-installer.mjs ← 安装器打包链（npm run build 调用）
@@ -122,7 +120,7 @@ npm run build
 执行自带的安装器打包链：主应用构建 → 安装向导编译 → 主程序嵌入，
 产物为 `dist-installer/{产品名}_{版本}_x64-setup.exe`——单文件分发，
 双击即进入安装向导（欢迎 → 路径 → 选项 → 进度 → 完成），卸载走控制面板。
-详细原理与自定义见 [docs/安装器说明.md](docs/安装器说明.md)。
+详细原理与自定义见 [docs/使用说明.md](docs/使用说明.md) 中的「安装/卸载向导」章节。
 
 > 首次打包需完整编译安装器依赖，耗时较长；后续增量构建会快很多。
 > 只改了安装器、主应用未变时，可用 `npm run build -- --skip-main` 跳过主应用构建。
@@ -174,7 +172,7 @@ npm run tauri build -- --no-bundle
 托盘左键还原主窗口，右键弹出与应用同风格的自绘菜单（透明 Webview 小窗渲染，非原生菜单）。
 与 get_file_size 同为少数 Rust 侧能力。
 
-工作原理、菜单项定制、注意事项与完整移除步骤见 [docs/托盘说明.md](docs/托盘说明.md)。
+工作原理、菜单项定制、注意事项与完整移除步骤见 [docs/使用说明.md](docs/使用说明.md) 中的「系统托盘」章节。
 
 ## 窗口显示白屏？
 
