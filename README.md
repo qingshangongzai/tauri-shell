@@ -7,7 +7,8 @@
 > 🏠 [Gitee 仓库](https://gitee.com/qingshangongzai/tauri-shell/) · 开发者 [青山公仔](https://gitee.com/qingshangongzai)
 
 **特点：**
-- 无边框窗口 + 仿原生标题栏（最小化 / 最大化 / 关闭）
+- 标题栏自适应：页面带自绘标题栏（`data-tauri-drag-region`）则无边框窗口，否则自动切换系统原生标题栏，零配置
+- 支持 GitHub Actions 云构建：本地零环境，fork 后网页端改 HTML、打 tag 即得安装包（见 [docs/使用说明.md](docs/使用说明.md) 的「云构建」章）
 - 系统托盘：关闭窗口最小化到托盘（设置页可关），托盘右键为「去线留白」自绘菜单，可按需移除
 - 内置丰富的示例界面：侧边栏导航、仪表盘、工具页、能力展示、组件页、设置页（含深色模式）、关于页
 - 可拆用的内置组件：Toast 通知、Modal 弹窗、Tab 标签页、Progress 进度条、Badge 徽章、Button 按钮、Input 输入框、Switch 开关、Select 下拉选择器、Tooltip、自定义右键菜单
@@ -21,18 +22,20 @@
 
 **① 纯壳 — 打包你自己的 HTML**
 
-把你的网页放进 `dist/index.html`，一键打包为 Windows 桌面程序，示例界面随之被替换。不关心示例页长什么样，直接看下方「快速开始」。
+把你的网页放进 `dist/index.html`，一键打包为 Windows 桌面程序，示例界面随之被替换。不需要保留示例页的任何代码——标题栏与窗口显示由壳自动处理。不关心示例页长什么样，直接看下方「快速开始」；本地不想装开发环境，看 [docs/使用说明.md](docs/使用说明.md) 的「云构建」章。
 
 **② 同风格开发 — 复用组件与样式**
 
 认可示例页的「去线留白」风格，可以从 `components/` 目录起步：`tokens.css`（设计令牌）、`starter.html`（风格骨架模板，替换 `dist/index.html` 即得同风格空应用）、以及 Toast / Modal / Tab / Progress / Badge / Button / Input / Switch / Select / Tooltip / 右键菜单十一个自包含 demo（双击浏览器即可预览，复制三段注释标出的 CSS/HTML/JS 即可移植）。
 
-两条路径的详细步骤（标题栏取舍、改名清单、设计令牌速查、组件复制指引等）见 [docs/使用说明.md](docs/使用说明.md)。
+两条路径的详细步骤（标题栏自动适配规则、改名清单、设计令牌速查、组件复制指引等）见 [docs/使用说明.md](docs/使用说明.md)。
 
 ## 目录结构
 
 ```
 轻壳/
+├── .github/workflows/
+│   └── release.yml         ← GitHub Actions 云构建（打 tag 出安装包）
 ├── dist/
 │   ├── index.html          ← 你的网页放这里
 │   ├── tray-menu.html      ← 托盘右键菜单页（不需托盘可删，见 docs/使用说明.md「系统托盘」）
@@ -59,7 +62,7 @@
 │   ├── starter.html        ← 风格骨架模板（替换 dist/index.html 即得同风格空应用）
 │   └── *.html              ← Toast / Modal / Tab / Progress / Badge / Button / Input / Switch / Select / Tooltip / 右键菜单 demo
 ├── docs/
-│   └── 使用说明.md         ← 两条使用路径详解（改名清单、组件复制指引、安装器与托盘专题）
+│   └── 使用说明.md         ← 两条使用路径详解（标题栏适配、改名清单、组件复制、云构建、安装器与托盘专题）
 ├── scripts/
 │   ├── gen-icons.mjs       ← 图标生成（构建时自动调用，只产出 Windows 所需）
 │   └── build-installer.mjs ← 安装器打包链（npm run build 调用）
@@ -98,10 +101,12 @@ npm install
 
 交互细节也已就位：侧边栏折叠（`Ctrl+B`）、键盘全局导航（`Ctrl+1~6`）、自定义右键菜单、页面状态保持等。
 
-如果你完全用自己的 HTML，可选择：
+如果你完全用自己的 HTML，**不需要保留示例页的任何代码，也不需要改配置**——壳会自动适配标题栏：
 
-- **保留自定义标题栏**：`<div class="titlebar">` 及其子元素，以及尾部 `<script type="module">` 中的窗口控制逻辑。这是无边框窗口的拖拽和关闭 / 最小化 / 最大化功能。
-- **使用系统原生标题栏**：在 `tauri.conf.json` 中将 `"decorations"` 改为 `true`，然后删除 HTML 中的标题栏代码。
+- HTML 中存在 `data-tauri-drag-region` 属性（自绘标题栏的拖拽区） → 无边框窗口，由你的标题栏接管；
+- 不存在 → 自动使用系统原生标题栏（此时点 X 默认最小化到托盘，托盘右键菜单退出）。
+
+判定与切换发生在窗口显示前，无视觉跳变。React/Vue 等运行时才渲染标题栏的页面可能漏判，手动覆盖办法见 [docs/使用说明.md](docs/使用说明.md) 的「标题栏」小节。
 
 ### 2. 预览（实时刷新）
 
@@ -144,6 +149,14 @@ npm run tauri build -- --no-bundle
 > 构建时会自动执行：版本号同步 → 图标生成（从 `logo.svg`） → HTML 压缩，一步到位。
 > 安装向导的图标、页面 logo 与版本号同样源自主项目，无需单独维护。
 
+### 4. 不想装环境？用 GitHub Actions 云构建
+
+本地零环境也能出安装包：在 GitHub 上 fork 仓库 → 网页端把 `dist/index.html` 换成你的页面 → 发一个 `v*` 标签的 Release → 等云端构建完成，安装包自动附在 Release 里。
+
+完整步骤、常见问题（首次构建耗时、SmartScreen 提示等）见 [docs/使用说明.md](docs/使用说明.md) 的「云构建」章。
+
+> 页面本身用浏览器就能调试，仅打包交给云端；`npm run tauri dev` 实时预览仍需本地环境。
+
 ## 自定义配置
 
 改成你自己的应用需要动哪些文件（`productName`、`identifier`、EXE 属性、安装器常量等），
@@ -176,7 +189,7 @@ npm run tauri build -- --no-bundle
 
 ## 窗口显示白屏？
 
-这是设计如此——`tauri.conf.json` 中 `"visible": false`，页面加载完成后 JS 调用 `plugin:window|show` 显示窗口，避免白屏闪烁。
+这是设计如此——`tauri.conf.json` 中 `"visible": false`，壳在页面加载完成、标题栏模式判定后才显示窗口，避免白屏闪烁；另有 2 秒超时兜底，页面异常也不会永不出窗。你的 HTML 无需调用 `plugin:window|show`。
 
 ## 许可证
 

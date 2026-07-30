@@ -1,0 +1,63 @@
+# 云构建：在 GitHub Actions 上打包 Windows 安装包，无需本地安装 Rust / Node 环境。
+# 触发方式：
+#   1. 推送 v* 标签（如 v0.1.0）→ 构建并把安装包发布到 GitHub Release
+#   2. Actions 页面手动运行（workflow_dispatch）→ 构建并上传为 Artifact
+# 详细使用步骤见 docs/使用说明.md 的「云构建」章
+name: 构建安装包
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: write # 发布 Release 需要
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            installer/package-lock.json
+
+      - name: 安装 Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust 编译缓存（主应用 + 安装器）
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            src-tauri -> target
+            installer/src-tauri -> target
+
+      # npm ci 要求 lockfile 与 package.json 严格一致（快且干净）；
+      # 若 fork 后改了依赖却忘同步 lockfile，回退到 npm install 以免云构建直接失败
+      - name: 安装依赖
+        run: |
+          npm ci || npm install
+          npm --prefix installer ci || npm --prefix installer install
+
+      # 首次构建无缓存需完整编译两个 Rust 项目，约 15~25 分钟；后续有缓存会快很多
+      - name: 构建安装包
+        run: npm run build
+
+      - name: 上传构建产物（手动触发时）
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: installer
+          path: dist-installer/*.exe
+
+      - name: 发布到 Release（标签触发时）
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist-installer/*.exe
