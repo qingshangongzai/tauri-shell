@@ -2669,7 +2669,8 @@ See the Mulan PSL v2 for more details.
                 'set.autoSave': '自动保存', 'set.autoSaveHint': '退出时自动保存设置', 'set.save': '保存设置', 'set.saved': '✓ 已保存',
                 'set.backup': '备份与恢复', 'set.backupSub': '将本地设置导出为 JSON 文件，或从文件恢复',
                 'set.export': '导出设置', 'set.import': '导入设置', 'set.importFileAria': '选择设置文件',
-                'set.exported': '设置已导出为 qingke-settings.json', 'set.imported': '导入成功，正在应用…', 'set.importFailed': '导入失败：{msg}',
+                'set.exported': '设置已导出为 {name}', 'set.exportedToDownloads': '设置已导出到「下载」文件夹：qingke-settings.json',
+                'set.exportFailed': '导出失败：{msg}', 'set.imported': '导入成功，正在应用…', 'set.importFailed': '导入失败：{msg}',
                 'err.badFormat': '文件格式不正确', 'err.noImportable': '未找到可导入的设置项', 'err.fileRead': '文件读取失败',
                 'about.title': '关于', 'about.desc': '了解这个应用和它的构建技术。', 'about.iconAlt': '轻壳应用图标',
                 'about.appName': '轻壳',
@@ -2768,7 +2769,8 @@ See the Mulan PSL v2 for more details.
                 'set.autoSave': 'Auto save', 'set.autoSaveHint': 'Save settings automatically on exit', 'set.save': 'Save Settings', 'set.saved': '✓ Saved',
                 'set.backup': 'Backup & Restore', 'set.backupSub': 'Export local settings to a JSON file, or restore from one',
                 'set.export': 'Export', 'set.import': 'Import', 'set.importFileAria': 'Choose settings file',
-                'set.exported': 'Settings exported as qingke-settings.json', 'set.imported': 'Import succeeded, applying…', 'set.importFailed': 'Import failed: {msg}',
+                'set.exported': 'Settings exported as {name}', 'set.exportedToDownloads': 'Settings exported to the Downloads folder: qingke-settings.json',
+                'set.exportFailed': 'Export failed: {msg}', 'set.imported': 'Import succeeded, applying…', 'set.importFailed': 'Import failed: {msg}',
                 'err.badFormat': 'Invalid file format', 'err.noImportable': 'No importable settings found', 'err.fileRead': 'Failed to read file',
                 'about.title': 'About', 'about.desc': 'About this app and how it is built.', 'about.iconAlt': 'Tauri Shell app icon',
                 'about.appName': 'Tauri Shell',
@@ -2867,7 +2869,8 @@ See the Mulan PSL v2 for more details.
                 'set.autoSave': '自動保存', 'set.autoSaveHint': '終了時に設定を自動保存', 'set.save': '設定を保存', 'set.saved': '✓ 保存しました',
                 'set.backup': 'バックアップと復元', 'set.backupSub': 'ローカル設定を JSON ファイルにエクスポート、またはファイルから復元',
                 'set.export': 'エクスポート', 'set.import': 'インポート', 'set.importFileAria': '設定ファイルを選択',
-                'set.exported': '設定を qingke-settings.json にエクスポートしました', 'set.imported': 'インポート成功、適用中…', 'set.importFailed': 'インポート失敗：{msg}',
+                'set.exported': '設定を {name} にエクスポートしました', 'set.exportedToDownloads': '設定を「ダウンロード」フォルダーにエクスポートしました：qingke-settings.json',
+                'set.exportFailed': 'エクスポート失敗：{msg}', 'set.imported': 'インポート成功、適用中…', 'set.importFailed': 'インポート失敗：{msg}',
                 'err.badFormat': 'ファイル形式が正しくありません', 'err.noImportable': 'インポートできる設定項目が見つかりません', 'err.fileRead': 'ファイルの読み取りに失敗しました',
                 'about.title': '情報', 'about.desc': 'このアプリとその構築技術について。', 'about.iconAlt': '軽シェルのアプリアイコン',
                 'about.appName': '軽シェル',
@@ -3310,13 +3313,39 @@ See the Mulan PSL v2 for more details.
             const SETTINGS_PREFIX = 'tauri-shell-';
             const importFile = document.getElementById('settingsImportFile');
 
-            document.getElementById('settingsExport').addEventListener('click', () => {
+            document.getElementById('settingsExport').addEventListener('click', async () => {
                 const data = {};
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
                     if (key.startsWith(SETTINGS_PREFIX)) data[key] = localStorage.getItem(key);
                 }
-                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const json = JSON.stringify(data, null, 2);
+                // 优先弹出系统“另存为”对话框（WebView2 支持 File System Access API），用户可自选保存位置
+                if (window.showSaveFilePicker) {
+                    let writable;
+                    try {
+                        const handle = await window.showSaveFilePicker({
+                            suggestedName: 'qingke-settings.json',
+                            types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+                        });
+                        writable = await handle.createWritable();
+                        await writable.write(json);
+                        await writable.close();
+                        writable = null;
+                        window._showToast && window._showToast('success', t('set.exported', { name: handle.name }));
+                        window._logActivity && window._logActivity(t('log.exported'));
+                    } catch (e) {
+                        // 写入中途失败时丢弃未关闭的流，避免磁盘残留 .crswap 交换临时文件
+                        if (writable) await writable.abort().catch(() => {});
+                        // 用户取消“另存为”时静默返回，其余错误才提示失败
+                        if (e.name !== 'AbortError') {
+                            window._showToast && window._showToast('error', t('set.exportFailed', { msg: e.message }));
+                        }
+                    }
+                    return;
+                }
+                // 回退：<a download> 会被静默下载到系统“下载”文件夹，提示中注明位置
+                const blob = new Blob([json], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
@@ -3324,7 +3353,7 @@ See the Mulan PSL v2 for more details.
                 a.click();
                 // 延迟释放 blob URL，避免个别 WebView 实现在下载排队前释放导致失败
                 setTimeout(() => URL.revokeObjectURL(url), 1000);
-                window._showToast && window._showToast('success', t('set.exported'));
+                window._showToast && window._showToast('success', t('set.exportedToDownloads'));
                 window._logActivity && window._logActivity(t('log.exported'));
             });
 
