@@ -16,3 +16,4 @@ installer/dist/
 installer/src-tauri/target/
 installer/src-tauri/gen/
 待优化清单.md
+/.opencode
