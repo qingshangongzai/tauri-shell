@@ -28,6 +28,8 @@ tauri-winres = "0.3"
 [dependencies]
 # tray-icon：系统托盘（不需要托盘时移除该 feature，见 README「按需移除托盘」）
 tauri = { version = "2", features = ["tray-icon"] }
+# single-instance：进程单例，避免“关闭进托盘”后再次启动出现多实例（多托盘图标）
+tauri-plugin-single-instance = "2"
 
 [profile.release]
 opt-level = "s"

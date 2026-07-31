@@ -72,6 +72,21 @@ fn position_menu_window(
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+            // 已有实例运行时再启动：新进程自动退出，这里还原已有实例的主窗口。
+            // 冷启动瞬间主窗口可能尚未创建，短暂轮询等待其出现后再还原（最长约 5 秒）
+            let app = app.clone();
+            std::thread::spawn(move || {
+                use tauri::Manager;
+                for _ in 0..50 {
+                    if app.get_webview_window("main").is_some() {
+                        break;
+                    }
+                    std::thread::sleep(std::time::Duration::from_millis(100));
+                }
+                show_main_window(app);
+            });
+        }))
         .setup(|app| {
             // ── 托盘图标注册（不需要托盘时整块删除） ──
             #[cfg(desktop)]
