@@ -74,7 +74,7 @@ See the Mulan PSL v2 for more details.
   --tag-gray: #8b8d98;
 
   /* 字体：思源宋体（Google版优先） */
-  --font-sans: "Noto Serif SC", "edit Han Serif SC", "SimSun", "宋体", serif;
+  --font-sans: "Noto Serif SC", "Source Han Serif SC", "SimSun", "宋体", serif;
 }
 
 .dark {
@@ -158,5 +158,5 @@ See the Mulan PSL v2 for more details.
   --color-input-bg: var(--input-bg);
   --color-input-bg-focus: var(--input-bg-focus);
 
-  --font-sans: "Noto Serif SC", "edit Han Serif SC", "SimSun", "宋体", serif;
+  --font-sans: "Noto Serif SC", "Source Han Serif SC", "SimSun", "宋体", serif;
 }

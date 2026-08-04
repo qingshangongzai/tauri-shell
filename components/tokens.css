@@ -71,7 +71,7 @@ See the Mulan PSL v2 for more details.
     /* 布局与字体 */
     --radius: 10px;
     --radius-sm: 6px;
-    --font: "Noto Serif SC", "edit Han Serif SC", "SimSun", "宋体", serif;
+    --font: "Noto Serif SC", "Source Han Serif SC", "SimSun", "宋体", serif;
     --sidebar-w: 164px;
     --titlebar-h: 40px;
 }
