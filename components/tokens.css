@@ -34,6 +34,8 @@ See the Mulan PSL v2 for more details.
     --warning: #b26b00;
     --warning-bg: rgba(255, 179, 0, 0.1);
     --copy-success: #107c10;
+    --success: #107c10;
+    --success-bg: rgba(16, 124, 16, 0.08);
 
     /* Accent 强调色系统 - 浅色 */
     --accent: #005fb8;
@@ -92,6 +94,8 @@ See the Mulan PSL v2 for more details.
     --warning: #ffb84d;
     --warning-bg: rgba(255, 184, 77, 0.1);
     --copy-success: #4ade80;
+    --success: #4ade80;
+    --success-bg: rgba(74, 222, 128, 0.1);
 
     --accent: #60cdff;
     --accent-bg: #2a3f5c;
