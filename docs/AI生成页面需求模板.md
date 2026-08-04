@@ -23,7 +23,7 @@
 
 1. **判断需求明确度**：用户已明确关键功能点（输入什么、输出什么、是否保存数据、页面包含哪些模块）→ 直接进入第 3 步；含糊不清 → 先执行第 2 步。
 2. **列实现假设**（仅在需求含糊时）：用 1–3 句话列出实现假设，例如「按单次计算器实现：输入生产日期与保质期天数，输出到期日与剩余天数，不保存历史记录」，随后**直接生成**，不必等待确认——用户看到假设不符会指出并纠正。若存在多种差异明显的合理实现（如「单次工具」vs「多条记录管理」），先列出候选让用户选择，确认后再生成。用户明确要求「直接生成、不要问」时跳过本步。
-3. **生成页面**：按下列全部规范实现；用户需求未明确的部分，采用本文档各节的**默认选项**。
+3. **生成页面**：按下列全部规范实现；用户需求未明确的部分，采用本文档各节的**默认选项**。输出文件前，先用 1–2 句话说明本次实现的关键取舍（如状态判断阈值、计算触发方式等未明确的决策），便于用户核对。
 4. **自查交付**：输出前逐条通过「四、交付前自查清单」，直接给出完整可用的文件内容（长文件分段策略见「输出策略」）。
 
 **环境与硬性要求（全部必须满足）：**
@@ -38,6 +38,7 @@
 
 **输出策略：**
 
+- 完整文件以**单个**代码块（标注 html 语言）输出，勿拆成多个代码块；代码块外可附简短说明，但不要再出现其他代码块。
 - 正常情况下一次输出完整文件。
 - 预估完整文件超过 500 行时采用分段输出：先输出不含业务内容的完整骨架（标题栏、令牌、脚本齐全），并说明「骨架已就绪，回复『继续』我将填充业务内容」；收到「继续」后只输出业务内容部分（含追加的样式与脚本），不要重复输出骨架。
 - 无论何种原因你的输出被截断，用户回复「继续」时：接着上次输出位置继续输出，不要从头重复。
@@ -179,7 +180,7 @@ document.getElementById('winClose').addEventListener('click', () => invoke('plug
 
 ### 1.6 右键菜单（默认屏蔽默认菜单）
 
-默认加入以下脚本，屏蔽浏览器默认右键菜单（前进/后退、刷新、查看源代码等），使应用不暴露网页特征：
+默认屏蔽浏览器默认右键菜单（前进/后退、刷新、查看源代码等），使应用不暴露网页特征。**该脚本已内置在起步骨架中，无需额外添加**（以下脚本供参考，自绘菜单改造时替换）：
 
 ```html
 <script>
@@ -188,7 +189,7 @@ document.getElementById('winClose').addEventListener('click', () => invoke('plug
 </script>
 ```
 
-用户要求"右键菜单要应用风格的自绘菜单"时：在屏蔽默认菜单的同时，右键在光标位置弹出应用风格的自绘菜单。**注意**：屏蔽默认菜单后，输入框的"粘贴/剪切"等默认项也会消失，自绘菜单需提供对应动作（用 `navigator.clipboard` 读写剪贴板）。完整实现：
+用户要求"右键菜单要应用风格的自绘菜单"时：**在骨架内置的屏蔽脚本之后追加以下代码**（内置屏蔽与自绘菜单不冲突），在屏蔽默认菜单的同时，右键在光标位置弹出应用风格的自绘菜单。**注意**：屏蔽默认菜单后，输入框的"粘贴/剪切"等默认项也会消失，自绘菜单需提供对应动作（用 `navigator.clipboard` 读写剪贴板）。完整实现：
 
 ```html
 <style>
@@ -268,9 +269,9 @@ document.getElementById('winClose').addEventListener('click', () => invoke('plug
 
 > 菜单项与动作按用户需求增删即可；样式一律使用令牌，保持与页面一致。
 
-### 1.7 屏蔽浏览器快捷键（默认加入，可选）
+### 1.7 屏蔽浏览器快捷键（默认加入）
 
-以下代码让**打包后的应用**屏蔽 F5 / F12 / Ctrl+R / Ctrl+U 等浏览器快捷键，并在浏览器预览时自动不生效（保留调试键）：
+以下代码让**打包后的应用**屏蔽 F5 / F12 / Ctrl+R / Ctrl+U 等浏览器快捷键，并在浏览器预览时自动不生效（保留调试键）。**该脚本已内置在起步骨架中，无需额外添加**：
 
 ```html
 <script>
@@ -332,7 +333,7 @@ if (location.protocol === 'tauri:' || location.hostname === 'tauri.localhost') {
 
 ### 2.1 执行铁律（违反任何一条即不合格）
 
-1. **间距**：所有间距必须是 8px 的整数倍——同一信息组内 8/16px，不同信息组之间 24/32px，页面章节/模块之间 48/64px，页面边距 16/24px。
+1. **间距**：模块与组件间的留白以 8px 为基准——同一信息组内 8/16px，不同信息组之间 24/32px，页面章节/模块之间 48/64px，页面边距 16/24px；控件内边距、字号等微观尺寸沿用骨架既有值（如 2/4/6/10/12px），不受 8px 约束。
 2. **无边框原则**：表达分隔与层级用**留白、色块、弥散阴影**，不用边框线；仅高密度数据界面（表格类）与警示场景可保留分割线。
 3. **令牌取色**：颜色一律从令牌取值，**禁止写死色值**；需要新颜色时先定义成新令牌再使用。
 4. **文字层级**：用不透明度阶梯表达——主标题 `--text-primary`（87%）、正文 `--text-body`（78%）、辅助说明 `--text-auxiliary`（52%）、占位符 `--text-placeholder`（30%），不用灰阶。
@@ -373,7 +374,7 @@ if (location.protocol === 'tauri:' || location.hostname === 'tauri.localhost') {
 | 画布/表面 | `--bg` / `--sidebar` / `--card` / `--titlebar` | 页面底、侧栏、卡片、标题栏底色 |
 | 交互底色 | `--hover` / `--divider` / `--input-bg` / `--input-bg-focus` | 悬停、按压、填充式输入框 |
 | 强调色 | `--accent` / `--accent-bg` / `--accent-hover` / `--on-accent` | 主按钮、选中态、链接 |
-| 语义色 | `--danger(-bg)` / `--warning(-bg)` / `--copy-success` | 错误、警告、成功 |
+| 语义色 | `--danger(-bg)` / `--warning(-bg)` / `--success(-bg)` / `--copy-success` | 错误、警告、成功；`--copy-success` 为复制反馈专用，通用成功态用 `--success(-bg)` |
 | 文字阶梯 | `--text-primary` / `--text-body` / `--text-auxiliary` / `--text-placeholder` | 用不透明度而非灰阶表达层级 |
 | 动效 | `--ease` / `--duration-fast` / `--duration-normal` / `--duration-slow` | 统一缓动与时长 |
 | 层级阴影 | `--shadow-card` / `--shadow-flyout` | 弥散阴影代替边框线表达 elevation |
@@ -411,6 +412,8 @@ if (location.protocol === 'tauri:' || location.hostname === 'tauri.localhost') {
             --warning: #b26b00;
             --warning-bg: rgba(255, 179, 0, 0.1);
             --copy-success: #107c10;
+            --success: #107c10;
+            --success-bg: rgba(16, 124, 16, 0.08);
 
             --accent: #005fb8;
             --accent-bg: #e8f4fd;
@@ -460,6 +463,8 @@ if (location.protocol === 'tauri:' || location.hostname === 'tauri.localhost') {
             --warning: #ffb84d;
             --warning-bg: rgba(255, 184, 77, 0.1);
             --copy-success: #4ade80;
+            --success: #4ade80;
+            --success-bg: rgba(74, 222, 128, 0.1);
 
             --accent: #60cdff;
             --accent-bg: #2a3f5c;
@@ -638,6 +643,25 @@ if (location.protocol === 'tauri:' || location.hostname === 'tauri.localhost') {
             transition: background var(--duration-fast) var(--ease);
         }
         .form-input:focus { background: var(--input-bg-focus); }
+        .form-select {
+            width: 100%;
+            padding: 8px 28px 8px 12px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-family: var(--font);
+            font-size: 0.85rem;
+            outline: none;
+            cursor: pointer;
+            transition: background var(--duration-fast) var(--ease);
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+        }
+        .form-select:focus { background-color: var(--input-bg-focus); }
 
         /* 动效降级 */
         @media (prefers-reduced-motion: reduce) {
@@ -699,6 +723,27 @@ if (location.protocol === 'tauri:' || location.hostname === 'tauri.localhost') {
             updateMaxBtn();
         }
 
+        /* ═══════════ 默认脚本：屏蔽右键菜单与浏览器快捷键（骨架，勿改） ═══════════ */
+        // 屏蔽默认右键菜单（浏览器预览同样生效）
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        // 屏蔽浏览器快捷键：仅打包版生效，浏览器预览保留 F5/F12 便于调试
+        if (location.protocol === 'tauri:' || location.hostname === 'tauri.localhost') {
+            const BLOCKED_CTRL_KEYS = ['r', 'p', 'u', 'f', 'g', 'j', '+', '-', '=', '0'];
+            document.addEventListener('keydown', e => {
+                const key = e.key.toLowerCase();
+                if (
+                    key === 'f5' || key === 'f3' || key === 'f12' ||
+                    (e.ctrlKey && e.shiftKey && ['i', 'j', 'c'].includes(key)) ||
+                    (e.ctrlKey && !e.altKey && BLOCKED_CTRL_KEYS.includes(key)) ||
+                    (e.altKey && (key === 'arrowleft' || key === 'arrowright'))
+                ) { e.preventDefault(); }
+            }, { capture: true });
+            // Ctrl+滚轮页面缩放
+            document.addEventListener('wheel', e => { if (e.ctrlKey) e.preventDefault(); }, { passive: false, capture: true });
+            // 鼠标侧键历史前进/后退
+            document.addEventListener('mouseup', e => { if (e.button === 3 || e.button === 4) e.preventDefault(); });
+        }
+
         /* ═══════════ 你的业务逻辑写在这里 ═══════════ */
     }
     </script>
@@ -716,7 +761,8 @@ if (location.protocol === 'tauri:' || location.hostname === 'tauri.localhost') {
 - □ 窗口形态正确：方式 A（标题栏带 `data-tauri-drag-region`、三按钮、脚本齐全）或方式 B（无任何标题栏残留代码）
 - □ 关闭按钮命令正确：默认 `plugin:window|close`；仅用户明确要求托盘时用 `plugin:window|hide` + `<html>` 加 `data-tauri-tray`
 - □ `body` 不滚动（`overflow: hidden`），滚动在 `.content`
-- □ 所有颜色来自令牌，无写死色值；间距为 8 的整数倍；无多余边框线
+- □ 所有颜色来自令牌，无写死色值；模块间距为 8 的整数倍（控件内边距等微观尺寸除外）；无多余边框线
+- □ 无 emoji 代替图标（含标题与正文）；图标一律内联 SVG
 - □ 深色模式：默认固定浅色主题、无切换入口；仅用户明确要求时提供切换且工作正常
 - □ 默认右键菜单已屏蔽（默认行为）
 - □ 桌面应用形态：无移动端断点、无外部链接跳转、无网络请求
