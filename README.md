@@ -186,6 +186,8 @@ npm run tauri build -- --no-bundle
 > 🔁 构建时会自动执行：版本号同步 → 图标生成（从 `logo.svg`） → HTML 压缩，一步到位。
 > 安装向导的图标、页面 logo 与版本号同样源自主项目，无需单独维护。
 
+> 🧹 **清理构建中间产物**：`src-tauri/target` 是 Rust 编译缓存，一次完整构建后可占用数 GB 磁盘空间（安装器子包另有 `installer/src-tauri/target`）。若只是偶尔打包一次，可在对应目录下运行 `cargo clean` 清除（如 `cd src-tauri && cargo clean`）；下次构建将从零全量编译，耗时明显变长。
+
 ### 4️⃣ 不想装环境？用 GitHub Actions 云构建（最简单的玩法）
 
 本地零环境也能出安装包，全程只需三步：
