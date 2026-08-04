@@ -18,7 +18,9 @@ See the Mulan PSL v2 for more details.
       各组件（Toast / Modal / Tab 等）的自包含 demo 见同目录其他 HTML 文件。
 -->
 <!DOCTYPE html>
-<html lang="zh-CN">
+<!-- 托盘 opt-in 标记：保留 data-tauri-tray 则关闭最小化到托盘（托盘左键还原、右键菜单退出）；
+     不需要托盘时删掉该属性，并把关闭按钮改为始终 invoke('plugin:window|close')（见下方脚本注释） -->
+<html lang="zh-CN" data-tauri-tray>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -630,8 +632,9 @@ See the Mulan PSL v2 for more details.
             const invoke = cmd => internals.invoke(cmd);
 
             document.getElementById('winMin').addEventListener('click', () => invoke('plugin:window|minimize'));
-            // 关闭按钮：按设置隐藏到托盘或退出（挂托盘后 close 只销窗口不退进程，退出须走 exit_app）
-            // 若已按 docs/使用说明.md「按需移除托盘」移除托盘（exit_app 命令随之删除），请改为始终 invoke('plugin:window|close')
+            // 关闭按钮：本文件带 data-tauri-tray 标记（托盘已打包），按设置隐藏到托盘或退出
+            // （挂托盘后 close 只销窗口不退进程，退出须走 exit_app）；
+            // 若删掉了 <html> 上的 data-tauri-tray 标记（无托盘），请改为始终 invoke('plugin:window|close')
             document.getElementById('winClose').addEventListener('click', () =>
                 invoke(localStorage.getItem('tauri-shell-tray-min') === '0' ? 'exit_app' : 'plugin:window|hide'));
 

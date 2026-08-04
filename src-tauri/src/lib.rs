@@ -25,15 +25,17 @@ fn apply_window_chrome(window: tauri::WebviewWindow, custom_titlebar: bool) {
     let _ = window.show();
 }
 
-// ═══════════ 托盘（不需要托盘时按 README「按需移除托盘」小节整块删除） ═══════════
+// ═══════════ 托盘（dist/index.html 带 data-tauri-tray 标记才编译，见 build.rs） ═══════════
 
-/// 挂托盘图标后销毁窗口不会退出进程，须显式退出（托盘菜单「退出」调用）
+/// 挂托盘图标后销毁窗口不会退出进程，须显式退出（托盘菜单「退出」调用）。
+/// 保持无条件编译：无托盘构建中仍是合法命令（第三方 HTML 可自行调用退出），
+/// 仅 3 行，不随 cfg 裁剪以维持 generate_handler 列表简单不变。
 #[tauri::command]
 fn exit_app(app: tauri::AppHandle) {
     app.exit(0);
 }
 
-/// 还原并前置主窗口（托盘左键 / 托盘菜单「打开主界面」调用）
+/// 还原并前置主窗口（托盘左键 / 托盘菜单「打开主界面」/ 单实例二次启动调用）
 #[tauri::command]
 fn show_main_window(app: tauri::AppHandle) {
     use tauri::Manager;
@@ -47,7 +49,7 @@ fn show_main_window(app: tauri::AppHandle) {
 /// 托盘右键菜单定位：可见卡片左下角贴光标（向右上展开），
 /// 靠近屏幕边缘时夹取推回，保证卡片完整可见。
 /// DPI：定位用物理像素，尺寸由前端 LogicalSize 设置。
-#[cfg(desktop)]
+#[cfg(all(tray_enabled, desktop))]
 fn position_menu_window(
     app: &tauri::AppHandle,
     win: &tauri::WebviewWindow,
@@ -88,8 +90,8 @@ pub fn run() {
             });
         }))
         .setup(|app| {
-            // ── 托盘图标注册（不需要托盘时整块删除） ──
-            #[cfg(desktop)]
+            // ── 托盘（仅 dist/index.html 带 data-tauri-tray 标记时编译；无标记则不注册） ──
+            #[cfg(all(tray_enabled, desktop))]
             {
                 use tauri::{
                     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
@@ -98,7 +100,7 @@ pub fn run() {
 
                 // 原生标题栏的 X 会销毁主窗口，而隐藏的 tray-menu 窗口使进程不退出，
                 // 托盘从此无法还原窗口——拦截为隐藏进托盘，与自绘关闭按钮行为一致。
-                // 移除托盘时须连同此块删除，否则窗口关不掉（见 docs/使用说明.md「按需移除托盘」）
+                // 本块随 tray_enabled cfg 编译（见 build.rs）：无标记时不拦截，X 直接销毁退出
                 if let Some(main_win) = app.get_webview_window("main") {
                     let w = main_win.clone();
                     main_win.on_window_event(move |e| {
@@ -149,6 +151,16 @@ pub fn run() {
                     .build(app)?;
             }
 
+            // 无标记（未打包托盘）：销毁预建的 tray-menu 空窗口，
+            // 否则隐藏窗口会拖住进程不退出，关闭主窗口即成僵尸（无托盘可还原）
+            #[cfg(not(tray_enabled))]
+            {
+                use tauri::Manager;
+                if let Some(menu_win) = app.get_webview_window("tray-menu") {
+                    let _ = menu_win.destroy();
+                }
+            }
+
             // show 兜底：页面脚本异常导致 apply_window_chrome 未被调用时，
             // 超时强制显示窗口，避免 visible: false 下窗口永不出现
             {
@@ -187,4 +199,22 @@ pub fn run() {
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[cfg(test)]
+mod tests {
+    /// 可靠性锚点：build.rs 的条件编译开关必须与 dist/index.html 的标记一致。
+    /// scripts/test-tray-opt-in.mjs 会分别写入有/无标记的页面后跑 cargo test 验证。
+    #[test]
+    fn tray_cfg_matches_html_marker() {
+        let marker = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../dist/index.html");
+        let has_marker = std::fs::read_to_string(marker)
+            .unwrap_or_default()
+            .contains("data-tauri-tray");
+        assert_eq!(
+            cfg!(tray_enabled),
+            has_marker,
+            "build.rs 条件编译与 dist/index.html 的 data-tauri-tray 标记不一致"
+        );
+    }
 }

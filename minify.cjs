@@ -19,8 +19,16 @@ const OPTIONS = {
 };
 
 // 主页面 + 托盘菜单页（白名单式拷贝，dist 内其余文件不进打包产物）
-const PAGES = ["index.html", "tray-menu.html"];
+// 托盘为 opt-in：dist/index.html 带 data-tauri-tray 标记才打包 tray-menu.html
+const PAGES = [
+  "index.html",
+  ...(fs.readFileSync("dist/index.html", "utf8").includes("data-tauri-tray")
+    ? ["tray-menu.html"]
+    : []),
+];
 
+// 先清空再写入：PAGES 随标记变化，不清除会让上一次构建的旧文件残留进安装包
+fs.rmSync("dist-min", { recursive: true, force: true });
 fs.mkdirSync("dist-min", { recursive: true });
 Promise.all(
   PAGES.map(async (name) => {

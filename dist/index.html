@@ -9,8 +9,10 @@ EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 See the Mulan PSL v2 for more details.
 -->
+<!-- 托盘 opt-in 标记：data-tauri-tray 存在则构建期打包托盘代码（图标 + 自绘右键菜单 + 关闭最小化到托盘）；
+     去掉该属性则默认不打包托盘，关闭主窗口直接退出（见 docs/使用说明.md「系统托盘」） -->
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-tauri-tray>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
