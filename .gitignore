@@ -18,3 +18,5 @@ installer/src-tauri/gen/
 待优化清单.md
 /.opencode
 /.zcode
+# 代码审查临时 diff 文件
+/.git-diff.txt
