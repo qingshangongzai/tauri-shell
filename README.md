@@ -26,7 +26,7 @@ Rust 层几乎零逻辑（仅拖放示例的文件大小命令与系统托盘两
 | | 特性 | 说明 |
 |:--:|------|------|
 | 🪟 | **标题栏自适应** | 页面带自绘标题栏（`data-tauri-drag-region`）则无边框窗口，否则自动切换系统原生标题栏，零配置 |
-| ☁️ | **GitHub Actions 云构建** | 本地零环境，fork 后网页端改 HTML、打 tag 即得安装包（见 [docs/使用说明.md](docs/使用说明.md) 的「云构建」章） |
+| ☁️ | **GitHub Actions 云构建** | 本地零环境，fork 后网页端改 HTML、手动运行一次工作流即得安装包（见 [docs/使用说明.md](docs/使用说明.md) 的「云构建」章） |
 | 📌 | **系统托盘** | 默认不打包（关闭即退出）；`<html>` 加 `data-tauri-tray` 标记即构建期打包：关闭最小化到托盘、托盘右键「去线留白」自绘菜单 |
 | 🎛️ | **丰富的示例界面** | 侧边栏导航、仪表盘、工具页、能力展示、组件页、设置页（含深色模式）、关于页 |
 | 🧩 | **可拆用的内置组件** | Toast 通知、Modal 弹窗、Tab 标签页、Progress 进度条、Badge 徽章、Button 按钮、Input 输入框、Switch 开关、Select 下拉选择器、Tooltip、自定义右键菜单 |
@@ -60,7 +60,7 @@ Rust 层几乎零逻辑（仅拖放示例的文件大小命令与系统托盘两
 ```
 轻壳/
 ├── .github/workflows/
-│   └── release.yml         ← GitHub Actions 云构建（打 tag 出安装包）
+│   └── release.yml         ← GitHub Actions 云构建（手动运行出安装包）
 ├── dist/
 │   ├── index.html          ← 你的网页放这里（`<html>` 带 data-tauri-tray 标记才打包托盘）
 │   ├── tray-menu.html      ← 托盘右键菜单页（仅标记存在时被打包）
@@ -194,7 +194,7 @@ npm run tauri build -- --no-bundle
 
 1. **准备网页** — 只要一个 `index.html`（单文件，资源尽量内联）；
 2. **替换示例页** — fork 本仓库，网页端打开 `dist/index.html`，把你的代码整体替换进去（无需保留示例页任何代码，标题栏与窗口显示由壳自动适配）；
-3. **云端构建** — 在仓库 **Actions** 页面手动运行「构建安装包」，或发一个 `v*` 标签的 Release；构建完成后从 Artifact（或 Release 附件）下载安装包，双击即装。
+3. **云端构建** — 在仓库 **Actions** 页面手动运行「构建安装包」（ref 选标签时安装包会同时附到该 Release）；构建完成后从 Artifact 下载安装包，双击即装。
 
 不需要安装 Rust / Node，也不需要跑任何构建命令——你要做的只是把 HTML 放进去，其余（标题栏、托盘、安装向导）由壳代劳。托盘默认不打包（关闭即退出），需要托盘时给 `<html>` 加 `data-tauri-tray` 标记即可。
 
